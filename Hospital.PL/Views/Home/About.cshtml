@@ -1,0 +1,454 @@
+@{
+    ViewData["Title"] = "About NovaHealth";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1 class="display-3 fw-bold mb-3">
+                <span class="en-text">About NovaHealth</span>
+                <span class="ar-text" style="display:none">عن نوفا هيلث</span>
+            </h1>
+            <p class="lead mb-4">
+                <span class="en-text">Pioneering Healthcare Excellence Since 2005</span>
+                <span class="ar-text" style="display:none">رواد التميز في الرعاية الصحية منذ 2005</span>
+            </p>
+            <p class="mb-0">
+                <span class="en-text">Compassionate Care, Cutting-Edge Technology, Unwavering Commitment</span>
+                <span class="ar-text" style="display:none">رعاية رحيمة، تكنولوجيا متطورة، التزام لا يتزعزع</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/about.js" asp-append-version="true"></script>
+}
+
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">
+                    <span class="en-text">Our Story</span>
+                    <span class="ar-text" style="display:none">قصتنا</span>
+                </h2>
+                <p class="lead mb-4">
+                    <span class="en-text">
+                        Founded in 2005 by Dr. Robert and Elizabeth Nova, NovaHealth began as a small community clinic with a big vision:
+                        to transform healthcare through innovation, compassion, and excellence.
+                    </span>
+                    <span class="ar-text" style="display:none">
+                        تأسست نوفا هيلث في عام 2005 على يد الدكتور روبرت وإليزابيث نوفا، بدأت كعيادة مجتمعية صغيرة برؤية كبيرة: تحويل الرعاية الصحية من خلال الابتكار والتعاطف والتميز.
+                    </span>
+                </p>
+                <p class="mb-4">
+                    <span class="en-text">
+                        What started as a 20-bed facility has grown into a 300-bed multi-specialty hospital serving over 50,000 patients annually.
+                        Our journey has been guided by a simple yet powerful principle: every patient deserves world-class medical care delivered with genuine compassion.
+                    </span>
+                    <span class="ar-text" style="display:none">
+                        ما بدأ كمنشأة تضم 20 سريراً نما ليصبح مستشفى متعدد التخصصات يضم 300 سرير يخدم أكثر من 50,000 مريض سنوياً. لقد توجهت رحلتنا بمبدأ بسيط لكنه قوي: كل مريض يستحق رعاية طبية عالمية المستوى تقدم بتعاطف حقيقي.
+                    </span>
+                </p>
+                <p class="mb-4">
+                    <span class="en-text">
+                        Today, NovaHealth stands as a beacon of medical excellence, recognized nationally for our pioneering work in cardiac care,
+                        neurology, and minimally invasive surgeries. But our commitment remains the same - putting patients first in everything we do.
+                    </span>
+                    <span class="ar-text" style="display:none">
+                        اليوم، تقف نوفا هيلث كمنارة للتميز الطبي، معترف بها وطنياً لعملها الرائد في رعاية القلب والأعصاب والجراحات طفيفة التوغل. لكن التزامنا يظل كما هو - وضع المرضى في المقام الأول في كل ما نقوم به.
+                    </span>
+                </p>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="#mission" class="btn btn-primary-custom">
+                        <span class="en-text">Our Mission</span>
+                        <span class="ar-text" style="display:none">مهمتنا</span>
+                    </a>
+                    <a href="#team" class="btn btn-outline-custom">
+                        <span class="en-text">Meet Our Team</span>
+                        <span class="ar-text" style="display:none">تعرف على فريقنا</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-custom p-4 fade-in">
+                    <img src="~/images/Orthopedics.avif" alt="NovaHealth Hospital" class="img-fluid rounded-3" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="18">0</div>
+                    <div class="stat-label">
+                        <span class="en-text">Years of Excellence</span>
+                        <span class="ar-text" style="display:none">سنة من التميز</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="250">0</div>
+                    <div class="stat-label">
+                        <span class="en-text">Expert Doctors</span>
+                        <span class="ar-text" style="display:none">طبيب خبير</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="50">0</div>
+                    <div class="stat-label">
+                        <span class="en-text">Medical Departments</span>
+                        <span class="ar-text" style="display:none">قسم طبي</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number counter" data-target="150">0</div>
+                    <div class="stat-label">
+                        <span class="en-text">Patients Treated</span>
+                        <span class="ar-text" style="display:none">ألف مريض تم علاجهم</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-light mission-section" id="mission">
+    <div class="mission-bg"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card-custom p-4 h-100 fade-in">
+                    <div class="value-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3 class="mb-3">
+                        <span class="en-text">Our Mission</span>
+                        <span class="ar-text" style="display:none">مهمتنا</span>
+                    </h3>
+                    <p class="mb-4">
+                        <span class="en-text">
+                            To provide exceptional, compassionate healthcare that improves the lives of our patients and communities through
+                            clinical excellence, innovative technology, and unwavering commitment to quality.
+                        </span>
+                        <span class="ar-text" style="display:none">
+                            توفير رعاية صحية استثنائية ورحيمة تعمل على تحسين حياة مرضانا ومجتمعاتنا من خلال التميز السريري والتكنولوجيا المبتكرة والالتزام الثابت بالجودة.
+                        </span>
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-primary-color me-2"></i>
+                            <span class="en-text">Patient-centered care approach</span>
+                            <span class="ar-text" style="display:none">نهج رعاية يركز على المريض</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-primary-color me-2"></i>
+                            <span class="en-text">Evidence-based medical practices</span>
+                            <span class="ar-text" style="display:none">ممارسات طبية قائمة على الأدلة</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-primary-color me-2"></i>
+                            <span class="en-text">Continuous quality improvement</span>
+                            <span class="ar-text" style="display:none">تحسين الجودة المستمر</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-primary-color me-2"></i>
+                            <span class="en-text">Community health advocacy</span>
+                            <span class="ar-text" style="display:none">الدعوة لصحة المجتمع</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100 fade-in">
+                    <div class="value-icon">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <h3 class="mb-3">
+                        <span class="en-text">Our Vision</span>
+                        <span class="ar-text" style="display:none">رؤيتنا</span>
+                    </h3>
+                    <p class="mb-4">
+                        <span class="en-text">
+                            To be the leading healthcare institution recognized globally for medical innovation, outstanding patient outcomes,
+                            and transformative healthcare delivery that sets new standards in the medical community.
+                        </span>
+                        <span class="ar-text" style="display:none">
+                            أن نكون المؤسسة الصحية الرائدة المعترف بها عالمياً للابتكار الطبي ونتائج المرضى المتميزة وتقديم الرعاية الصحية التحويلية التي تضع معايير جديدة في المجتمع الطبي.
+                        </span>
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-star text-primary-color me-2"></i>
+                            <span class="en-text">Global healthcare leadership</span>
+                            <span class="ar-text" style="display:none">القيادة العالمية في الرعاية الصحية</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-star text-primary-color me-2"></i>
+                            <span class="en-text">Medical research and innovation</span>
+                            <span class="ar-text" style="display:none">البحث الطبي والابتكار</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-star text-primary-color me-2"></i>
+                            <span class="en-text">Healthcare education excellence</span>
+                            <span class="ar-text" style="display:none">التميز في التعليم الصحي</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-star text-primary-color me-2"></i>
+                            <span class="en-text">Sustainable healthcare solutions</span>
+                            <span class="ar-text" style="display:none">حلول رعاية صحية مستدامة</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Our Values</span>
+                    <span class="ar-text" style="display:none">قيمنا</span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">The principles that guide everything we do at NovaHealth</span>
+                    <span class="ar-text" style="display:none">المبادئ التي توجه كل ما نقوم به في نوفا هيلث</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var value in new[] {
+                new { Icon = "bi bi-heart", TitleEn = "Compassion", TitleAr = "التعاطف", DescEn = "We treat every patient with empathy, kindness, and respect, understanding that healing involves both medical treatment and emotional support.", DescAr = "نعامل كل مريض بتعاطف ولطف واحترام، ونفهم أن الشفاء يتضمن كلًا من العلاج الطبي والدعم العاطفي." },
+                new { Icon = "bi bi-shield-check", TitleEn = "Excellence", TitleAr = "التميز", DescEn = "We pursue the highest standards in medical care, continuously improving our practices and embracing innovation to achieve the best outcomes.", DescAr = "نسعى لتحقيق أعلى المعايير في الرعاية الطبية، ونحسن ممارساتنا باستمرار ونتبنى الابتكار لتحقيق أفضل النتائج." },
+                new { Icon = "bi bi-people", TitleEn = "Collaboration", TitleAr = "التعاون", DescEn = "We work together as a team, valuing each member's contribution and fostering partnerships with patients and families in the healing process.", DescAr = "نعمل معًا كفريق، ونقدر مساهمة كل عضو ونعزز الشراكات مع المرضى وعائلاتهم في عملية الشفاء." },
+                new { Icon = "bi bi-lightbulb", TitleEn = "Innovation", TitleAr = "الابتكار", DescEn = "We embrace cutting-edge technology and research to provide advanced treatments and improve healthcare delivery methods.", DescAr = "نتبنى أحدث التقنيات والبحث لتقديم علاجات متقدمة وتحسين طرق تقديم الرعاية الصحية." },
+                new { Icon = "bi bi-award", TitleEn = "Integrity", TitleAr = "النزاهة", DescEn = "We maintain the highest ethical standards, being transparent in our actions and accountable for our decisions and outcomes.", DescAr = "نحافظ على أعلى المعايير الأخلاقية، ونكون شفافين في أفعالنا ومسؤولين عن قراراتنا ونتائجنا." },
+                new { Icon = "bi bi-globe", TitleEn = "Community", TitleAr = "المجتمع", DescEn = "We are committed to serving our community's health needs and contributing to public health initiatives and education.", DescAr = "نحن ملتزمون بخدمة احتياجات مجتمعنا الصحية والمساهمة في مبادرات الصحة العامة والتعليم." }
+            })
+            {
+                <div class="col-md-4">
+                    <div class="card-custom value-card fade-in">
+                        <div class="value-icon">
+                            <i class="@value.Icon"></i>
+                        </div>
+                        <h4>
+                            <span class="en-text">@value.TitleEn</span>
+                            <span class="ar-text" style="display:none">@value.TitleAr</span>
+                        </h4>
+                        <p>
+                            <span class="en-text">@value.DescEn</span>
+                            <span class="ar-text" style="display:none">@value.DescAr</span>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-light" id="team">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Our Leadership Team</span>
+                    <span class="ar-text" style="display:none">فريق القيادة لدينا</span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Meet the visionary leaders guiding NovaHealth towards a healthier future</span>
+                    <span class="ar-text" style="display:none">تعرف على القادة ذوي الرؤية الذين يوجهون نوفا هيلث نحو مستقبل أكثر صحة</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom team-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80" alt="Dr. Sarah Johnson" class="team-image" />
+                    <h4>Dr. Sarah Johnson</h4>
+                    <p class="text-primary-color mb-2">
+                        <span class="en-text">Chief Executive Officer</span>
+                        <span class="ar-text" style="display:none">الرئيس التنفيذي</span>
+                    </p>
+                    <p class="small mb-3">
+                        <span class="en-text">20+ years in healthcare leadership</span>
+                        <span class="ar-text" style="display:none">أكثر من 20 سنة في قيادة الرعاية الصحية</span>
+                    </p>
+                    <p>
+                        <span class="en-text">Leading NovaHealth with a vision for innovative, patient-centered care and operational excellence.</span>
+                        <span class="ar-text" style="display:none">قيادة نوفا هيلث برؤية للرعاية المبتكرة التي تركز على المريض والتميز التشغيلي.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom team-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80" alt="Dr. Michael Chen" class="team-image" />
+                    <h4>Dr. Michael Chen</h4>
+                    <p class="text-primary-color mb-2">
+                        <span class="en-text">Chief Medical Officer</span>
+                        <span class="ar-text" style="display:none">الرئيس الطبي</span>
+                    </p>
+                    <p class="small mb-3">
+                        <span class="en-text">Board-certified Neurologist</span>
+                        <span class="ar-text" style="display:none">أخصائي أعصاب معتمد</span>
+                    </p>
+                    <p>
+                        <span class="en-text">Overseeing clinical operations and ensuring the highest standards of medical care across all departments.</span>
+                        <span class="ar-text" style="display:none">الإشراف على العمليات السريرية وضمان أعلى معايير الرعاية الطبية في جميع الأقسام.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom team-card fade-in">
+                    <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=400&q=80" alt="Dr. Emily Rodriguez" class="team-image" />
+                    <h4>Dr. Emily Rodriguez</h4>
+                    <p class="text-primary-color mb-2">
+                        <span class="en-text">Chief of Surgery</span>
+                        <span class="ar-text" style="display:none">رئيس الجراحة</span>
+                    </p>
+                    <p class="small mb-3">
+                        <span class="en-text">Renowned Orthopedic Surgeon</span>
+                        <span class="ar-text" style="display:none">جراحة عظام مشهورة</span>
+                    </p>
+                    <p>
+                        <span class="en-text">Pioneering advanced surgical techniques and leading our surgical excellence initiatives.</span>
+                        <span class="ar-text" style="display:none">ريادة التقنيات الجراحية المتقدمة وقيادة مبادرات التميز الجراحي لدينا.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Our Journey</span>
+                    <span class="ar-text" style="display:none">رحلتنا</span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Milestones in NovaHealth's history of healthcare excellence</span>
+                    <span class="ar-text" style="display:none">محطات بارزة في تاريخ نوفا هيلث للتميز في الرعاية الصحية</span>
+                </p>
+            </div>
+        </div>
+        <div class="timeline">
+            @{ var milestones = new[] {
+                    new { Year = "2005", TextEn = "NovaHealth founded as a 20-bed community clinic by Dr. Robert and Elizabeth Nova", TextAr = "تأسيس نوفا هيلث كعيادة مجتمعية تضم 20 سريراً على يد الدكتور روبرت وإليزابيث نوفا" },
+                    new { Year = "2008", TextEn = "Expanded to 50-bed facility and established first specialized cardiac care unit", TextAr = "التوسع إلى منشأة تضم 50 سريراً وإنشاء أول وحدة متخصصة لرعاية القلب" },
+                    new { Year = "2012", TextEn = "Launched telemedicine services and opened neurology department", TextAr = "إطلاق خدمات الطب عن بعد وافتتاح قسم الأعصاب" },
+                    new { Year = "2015", TextEn = "Recognized as Hospital of the Year for innovative patient care approaches", TextAr = "التكريم كـ \"مستشفى العام\" لأساليب الرعاية المبتكرة للمرضى" },
+                    new { Year = "2018", TextEn = "Opened new 300-bed state-of-the-art facility with advanced surgical suites", TextAr = "افتتاح منشأة جديدة تضم 300 سرير بأحدث التقنيات مع غرف جراحية متقدمة" },
+                    new { Year = "2025", TextEn = "Launched AI-powered diagnostic center and international medical tourism program", TextAr = "إطلاق مركز تشخيصي مدعوم بالذكاء الاصطناعي وبرنامج السياحة الطبية الدولية" }
+                };
+            }
+            @for (int i = 0; i < milestones.Length; i++)
+            {
+                var item = milestones[i];
+                var position = i % 2 == 0 ? "left" : "right";
+                <div class="timeline-item @position fade-in">
+                    <div class="timeline-content">
+                        <h4>@item.Year</h4>
+                        <p>
+                            <span class="en-text">@item.TextEn</span>
+                            <span class="ar-text" style="display:none">@item.TextAr</span>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <span class="en-text">Frequently Asked Questions</span>
+                        <span class="ar-text" style="display:none">الأسئلة الشائعة</span>
+                    </h2>
+                    <p class="lead">
+                        <span class="en-text">Get answers to common questions about NovaHealth</span>
+                        <span class="ar-text" style="display:none">احصل على إجابات للأسئلة الشائعة حول نوفا هيلث</span>
+                    </p>
+                </div>
+                <div class="accordion accordion-custom" id="aboutFAQ">
+                    @{ var faqs = new[] {
+                            new { Id = "faq1", TitleEn = "What makes NovaHealth different from other hospitals?", TitleAr = "ما الذي يجعل نوفا هيلث مختلفة عن المستشفيات الأخرى؟", BodyEn = "NovaHealth combines cutting-edge medical technology with personalized, compassionate care. Our unique patient-centered approach, innovative treatment methods, and commitment to continuous improvement set us apart. We also prioritize medical research and community health initiatives.", BodyAr = "تجمع نوفا هيلث بين أحدث التقنيات الطبية والرعاية المخصصة والرحيمة. نهجنا الفريد الذي يركز على المريض وأساليب العلاج المبتكرة والالتزام بالتحسين المستمر يميزنا. نحن نعطي الأولوية أيضًا للبحث الطبي ومبادرات صحة المجتمع." },
+                            new { Id = "faq2", TitleEn = "Do you accept international patients?", TitleAr = "هل تقبلون المرضى الدوليين؟", BodyEn = "Yes, we welcome international patients and have a dedicated International Patient Services department. We assist with medical visas, accommodation, language interpretation, and all aspects of medical travel.", BodyAr = "نعم، نرحب بالمرضى الدوليين ولدينا قسم مخصص لخدمات المرضى الدوليين. نساعد في تأشيرات العلاج والإقامة والتفسير اللغوي وجميع جوانب السفر الطبي." },
+                            new { Id = "faq3", TitleEn = "What insurance plans do you accept?", TitleAr = "ما هي خطط التأمين التي تقبلونها؟", BodyEn = "We accept most major insurance providers and have partnerships with numerous national and international insurance companies. Our billing department can verify your coverage and help you understand your benefits.", BodyAr = "نقبل معظم مقدمي التأمين الرئيسيين ولدينا شراكات مع العديد من شركات التأمين الوطنية والدولية. يمكن لقسم الفواتير لدينا التحقق من تغطيتك ومساعدتك في فهم مزاياك." },
+                            new { Id = "faq4", TitleEn = "How do you ensure patient safety and quality care?", TitleAr = "كيف تضمنون سلامة المرضى وجودة الرعاية؟", BodyEn = "Patient safety is our top priority. We implement rigorous safety protocols, continuous staff training, advanced monitoring systems, and regular quality audits. Our hospital is accredited by international healthcare standards organizations.", BodyAr = "سلامة المرضى هي أولويتنا القصوى. ننفذ بروتوكولات سلامة صارمة وتدريباً مستمراً للطاقم وأنظمة مراقبة متقدمة وتدقيقات جودة منتظمة. مستشفانا معتمد من قبل منظمات معايير الرعاية الصحية الدولية." }
+                        };
+                    }
+                    @for (int i = 0; i < faqs.Length; i++)
+                    {
+                        var item = faqs[i];
+                        var showClass = i == 0 ? "show" : string.Empty;
+                        var collapsed = i == 0 ? string.Empty : "collapsed";
+                        <div class="accordion-item fade-in">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button @collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@item.Id">
+                                    <span class="en-text">@item.TitleEn</span>
+                                    <span class="ar-text" style="display:none">@item.TitleAr</span>
+                                </button>
+                            </h2>
+                            <div id="@item.Id" class="accordion-collapse collapse @showClass" data-bs-parent="#aboutFAQ">
+                                <div class="accordion-body">
+                                    <span class="en-text">@item.BodyEn</span>
+                                    <span class="ar-text" style="display:none">@item.BodyAr</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background-color: var(--primary-color); color: var(--bg-white);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Ready to Experience NovaHealth Care?</span>
+                    <span class="ar-text" style="display:none">هل أنت مستعد لتجربة رعاية نوفا هيلث؟</span>
+                </h3>
+                <p class="lead mb-0">
+                    <span class="en-text">Join thousands of patients who trust us with their health and well-being.</span>
+                    <span class="ar-text" style="display:none">انضم إلى آلاف المرضى الذين يثقون بنا في صحتهم ورفاهيتهم.</span>
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a asp-controller="Appointment" asp-action="Create" class="btn btn-light btn-lg px-4 py-2 fw-bold me-3">
+                    <span class="en-text">Book Appointment</span>
+                    <span class="ar-text" style="display:none">حجز موعد</span>
+                </a>
+                <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-light btn-lg px-4 py-2">
+                    <span class="en-text">Contact Us</span>
+                    <span class="ar-text" style="display:none">اتصل بنا</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

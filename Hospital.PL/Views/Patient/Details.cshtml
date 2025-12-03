@@ -1,0 +1,182 @@
+@model Hospital.BBL.DTOs.PatientDTOs.GetPatientByIdDto
+@using Hospital.DAL.Models.PatientModule
+@{
+    ViewData["Title"] = "Patient Details";
+
+    string ResolvePhoto(string? imageUrl) =>
+        !string.IsNullOrWhiteSpace(imageUrl)
+            ? $"~/Files/Images/{imageUrl}"
+            : "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80";
+
+    string FormatBloodType(BloodType type) => type switch
+    {
+        BloodType.A_Pos => "A+",
+        BloodType.A_Neg => "A-",
+        BloodType.B_Pos => "B+",
+        BloodType.B_Neg => "B-",
+        BloodType.AB_Pos => "AB+",
+        BloodType.AB_Neg => "AB-",
+        BloodType.O_Pos => "O+",
+        BloodType.O_Neg => "O-",
+        _ => type.ToString()
+    };
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Patient Details</span>
+                    <span class="ar-text" style="display:none">تفاصيل المريض</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Comprehensive snapshot of personal and medical information.</span>
+                    <span class="ar-text" style="display:none">عرض شامل للمعلومات الشخصية والطبية.</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom me-2">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Patients</span>
+                    <span class="ar-text" style="display:none">العودة للمرضى</span>
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                    <i class="bi bi-pencil me-2"></i>
+                    <span class="en-text">Edit Patient</span>
+                    <span class="ar-text" style="display:none">تعديل المريض</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-lg-4 text-center border-end">
+                        <img src="@Url.Content(ResolvePhoto(Model.Image))" alt="@Model.Name" class="profile-image mb-3" />
+                        <h3>@Model.Name</h3>
+                        <p class="text-primary-color mb-2">
+                            <span class="en-text">Patient ID: NH-@Model.Id.ToString("D4")</span>
+                            <span class="ar-text" style="display:none">معرف المريض: NH-@Model.Id.ToString("D4")</span>
+                        </p>
+                        <span class="badge badge-active">
+                            <span class="en-text">@Model.Status</span>
+                            <span class="ar-text" style="display:none">@Model.Status</span>
+                        </span>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">@Model.Age</div>
+                                    <div class="metric-label">
+                                        <span class="en-text">Age</span>
+                                        <span class="ar-text" style="display:none">العمر</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">@Model.Height</div>
+                                    <div class="metric-label">
+                                        <span class="en-text">Height (cm)</span>
+                                        <span class="ar-text" style="display:none">الطول (سم)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">@Model.Weight</div>
+                                    <div class="metric-label">
+                                        <span class="en-text">Weight (kg)</span>
+                                        <span class="ar-text" style="display:none">الوزن (كجم)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="metric-card">
+                                    <div class="metric-value">@FormatBloodType(Model.BloodType)</div>
+                                    <div class="metric-label">
+                                        <span class="en-text">Blood Type</span>
+                                        <span class="ar-text" style="display:none">فصيلة الدم</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Personal Information</span>
+                            <span class="ar-text" style="display:none">المعلومات الشخصية</span>
+                        </h5>
+                        <ul class="list-unstyled details-list">
+                            <li>
+                                <strong><span class="en-text">Email:</span><span class="ar-text" style="display:none">البريد الإلكتروني:</span></strong>
+                                @Model.Email
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Phone:</span><span class="ar-text" style="display:none">الهاتف:</span></strong>
+                                @Model.PhoneNumber
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Date of Birth:</span><span class="ar-text" style="display:none">تاريخ الميلاد:</span></strong>
+                                @Model.DateOfBirth.ToString("MMMM dd, yyyy")
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Gender:</span><span class="ar-text" style="display:none">الجنس:</span></strong>
+                                @Model.Gender
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Address:</span><span class="ar-text" style="display:none">العنوان:</span></strong>
+                                @Model.Address
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Medical Information</span>
+                            <span class="ar-text" style="display:none">المعلومات الطبية</span>
+                        </h5>
+                        <ul class="list-unstyled details-list">
+                            <li>
+                                <strong><span class="en-text">Allergies:</span><span class="ar-text" style="display:none">الحساسية:</span></strong>
+                                @Model.Allergies
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Current Medications:</span><span class="ar-text" style="display:none">الأدوية الحالية:</span></strong>
+                                @Model.CurrentMedications
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Primary Doctor:</span><span class="ar-text" style="display:none">الطبيب الأساسي:</span></strong>
+                                @(Model.Doctor ?? "Not Assigned")
+                            </li>
+                            <li>
+                                <strong><span class="en-text">Status:</span><span class="ar-text" style="display:none">الحالة:</span></strong>
+                                @Model.Status
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h5 class="text-primary-color mb-3">
+                        <span class="en-text">Medical History</span>
+                        <span class="ar-text" style="display:none">التاريخ الطبي</span>
+                    </h5>
+                    <p class="medical-history">@Model.MedicalHistory</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

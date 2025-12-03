@@ -1,0 +1,192 @@
+@model Hospital.PL.ViewModels.DoctorViewModel
+@using Hospital.DAL.Models.DoctorModule
+@{
+    ViewData["Title"] = "Edit Doctor";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/doctors.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Edit Doctor Profile</span>
+                    <span class="ar-text" style="display:none">تعديل ملف الطبيب</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Update personal details, specialty, and department assignment.</span>
+                    <span class="ar-text" style="display:none">قم بتحديث البيانات الشخصية والتخصص وتعيين القسم.</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Doctors</span>
+                    <span class="ar-text" style="display:none">العودة للأطباء</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        @if (ViewBag.Errors is IEnumerable<string> errors && errors.Any())
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>
+                    <span class="en-text">Error!</span>
+                    <span class="ar-text" style="display:none">خطأ!</span>
+                </strong>
+                <ul class="mb-0 mt-2">
+                    @foreach (var error in errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label">
+                                <span class="en-text">First Name</span>
+                                <span class="ar-text" style="display:none">الاسم الأول</span>
+                            </label>
+                            <input asp-for="FirstName" class="form-control" required />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label">
+                                <span class="en-text">Last Name</span>
+                                <span class="ar-text" style="display:none">الاسم الأخير</span>
+                            </label>
+                            <input asp-for="LastName" class="form-control" required />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Specialization" class="form-label">
+                                <span class="en-text">Specialization</span>
+                                <span class="ar-text" style="display:none">التخصص</span>
+                            </label>
+                            <input asp-for="Specialization" class="form-control" required />
+                            <span asp-validation-for="Specialization" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="DepartmentId" class="form-label">
+                                <span class="en-text">Department</span>
+                                <span class="ar-text" style="display:none">القسم</span>
+                            </label>
+                            <select asp-for="DepartmentId" class="form-select" asp-items="Model.Departments">
+                                <option value="" data-en="Select Department" data-ar="اختر القسم">Select Department</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">
+                                <span class="en-text">Email</span>
+                                <span class="ar-text" style="display:none">البريد الإلكتروني</span>
+                            </label>
+                            <input asp-for="Email" class="form-control" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label">
+                                <span class="en-text">Phone</span>
+                                <span class="ar-text" style="display:none">الهاتف</span>
+                            </label>
+                            <input asp-for="PhoneNumber" class="form-control" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Education" class="form-label">
+                                <span class="en-text">Education</span>
+                                <span class="ar-text" style="display:none">التعليم</span>
+                            </label>
+                            <input asp-for="Education" class="form-control" required />
+                            <span asp-validation-for="Education" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ExpertYears" class="form-label">
+                                <span class="en-text">Years of Experience</span>
+                                <span class="ar-text" style="display:none">سنوات الخبرة</span>
+                            </label>
+                            <input asp-for="ExpertYears" type="number" min="0" class="form-control" />
+                            <span asp-validation-for="ExpertYears" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">
+                                <span class="en-text">Status</span>
+                                <span class="ar-text" style="display:none">الحالة</span>
+                            </label>
+                            <select asp-for="Status" class="form-select">
+                                @foreach (var status in Enum.GetValues<DoctorStatus>())
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Bio" class="form-label">
+                                <span class="en-text">Bio / Description</span>
+                                <span class="ar-text" style="display:none">السيرة الذاتية / الوصف</span>
+                            </label>
+                            <textarea asp-for="Bio" rows="4" class="form-control" required></textarea>
+                            <span asp-validation-for="Bio" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Image" class="form-label">
+                                <span class="en-text">Profile Photo</span>
+                                <span class="ar-text" style="display:none">صورة الملف الشخصي</span>
+                            </label>
+                            <input asp-for="Image" type="file" class="form-control" accept="image/*" />
+                            <div class="form-text en-text">Leave empty to keep current photo</div>
+                            <div class="form-text ar-text" style="display:none">اتركه فارغاً للاحتفاظ بالصورة الحالية</div>
+                            <span asp-validation-for="Image" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end gap-3">
+                        <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
+                            <span class="en-text">Cancel</span>
+                            <span class="ar-text" style="display:none">إلغاء</span>
+                        </a>
+                        <button type="submit" class="btn btn-primary-custom" style="white-space: nowrap;">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span class="en-text">Update Doctor</span>
+                            <span class="ar-text" style="display:none">تحديث الطبيب</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/doctors.js" asp-append-version="true"></script>
+}

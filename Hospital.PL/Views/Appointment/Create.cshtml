@@ -1,0 +1,182 @@
+@model Hospital.PL.ViewModels.AppointementViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Hospital.DAL.Models.AppointmentModule
+@{
+    ViewData["Title"] = "Schedule Appointment";
+    var patients = ViewBag.Patients as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var doctors = ViewBag.Doctors as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/appointments.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Schedule New Appointment</span>
+                    <span class="ar-text" style="display:none">جدولة موعد جديد</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Select patient, doctor, date, time, and appointment details.</span>
+                    <span class="ar-text" style="display:none">اختر المريض والطبيب والتاريخ والوقت وتفاصيل الموعد.</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Appointments</span>
+                    <span class="ar-text" style="display:none">العودة للمواعيد</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="PatientId" class="form-label">
+                                <span class="en-text">Patient</span>
+                                <span class="ar-text" style="display:none">المريض</span>
+                            </label>
+                            @if (ViewBag.IsPatient == true)
+                            {
+                                @if (ViewBag.PatientId != null)
+                                {
+                                    <input type="hidden" asp-for="PatientId" value="@ViewBag.PatientId" />
+                                    <select asp-for="PatientId" class="form-select" asp-items="patients" disabled>
+                                    </select>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <span class="en-text">No patient profile found for your account. Please contact support.</span>
+                                        <span class="ar-text" style="display:none">لم يتم العثور على ملف مريض لحسابك. يرجى الاتصال بالدعم.</span>
+                                    </div>
+                                    <!-- Fallback to allow selection if needed, or keep hidden/disabled -->
+                                    <select asp-for="PatientId" class="form-select" asp-items="patients" disabled>
+                                         <option>No Profile Found</option>
+                                    </select>
+                                }
+                            }
+                            else
+                            {
+                                <select asp-for="PatientId" class="form-select" asp-items="patients">
+                                    <option value="">Select Patient</option>
+                                </select>
+                            }
+                            <span asp-validation-for="PatientId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DoctorId" class="form-label">
+                                <span class="en-text">Doctor</span>
+                                <span class="ar-text" style="display:none">الطبيب</span>
+                            </label>
+                            <select asp-for="DoctorId" class="form-select" asp-items="doctors">
+                                <option value="">Select Doctor</option>
+                            </select>
+                            <span asp-validation-for="DoctorId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Appointment_Date" class="form-label">
+                                <span class="en-text">Date</span>
+                                <span class="ar-text" style="display:none">التاريخ</span>
+                            </label>
+                            <input asp-for="Appointment_Date" type="date" class="form-control" required />
+                            <span asp-validation-for="Appointment_Date" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Appointment_Time" class="form-label">
+                                <span class="en-text">Time</span>
+                                <span class="ar-text" style="display:none">الوقت</span>
+                            </label>
+                            <input asp-for="Appointment_Time" type="time" class="form-control" required />
+                            <span asp-validation-for="Appointment_Time" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AppointmentType" class="form-label">
+                                <span class="en-text">Appointment Type</span>
+                                <span class="ar-text" style="display:none">نوع الموعد</span>
+                            </label>
+                            <select asp-for="AppointmentType" class="form-select">
+                                @foreach (var type in Enum.GetValues<AppointmentType>())
+                                {
+                                    var display = type switch
+                                    {
+                                        AppointmentType.FollowUp => "Follow-up",
+                                        AppointmentType.Checkup => "Check-up",
+                                        _ => type.ToString()
+                                    };
+                                    <option value="@type">@display</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AppointmentType" class="text-danger small"></span>
+                        </div>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="form-label">
+                                    <span class="en-text">Status</span>
+                                    <span class="ar-text" style="display:none">الحالة</span>
+                                </label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="@AppointmentStatus.Scheduled">Scheduled</option>
+                                    <option value="@AppointmentStatus.confirmed">Confirmed</option>
+                                    <option value="@AppointmentStatus.pending" selected>Pending</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="hidden" asp-for="Status" value="@AppointmentStatus.pending" />
+                        }
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label">
+                                <span class="en-text">Notes</span>
+                                <span class="ar-text" style="display:none">ملاحظات</span>
+                            </label>
+                            <textarea asp-for="Notes" rows="3" class="form-control" placeholder="Reason for visit, preparation notes, etc."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Image" class="form-label">
+                                <span class="en-text">Attachment (Optional)</span>
+                                <span class="ar-text" style="display:none">مرفق (اختياري)</span>
+                            </label>
+                            <input asp-for="Image" type="file" class="form-control" accept="image/*" />
+                            <span asp-validation-for="Image" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <a asp-action="Index" class="btn btn-outline-custom">
+                            <span class="en-text">Cancel</span>
+                            <span class="ar-text" style="display:none">إلغاء</span>
+                        </a>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <span class="en-text">Schedule Appointment</span>
+                            <span class="ar-text" style="display:none">جدولة الموعد</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

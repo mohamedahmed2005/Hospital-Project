@@ -1,0 +1,303 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "My Appointments";
+    var doctor = ViewBag.Doctor as dynamic;
+    var appointments = ViewBag.Appointments as IEnumerable<Hospital.BBL.DTOs.AppointmentDTOs.GetAllAppointmentsDto>;
+    var selectedDate = ViewBag.SelectedDate as DateOnly? ?? DateOnly.FromDateTime(DateTime.Now);
+    var dateParam = ViewBag.DateParam as string ?? "";
+    bool hasDateFilter = ViewBag.HasDateFilter as bool? ?? false;
+    
+    // Helper to format date for input
+    string dateValue = hasDateFilter ? dateParam : selectedDate.ToString("yyyy-MM-dd");
+    if (dateParam == "all") dateValue = "";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">My Appointments</span>
+                    <span class="ar-text" style="display:none">مواعيدي</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">View, filter and manage your appointments</span>
+                    <span class="ar-text" style="display:none">عرض وإدارة المواعيد</span>
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <a asp-controller="Dashboard" asp-action="Doctor" class="btn btn-outline-custom">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Dashboard</span>
+                    <span class="ar-text" style="display:none">العودة للوحة التحكم</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+
+        <!-- FILTERS ROW -->
+        <div class="row mb-4 g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="searchInput"
+                           placeholder="Search appointments by patient name, type, or status..."
+                           data-ar-placeholder="ابحث عن المواعيد باسم المريض أو النوع أو الحالة..." />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <form method="get" asp-action="MyAppointments" id="filterForm">
+                     <div class="input-group">
+                        <input type="date" id="dateFilter" name="date" class="form-control border-start-0"
+                               value="@dateValue"
+                               onchange="this.form.submit()">
+                        @if(hasDateFilter && dateParam != "all")
+                        {
+                             <a href="@Url.Action("MyAppointments", new { date = "all" })" class="btn btn-outline-secondary" title="Clear Date Filter">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- APPOINTMENTS TABLE -->
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th><span class="en-text">Time</span><span class="ar-text" style="display:none">الوقت</span></th>
+                        <th><span class="en-text">Patient</span><span class="ar-text" style="display:none">المريض</span></th>
+                        <th><span class="en-text">Date</span><span class="ar-text" style="display:none">التاريخ</span></th>
+                        <th><span class="en-text">Type</span><span class="ar-text" style="display:none">النوع</span></th>
+                        <th><span class="en-text">Status</span><span class="ar-text" style="display:none">الحالة</span></th>
+                        <th><span class="en-text">Availability</span><span class="ar-text" style="display:none">التوفر</span></th>
+                        <th><span class="en-text">Actions</span><span class="ar-text" style="display:none">الإجراءات</span></th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsTableBody">
+                    @if (appointments == null || !appointments.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-calendar-x display-4 d-block mb-3"></i>
+                                    <p class="mb-0">
+                                        <span class="en-text">No appointments found.</span>
+                                        <span class="ar-text" style="display:none">لا توجد مواعيد.</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var appt in appointments.OrderBy(a => a.Appointment_Date).ThenBy(a => a.Appointment_Time))
+                        {
+                            DateTime timeValue;
+                            bool ok = DateTime.TryParse(appt.Appointment_Time.ToString(), out timeValue);
+                            var statusClass = appt.Status switch
+                            {
+                                Hospital.DAL.Models.AppointmentModule.AppointmentStatus.confirmed => "bg-success",
+                                Hospital.DAL.Models.AppointmentModule.AppointmentStatus.pending => "bg-warning",
+                                Hospital.DAL.Models.AppointmentModule.AppointmentStatus.cancelled => "bg-danger",
+                                _ => "bg-info"
+                            };
+                            
+                            var searchKey = $"{appt.PatientName ?? ""} {appt.AppointmentType} {appt.Status}".ToLowerInvariant();
+
+                            <tr class="@(appt.IsAvailable ? "" : "table-danger")" data-keywords="@searchKey">
+                                <td>
+                                    @if (ok)
+                                    {
+                                        <span class="fw-bold">@timeValue.ToString("HH:mm")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">--:--</span>
+                                    }
+                                </td>
+                                <td>
+                                    <strong>@(appt.PatientName ?? "No Patient")</strong>
+                                </td>
+                                <td>@appt.Appointment_Date.ToString("MMM dd, yyyy")</td>
+                                <td>@appt.AppointmentType</td>
+                                <td>
+                                    <span class="badge @statusClass">
+                                        @appt.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="availability-toggle btn btn-sm @(appt.IsAvailable ? "btn-success" : "btn-danger")"
+                                            data-appointment-id="@appt.Id"
+                                            data-is-available="@appt.IsAvailable.ToString().ToLower()">
+                                        <span class="en-text">@(appt.IsAvailable ? "Available" : "Unavailable")</span>
+                                        <span class="ar-text" style="display:none">@(appt.IsAvailable ? "متاح" : "غير متاح")</span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <div class="action-buttons d-flex gap-1">
+                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom" asp-controller="Appointment" asp-action="Details" asp-route-id="@appt.Id">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination-toolbar mt-3" id="appointmentsPaginationToolbar">
+            <div class="page-size">
+                <label for="pageSize" class="form-label mb-0">
+                    <span class="en-text">Show</span>
+                    <span class="ar-text" style="display:none">عرض</span>
+                </label>
+                <select class="form-select form-select-sm w-auto" id="pageSize">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span class="text-muted small">
+                    <span class="en-text">per page</span>
+                    <span class="ar-text" style="display:none">لكل صفحة</span>
+                </span>
+            </div>
+            <!-- Pagination logic would go here if server-side, or JS pagination -->
+            <div class="pagination-wrapper"></div>
+        </div>
+
+        <div class="alert alert-info mt-3 d-none" id="emptyState">
+            <span class="en-text">No appointments match your current filters.</span>
+            <span class="ar-text" style="display:none">لا توجد مواعيد تطابق عوامل التصفية الحالية.</span>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="mb-0" style="color: var(--text-light);">
+                <span class="en-text" id="countLabelEn" data-total="@(appointments?.Count() ?? 0)">Showing @(appointments?.Count() ?? 0) appointment(s)</span>
+                <span class="ar-text" style="display:none" id="countLabelAr" data-total="@(appointments?.Count() ?? 0)">إظهار @(appointments?.Count() ?? 0) موعد</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- SEARCH FUNCTIONALITY ---
+            const searchInput = document.getElementById('searchInput');
+            const tableBody = document.getElementById('appointmentsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const countLabelEn = document.getElementById('countLabelEn');
+            const countLabelAr = document.getElementById('countLabelAr');
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                let visibleCount = 0;
+                const rows = tableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const keywords = row.getAttribute('data-keywords') || '';
+                    if (keywords.includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    emptyState.classList.remove('d-none');
+                } else {
+                    emptyState.classList.add('d-none');
+                }
+
+                // Update count
+                countLabelEn.textContent = `Showing ${visibleCount} appointment(s)`;
+                if (countLabelAr) {
+                    countLabelAr.textContent = `إظهار ${visibleCount} موعد`;
+                }
+            }
+
+            if(searchInput) {
+                searchInput.addEventListener('input', filterTable);
+            }
+
+            // --- AVAILABILITY TOGGLE ---
+            const toggleButtons = document.querySelectorAll('.availability-toggle');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const appointmentId = this.getAttribute('data-appointment-id');
+                    const isAvailable = this.getAttribute('data-is-available') === 'true';
+                    
+                    // Disable button during request
+                    this.disabled = true;
+                    // Keep the width consistent to prevent jumping
+                    const originalWidth = this.offsetWidth;
+                    this.style.width = originalWidth + 'px';
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                    
+                    fetch('@Url.Action("ToggleAvailability", "DoctorAppointment")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                        },
+                        body: JSON.stringify({ appointmentId: appointmentId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update button state
+                            this.setAttribute('data-is-available', data.isAvailable.toString());
+                            this.style.width = ''; // Reset width
+                            if (data.isAvailable) {
+                                this.className = 'availability-toggle btn btn-sm btn-success';
+                                this.innerHTML = '<span class="en-text">Available</span><span class="ar-text" style="display:none">متاح</span>';
+                            } else {
+                                this.className = 'availability-toggle btn btn-sm btn-danger';
+                                this.innerHTML = '<span class="en-text">Unavailable</span><span class="ar-text" style="display:none">غير متاح</span>';
+                            }
+                            
+                            // Update row appearance if needed
+                            const row = this.closest('tr');
+                            if (data.isAvailable) {
+                                row.classList.remove('table-danger');
+                            } else {
+                                row.classList.add('table-danger');
+                            }
+                        } else {
+                            alert('Failed to update availability: ' + (data.message || 'Unknown error'));
+                            location.reload();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating availability.');
+                        location.reload();
+                    })
+                    .finally(() => {
+                        this.disabled = false;
+                        this.style.width = '';
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,123 @@
+@model Hospital.BBL.DTOs.DepartmentDTOs.GetDepartmentByIdDto
+@using Hospital.DAL.Models.DepartmentModule
+@{
+    ViewData["Title"] = "Department Details";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/departments.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3" style="color: var(--primary-color);">
+                    <span class="en-text">@Model.Name</span>
+                    <span class="ar-text" style="display:none">@Model.Name</span>
+                </h1>
+
+                <p class="lead mb-0" style="color: var(--text-light);">
+                    <span class="en-text">Department overview, services, and leadership.</span>
+                    <span class="ar-text" style="display:none">نظرة عامة على القسم والخدمات والقيادة.</span>
+                </p>
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom me-2">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Departments</span>
+                    <span class="ar-text" style="display:none">العودة للأقسام</span>
+                </a>
+
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                    <i class="bi bi-pencil me-2"></i>
+                    <span class="en-text">Edit Department</span>
+                    <span class="ar-text" style="display:none">تعديل القسم</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <div class="row mb-4">
+
+                    <div class="col-md-4 border-end">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Key Facts</span>
+                            <span class="ar-text" style="display:none">معلومات رئيسية</span>
+                        </h5>
+
+                        <ul class="list-unstyled details-list" style="color: var(--text-light);">
+                            <li>
+                                <strong>
+                                    <span class="en-text">Specialty:</span>
+                                    <span class="ar-text" style="display:none">التخصص:</span>
+                                </strong>
+                                @Model.DepartmentSpeciality
+                            </li>
+
+                            <li>
+                                <strong>
+                                    <span class="en-text">Location:</span>
+                                    <span class="ar-text" style="display:none">الموقع:</span>
+                                </strong>
+                                @Model.Location
+                            </li>
+
+                            <li>
+                                <strong>
+                                    <span class="en-text">Status:</span>
+                                    <span class="ar-text" style="display:none">الحالة:</span>
+                                </strong>
+                                @Model.Status
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 border-end">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Key Services</span>
+                            <span class="ar-text" style="display:none">الخدمات الرئيسية</span>
+                        </h5>
+                        <p style="color: var(--text-light);">@Model.KeyServices</p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Department Description</span>
+                            <span class="ar-text" style="display:none">وصف القسم</span>
+                        </h5>
+                        <p style="color: var(--text-light);">@Model.Description</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Leadership</span>
+                            <span class="ar-text" style="display:none">القيادة</span>
+                        </h5>
+
+                        <p class="mb-1" style="color: var(--text-light);">
+                            <span class="en-text">Assigned Doctor:</span>
+                            <span class="ar-text" style="display:none">الطبيب المسؤول:</span>
+                            <strong>@(Model.DoctorName ?? "Unassigned")</strong>
+                        </p>
+
+                        @if (Model.DoctorId.HasValue)
+                        {
+                            <p class="small mb-0" style="color: var(--text-light);">ID: @Model.DoctorId</p>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

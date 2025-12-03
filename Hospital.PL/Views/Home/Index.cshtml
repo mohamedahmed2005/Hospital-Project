@@ -1,0 +1,524 @@
+﻿@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "NovaHealth";
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
+
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="en-text">Your Health is Our <span class="text-primary-color">Priority</span></span>
+                        <span class="ar-text" style="display:none">صحتك هي <span class="text-primary-color">أولويتنا</span></span>
+                    </h1>
+                    <p class="lead mb-4">
+                        <span class="en-text">
+                            At NovaHealth, we provide world-class medical care with compassion and cutting-edge technology.
+                            Our team of specialists is dedicated to your well-being and recovery.
+                        </span>
+                        <span class="ar-text" style="display:none">
+                            في نوفا هيلث، نقدم رعاية طبية عالمية المستوى مع التعاطف والتكنولوجيا المتطورة. فريقنا من المتخصصين مكرس لرفاهيتك وتعافيك.
+                        </span>
+                    </p>
+                    <div class="buttons my-4">
+                        @if (isAuthenticated)
+                        {
+                            @if (!User.IsInRole("Doctor"))
+                            {
+                                <div class="top-buttons d-flex align-items-center">
+                                    <a asp-controller="Appointment" asp-action="Create" class="btn btn-primary-custom me-3" style="white-space: nowrap;">
+                                        <span class="en-text">Book Appointment</span>
+                                        <span class="ar-text" style="display:none">حجز موعد</span>
+                                    </a>
+                                    <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-custom" style="white-space: nowrap;">
+                                        <span class="en-text">Emergency Care</span>
+                                        <span class="ar-text" style="display:none">الرعاية الطارئة</span>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="top-buttons d-flex align-items-center">
+                                    <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-custom" style="white-space: nowrap;">
+                                        <span class="en-text">Emergency Care</span>
+                                        <span class="ar-text" style="display:none">الرعاية الطارئة</span>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="auth-buttons d-flex align-items-center">
+                                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Create", "Appointment")" class="btn btn-primary-custom me-3" style="white-space: nowrap;">
+                                    <span class="en-text">Book Appointment</span>
+                                    <span class="ar-text" style="display:none">حجز موعد</span>
+                                </a>
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-custom me-3" style="white-space: nowrap;">
+                                    <span class="en-text">Log In</span>
+                                    <span class="ar-text" style="display:none">تسجيل الدخول</span>
+                                </a>
+                                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-custom" style="white-space: nowrap;">
+                                    <span class="en-text">Sign Up</span>
+                                    <span class="ar-text" style="display:none">إنشاء حساب</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image text-center">
+                    <img src="~/images/HomePicture.avif" alt="Medical Professionals" class="img-fluid rounded-3" />
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+          <div class="row text-center">
+            <div class="col-md-3 col-6">
+              <div class="stat">
+                <span class="counter" data-target="250">0</span>
+                <h3>
+                  <span class="en-text">Expert Doctors</span>
+                  <span class="ar-text" style="display: none">أطباء خبراء</span>
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="stat">
+                <span class="counter" data-target="50">0</span>
+                <h3>
+                  <span class="en-text">Medical Departments</span>
+                  <span class="ar-text" style="display: none">قسم طبي</span>
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="stat">
+                <span class="counter" data-target="15000">0</span>
+                <h3>
+                  <span class="en-text">Happy Patients</span>
+                  <span class="ar-text" style="display: none">مريض سعيد</span>
+                </h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="stat">
+                <span>24/7</span>
+                <h3>
+                  <span class="en-text">Emergency Care</span>
+                  <span class="ar-text" style="display: none">رعاية طارئة</span>
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+
+<section class="emergency-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">24/7 Emergency Care</span>
+                    <span class="ar-text" style="display:none">الرعاية الطارئة على مدار 24/7</span>
+                </h2>
+                <p class="lead mb-4">
+                    <span class="en-text">
+                        Immediate medical attention when you need it most. Our emergency department is always open with expert staff ready to help.
+                    </span>
+                    <span class="ar-text" style="display:none">
+                        الرعاية الطبية الفورية عندما تحتاجها أكثر. قسم الطوارئ لدينا مفتوح دائمًا مع طاقم خبير جاهز للمساعدة.
+                    </span>
+                </p>
+                <div class="d-flex gap-3">
+                    <a asp-controller="Home" asp-action="Contact" class="btn btn-light btn-lg px-4 fw-bold">
+                        <i class="bi bi-telephone me-2"></i>
+                        <span class="en-text">Emergency Hotline</span>
+                        <span class="ar-text" style="display:none">خط الطوارئ</span>
+                    </a>
+                    <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-light btn-lg px-4">
+                        <span class="en-text">Emergency Info</span>
+                        <span class="ar-text" style="display:none">معلومات الطوارئ</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="bi bi-ambulance display-1"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-4 fw-bold mb-3">
+                    <span class="en-text">Why Choose <span class="text-primary-color">NovaHealth</span></span>
+                    <span class="ar-text" style="display:none">لماذا تختار <span class="text-primary-color">نوفا هيلث</span></span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">We combine medical excellence with compassionate care to deliver the best health outcomes.</span>
+                    <span class="ar-text" style="display:none">نجمع بين التميز الطبي والرعاية الرحيمة لتقديم أفضل النتائج الصحية.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Advanced Technology</span>
+                        <span class="ar-text" style="display:none">تكنولوجيا متطورة</span>
+                    </h4>
+                    <p>
+                        <span class="en-text">State-of-the-art medical equipment and innovative treatment approaches for accurate diagnosis and effective care.</span>
+                        <span class="ar-text" style="display:none">أحدث المعدات الطبية وأساليب العلاج المبتكرة للتشخيص الدقيق والرعاية الفعالة.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Expert Specialists</span>
+                        <span class="ar-text" style="display:none">أخصائيون خبراء</span>
+                    </h4>
+                    <p>
+                        <span class="en-text">Our board-certified physicians and specialists have years of experience in their respective fields.</span>
+                        <span class="ar-text" style="display:none">أطباؤنا المعتمدون والمتخصصون لديهم سنوات من الخبرة في مجالاتهم المختلفة.</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="bi bi-heart"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Patient-Centered Care</span>
+                        <span class="ar-text" style="display:none">رعاية تركز على المريض</span>
+                    </h4>
+                    <p>
+                        <span class="en-text">We prioritize your comfort and well-being with personalized treatment plans and compassionate support.</span>
+                        <span class="ar-text" style="display:none">نعطي الأولوية لراحتك ورفاهيتك مع خطط علاج مخصصة ودعم رحيم.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-4 fw-bold mb-3">
+                    <span class="en-text">Our <span class="text-primary-color">Medical Services</span></span>
+                    <span class="ar-text" style="display:none">خدماتنا <span class="text-primary-color">الطبية</span></span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Comprehensive healthcare services for all your medical needs.</span>
+                    <span class="ar-text" style="display:none">خدمات رعاية صحية شاملة لجميع احتياجاتك الطبية.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="service-card fade-in">
+                    <div class="service-image">
+                        <img src="~/images/Cardiology.avif" alt="Cardiology" />
+                    </div>
+                    <div class="service-content">
+                        <h4>
+                            <span class="en-text">Cardiology</span>
+                            <span class="ar-text" style="display:none">طب القلب</span>
+                        </h4>
+                        <p>
+                            <span class="en-text">Comprehensive heart care with advanced diagnostic and treatment options.</span>
+                            <span class="ar-text" style="display:none">رعاية قلبية شاملة مع خيارات تشخيص وعلاج متقدمة.</span>
+                        </p>
+                        <a asp-controller="Department" asp-action="Index" class="text-primary-color fw-bold">
+                            <span class="en-text">Learn More</span>
+                            <span class="ar-text" style="display:none">تعرف أكثر</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card fade-in">
+                    <div class="service-image">
+                        <img src="~/images/Neurology.jpg" alt="Neurology" />
+                    </div>
+                    <div class="service-content">
+                        <h4>
+                            <span class="en-text">Neurology</span>
+                            <span class="ar-text" style="display:none">طب الأعصاب</span>
+                        </h4>
+                        <p>
+                            <span class="en-text">Comprehensive neurological diagnostics and personalized treatment programs.</span>
+                            <span class="ar-text" style="display:none">تشخيصات عصبية شاملة وبرامج علاج شخصية.</span>
+                        </p>
+                        <a asp-controller="Department" asp-action="Index" class="text-primary-color fw-bold">
+                            <span class="en-text">Learn More</span>
+                            <span class="ar-text" style="display:none">تعرف أكثر</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card fade-in">
+                    <div class="service-image">
+                        <img src="~/images/Orthopedics.avif" alt="Orthopedics" />
+                    </div>
+                    <div class="service-content">
+                        <h4>
+                            <span class="en-text">Orthopedics</span>
+                            <span class="ar-text" style="display:none">جراحة العظام</span>
+                        </h4>
+                        <p>
+                            <span class="en-text">Advanced bone, joint, and sports injury care for all ages.</span>
+                            <span class="ar-text" style="display:none">رعاية متقدمة للعظام والمفاصل وإصابات الرياضة لجميع الأعمار.</span>
+                        </p>
+                        <a asp-controller="Department" asp-action="Index" class="text-primary-color fw-bold">
+                            <span class="en-text">Learn More</span>
+                            <span class="ar-text" style="display:none">تعرف أكثر</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@{
+    var featuredDoctors = new[]
+    {
+        new { Name = "Dr. Sarah Johnson", Specialty = "Cardiologist", Experience = "15+ years of experience", Image = "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80" },
+        new { Name = "Dr. Michael Chen", Specialty = "Neurologist", Experience = "12+ years of experience", Image = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80" },
+        new { Name = "Dr. Emily Rodriguez", Specialty = "Orthopedic Surgeon", Experience = "18+ years of experience", Image = "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=400&q=80" },
+        new { Name = "Dr. James Wilson", Specialty = "Pediatrician", Experience = "10+ years of experience", Image = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80" }
+    };
+
+    var newsArticles = new[]
+    {
+        new { Category = "Research", Title = "Breakthrough in Heart Disease Treatment", Description = "New minimally invasive procedure shows 95% success rate in clinical trials.", Image = Url.Content("~/images/news1.jpg") },
+        new { Category = "Wellness", Title = "5 Daily Habits for Better Heart Health", Description = "Simple lifestyle changes that can significantly improve cardiovascular health.", Image = Url.Content("~/images/news2.avif") },
+        new { Category = "Technology", Title = "AI Revolutionizing Medical Diagnostics", Description = "How artificial intelligence is improving accuracy in disease detection.", Image = Url.Content("~/images/news3.jpg") }
+    };
+
+    var testimonials = new[]
+    {
+        new { Quote = "\"The care I received at NovaHealth was exceptional. The doctors took time to explain everything and made me feel comfortable throughout my treatment.\"", Name = "Sarah Johnson", RoleEn = "Cardiology Patient", RoleAr = "مريضة قلب", Avatar = "https://randomuser.me/api/portraits/women/45.jpg" },
+        new { Quote = "\"From the moment I walked in, I felt cared for. The staff was attentive, and the facilities are state-of-the-art. Highly recommend NovaHealth!\"", Name = "Michael Brown", RoleEn = "Orthopedics Patient", RoleAr = "مريض عظام", Avatar = "https://randomuser.me/api/portraits/men/32.jpg" },
+        new { Quote = "\"The neurology department helped me through a difficult time with compassion and expertise. I'm grateful for the excellent care I received.\"", Name = "Jennifer Lee", RoleEn = "Neurology Patient", RoleAr = "مريضة أعصاب", Avatar = "https://randomuser.me/api/portraits/women/68.jpg" }
+    };
+}
+
+<section class="doctors-preview">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-4 fw-bold mb-3">
+                    <span class="en-text">Meet Our <span class="text-primary-color">Specialists</span></span>
+                    <span class="ar-text" style="display:none">تعرف على <span class="text-primary-color">متخصصينا</span></span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Our team of highly qualified doctors is dedicated to providing exceptional healthcare.</span>
+                    <span class="ar-text" style="display:none">فريقنا من الأطباء المؤهلين تأهيلاً عالياً مكرس لتقديم رعاية صحية استثنائية.</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var doctor in featuredDoctors)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="doctor-preview-card fade-in">
+                        <img src="@doctor.Image" alt="@doctor.Name" class="doctor-avatar" />
+                        <h4>@doctor.Name</h4>
+                        <p class="text-primary-color">
+                            <span class="en-text">@doctor.Specialty</span>
+                            <span class="ar-text" style="display:none">@doctor.Specialty</span>
+                        </p>
+                        <p class="small">
+                            <span class="en-text">@doctor.Experience</span>
+                            <span class="ar-text" style="display:none">@doctor.Experience</span>
+                        </p>
+                        <a asp-controller="Doctor" asp-action="Index" class="btn btn-outline-custom btn-sm mt-2">
+                            <span class="en-text">View Profile</span>
+                            <span class="ar-text" style="display:none">عرض الملف</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a asp-controller="Doctor" asp-action="Index" class="btn btn-primary-custom">
+                <span class="en-text">View All Doctors</span>
+                <span class="ar-text" style="display:none">عرض جميع الأطباء</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="news-section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-4 fw-bold mb-3">
+                    <span class="en-text">Latest <span class="text-primary-color">Health News</span></span>
+                    <span class="ar-text" style="display:none">أحدث <span class="text-primary-color">أخبار الصحة</span></span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Stay informed with the latest medical advancements and health tips.</span>
+                    <span class="ar-text" style="display:none">ابق على اطلاع بأحدث التطورات الطبية ونصائح الصحة.</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var article in newsArticles)
+            {
+                <div class="col-md-4">
+                    <div class="news-card fade-in">
+                        <div class="news-image">
+                            <img src="@article.Image" alt="@article.Title" />
+                        </div>
+                        <div class="news-content">
+                            <span class="badge bg-primary mb-2">
+                                <span class="en-text">@article.Category</span>
+                                <span class="ar-text" style="display:none">@article.Category</span>
+                            </span>
+                            <h4>
+                                <span class="en-text">@article.Title</span>
+                                <span class="ar-text" style="display:none">@article.Title</span>
+                            </h4>
+                            <p>
+                                <span class="en-text">@article.Description</span>
+                                <span class="ar-text" style="display:none">@article.Description</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="testimonials-carousel">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-4 fw-bold mb-3">
+                    <span class="en-text">Patient <span class="text-primary-color">Testimonials</span></span>
+                    <span class="ar-text" style="display:none">آراء <span class="text-primary-color">المرضى</span></span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Hear what our patients have to say about their experience at NovaHealth.</span>
+                    <span class="ar-text" style="display:none">استمع إلى ما يقوله مرضانا عن تجربتهم في نوفا هيلث.</span>
+                </p>
+            </div>
+        </div>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (var i = 0; i < testimonials.Length; i++)
+                {
+                    var item = testimonials[i];
+                    var activeClass = i == 0 ? "active" : string.Empty;
+                    <div class="carousel-item @activeClass">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="testimonial-card text-center">
+                                    <div class="testimonial-text">
+                                        <p>@item.Quote</p>
+                                    </div>
+                                    <div class="testimonial-author justify-content-center">
+                                        <div class="author-image">
+                                            <img src="@item.Avatar" alt="@item.Name" />
+                                        </div>
+                                        <div class="author-info">
+                                            <h5 class="mb-0">@item.Name</h5>
+                                            <p class="mb-0">
+                                                <span class="en-text">@item.RoleEn</span>
+                                                <span class="ar-text" style="display:none">@item.RoleAr</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">
+                    <span class="en-text">Previous</span>
+                    <span class="ar-text" style="display:none">السابق</span>
+                </span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">
+                    <span class="en-text">Next</span>
+                    <span class="ar-text" style="display:none">التالي</span>
+                </span>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<section class="cta-section p-4 bg-primary-color text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Ready to take control of your health?</span>
+                    <span class="ar-text" style="display:none">مستعد للاهتمام بصحتك؟</span>
+                </h2>
+                <p class="lead mb-4">
+                    <span class="en-text">Schedule an appointment or contact us to learn more about our personalized care plans.</span>
+                    <span class="ar-text" style="display:none">احجز موعدًا أو تواصل معنا لمعرفة المزيد عن خطط الرعاية الشخصية.</span>
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a asp-controller="Appointment" asp-action="Create" class="btn btn-light btn-lg px-4 py-2 fw-bold">
+                    <span class="en-text">Schedule Now</span>
+                    <span class="ar-text" style="display:none">احجز الآن</span>
+                </a>
+                @if (isAuthenticated)
+                {
+                    <a asp-controller="Patient" asp-action="Index" class="btn btn-light btn-lg px-4 py-2 fw-bold">
+                        <span class="en-text">Patient Portal</span>
+                        <span class="ar-text" style="display:none">بوابة المرضى</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-custom">
+                        <span class="en-text">Patient Portal</span>
+                        <span class="ar-text" style="display:none">بوابة المرضى</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/home.js" asp-append-version="true"></script>
+}

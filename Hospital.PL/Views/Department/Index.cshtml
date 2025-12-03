@@ -1,0 +1,288 @@
+@using Hospital.BBL.DTOs.DepartmentDTOs
+@using Hospital.DAL.Models.DepartmentModule
+@model IEnumerable<GetAllDepartmentsDto>
+
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Departments";
+    var departments = Model?.ToList() ?? new List<GetAllDepartmentsDto>();
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+    var totalDepartments = departments.Count;
+    var activeDepartments = departments.Count(d => d.Status == DepartmentStatus.Active);
+    var inactiveDepartments = departments.Count(d => d.Status == DepartmentStatus.InActive);
+    var maintenanceDepartments = departments.Count(d => d.Status == DepartmentStatus.Maintenance);
+    var staffEstimate = Math.Max(40, departments.Count * 8);
+    var monthlyPatients = Math.Max(1200, departments.Count * 200);
+
+    string StatusBadgeClass(DepartmentStatus status) => status switch
+    {
+        DepartmentStatus.Active => "badge badge-active",
+        DepartmentStatus.InActive => "badge badge-inactive",
+        DepartmentStatus.Maintenance => "badge badge-maintenance",
+        _ => "badge badge-default"
+    };
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/departments.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Hospital Departments</span>
+                    <span class="ar-text" style="display:none">أقسام المستشفى</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Monitor department performance, capacity, and staffing in one dashboard.</span>
+                    <span class="ar-text" style="display:none">راقب أداء الأقسام والطاقة الاستيعابية والموظفين في لوحة واحدة.</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                {
+                    <a asp-action="Create" class="btn btn-primary-custom">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="en-text">Add Department</span>
+                        <span class="ar-text" style="display:none">إضافة قسم</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <span class="label en-text">Total Departments</span>
+                    <span class="label ar-text" style="display:none">إجمالي الأقسام</span>
+                    <h3 id="totalDepartments">@totalDepartments</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <span class="label en-text">Medical Staff</span>
+                    <span class="label ar-text" style="display:none">الطاقم الطبي</span>
+                    <h3 id="medicalStaff">@staffEstimate</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <span class="label en-text">Active Departments</span>
+                    <span class="label ar-text" style="display:none">الأقسام النشطة</span>
+                    <h3 id="activeDepartments">@activeDepartments</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <span class="label en-text">Monthly Patients</span>
+                    <span class="label ar-text" style="display:none">المرضى شهرياً</span>
+                    <h3 id="monthlyPatients">@monthlyPatients</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3 mb-4">
+            <div class="col-lg-5">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="departmentSearchInput"
+                        placeholder="Search departments by name, specialty, or location..."
+                        data-ar-placeholder="ابحث عن الأقسام بالاسم أو التخصص أو الموقع..." />
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-select" id="departmentStatusFilter">
+                    <option value="" data-en="All Statuses" data-ar="جميع الحالات">All Statuses</option>
+                    @foreach (var status in Enum.GetValues<DepartmentStatus>())
+                    {
+                        <option value="@status.ToString().ToLowerInvariant()" data-en="@status" data-ar="@status">@status</option>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <div class="view-toggle d-flex">
+                    <button class="view-toggle-btn active" id="tableViewBtn">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="en-text">Table View</span>
+                        <span class="ar-text" style="display:none">عرض الجدول</span>
+                    </button>
+                    <button class="view-toggle-btn" id="gridViewBtn">
+                        <i class="bi bi-grid me-2"></i>
+                        <span class="en-text">Grid View</span>
+                        <span class="ar-text" style="display:none">عرض الشبكة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tableView">
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th><span class="en-text">Department</span><span class="ar-text" style="display:none">القسم</span></th>
+                            <th><span class="en-text">Specialty</span><span class="ar-text" style="display:none">التخصص</span></th>
+                            <th><span class="en-text">Location</span><span class="ar-text" style="display:none">الموقع</span></th>
+                            <th><span class="en-text">Status</span><span class="ar-text" style="display:none">الحالة</span></th>
+                            <th><span class="en-text">Actions</span><span class="ar-text" style="display:none">الإجراءات</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="departmentsTableBody">
+                        @if (departments.Any())
+                        {
+                            foreach (var department in departments)
+                            {
+                                var statusClass = StatusBadgeClass(department.Status);
+                                var searchKey = $"{department.Name} {department.DepartmentSpeciality} {department.Location}".ToLowerInvariant();
+                                <tr data-status="@department.Status.ToString().ToLowerInvariant()" data-keyword="@searchKey">
+                                    <td>
+                                        <strong>@department.Name</strong>
+                                        <div class="text-muted small">@department.Location</div>
+                                    </td>
+                                    <td>@department.DepartmentSpeciality</td>
+                                    <td>@department.Location</td>
+                                    <td>
+                                        <span class="@statusClass">
+                                            <span class="en-text">@department.Status</span>
+                                            <span class="ar-text" style="display:none">@department.Status</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a asp-action="Details" asp-route-id="@department.Id" class="btn btn-sm btn-outline-custom btn-sm-custom">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@department.Id" class="btn btn-sm btn-outline-custom btn-sm-custom">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form asp-action="Delete"
+                                                  asp-route-id="@department.Id"
+                                                  method="post"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Delete this department?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-custom btn-sm-custom">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <span class="en-text">No departments found.</span>
+                                    <span class="ar-text" style="display:none">لا توجد أقسام.</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="gridView" class="grid-view" style="display:none">
+            <div class="row g-4" id="departmentCardContainer">
+                @if (departments.Any())
+                {
+                    foreach (var department in departments)
+                    {
+                        var statusClass = StatusBadgeClass(department.Status);
+                        var statusText = department.Status.ToString();
+                        var key = $"{department.Name} {department.DepartmentSpeciality} {department.Location}".ToLowerInvariant();
+                        <div class="col-md-4" data-status="@department.Status.ToString().ToLowerInvariant()" data-keyword="@key">
+                            <div class="department-card">
+                                <div class="card-header d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5>@department.Name</h5>
+                                        <small class="text-muted">@department.Location</small>
+                                    </div>
+                                    <span class="@statusClass">
+                                        <span class="en-text">@statusText</span>
+                                        <span class="ar-text" style="display:none">@statusText</span>
+                                    </span>
+                                </div>
+                                <p class="mb-3">@department.DepartmentSpeciality</p>
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Details" asp-route-id="@department.Id" class="btn btn-outline-custom btn-sm-custom">
+                                        <span class="en-text">Details</span>
+                                        <span class="ar-text" style="display:none">التفاصيل</span>
+                                    </a>
+                                    @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@department.Id" class="btn btn-primary-custom btn-sm-custom">
+                                            <span class="en-text">Manage</span>
+                                            <span class="ar-text" style="display:none">إدارة</span>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center py-5">
+                        <span class="en-text">No departments to display.</span>
+                        <span class="ar-text" style="display:none">لا توجد أقسام للعرض.</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="pagination-toolbar mt-4" id="departmentsPaginationToolbar">
+            <div class="page-size">
+                <label for="departmentsPageSize" class="form-label mb-0">
+                    <span class="en-text">Show</span>
+                    <span class="ar-text" style="display:none">عرض</span>
+                </label>
+                <select class="form-select form-select-sm w-auto" id="departmentsPageSize">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span class="text-muted small">
+                    <span class="en-text">per page</span>
+                    <span class="ar-text" style="display:none">لكل صفحة</span>
+                </span>
+            </div>
+            <div class="pagination-wrapper" id="departmentsPagination"></div>
+        </div>
+
+        <div class="alert alert-info mt-3 d-none" id="departmentsEmptyState">
+            <span class="en-text">No departments match your current filters.</span>
+            <span class="ar-text" style="display:none">لا توجد أقسام تطابق عوامل التصفية الحالية.</span>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="mb-0" style="color: var(--text-light);">
+                <span class="en-text" id="departmentsCountLabelEn" data-total="@totalDepartments">Showing @totalDepartments department(s)</span>
+                <span class="ar-text" style="display:none" id="departmentsCountLabelAr" data-total="@totalDepartments">إظهار @totalDepartments قسم</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/departments.js" asp-append-version="true"></script>
+}
+

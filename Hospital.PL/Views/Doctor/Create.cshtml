@@ -1,0 +1,261 @@
+@model Hospital.PL.ViewModels.DoctorViewModel
+
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Add Doctor";
+    var departments = Model?.Departments ?? Enumerable.Empty<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+    var hasDepartments = departments.Any();
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/doctors.css" asp-append-version="true" />
+}
+
+<div class="container mt-4">
+    <section class="page-header mb-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-5 fw-bold mb-3">
+                        @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                        {
+                            <span class="en-text">Complete Your Doctor Profile</span>
+                            <span class="ar-text" style="display:none">أكمل ملف الطبيب الخاص بك</span>
+                        }
+                        else
+                        {
+                            <span class="en-text">Add New Doctor</span>
+                            <span class="ar-text" style="display:none">إضافة طبيب جديد</span>
+                        }
+                    </h1>
+                    <p class="lead mb-0">
+                        @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                        {
+                            <span class="en-text">Please fill in your professional information to complete your profile and start managing appointments</span>
+                            <span class="ar-text" style="display:none">يرجى ملء معلوماتك المهنية لإكمال ملفك وبدء إدارة المواعيد</span>
+                        }
+                        else
+                        {
+                            <span class="en-text">Provide the doctor's profile, specialty, and optionally link a department</span>
+                            <span class="ar-text" style="display:none">أدخل بيانات الطبيب وتخصصه ويمكنك ربطه بقسم لاحقاً</span>
+                        }
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Dashboard" asp-action="Doctor" class="btn btn-outline-custom">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            <span class="en-text">Back to Dashboard</span>
+                            <span class="ar-text" style="display:none">العودة للوحة التحكم</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="btn btn-outline-custom">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            <span class="en-text">Back to Doctors</span>
+                            <span class="ar-text" style="display:none">العودة للأطباء</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <div class="container">
+            @if (ViewBag.Errors is IEnumerable<string> errors && errors.Any())
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>
+                        <span class="en-text">Error!</span>
+                        <span class="ar-text" style="display:none">خطأ!</span>
+                    </strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach (var error in errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">First Name</span>
+                                    <span class="ar-text" style="display:none">الاسم الأول</span>
+                                </label>
+                                <input asp-for="FirstName" class="form-control" placeholder="John" data-ar-placeholder="جون" required />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Last Name</span>
+                                    <span class="ar-text" style="display:none">الاسم الأخير</span>
+                                </label>
+                                <input asp-for="LastName" class="form-control" placeholder="Doe" data-ar-placeholder="دو" required />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Specialty</span>
+                                    <span class="ar-text" style="display:none">التخصص</span>
+                                </label>
+                                <input asp-for="Specialization" class="form-control" placeholder="Cardiologist" data-ar-placeholder="طبيب قلب" required />
+                                <span asp-validation-for="Specialization" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Department (optional)</span>
+                                    <span class="ar-text" style="display:none">القسم (اختياري)</span>
+                                </label>
+                                @if (hasDepartments)
+                                {
+                                    <select asp-for="DepartmentId" class="form-select" asp-items="departments">
+                                        <option value="" data-en="Select Department" data-ar="اختر القسم">Select Department</option>
+                                    </select>
+                                    <div class="form-text en-text">Assign later if the department is not ready yet.</div>
+                                    <div class="form-text ar-text" style="display:none">يمكنك التعيين لاحقاً إذا لم يكن القسم جاهزاً بعد.</div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <span class="en-text">No departments available. You can create the doctor profile now and link it once departments exist.</span>
+                                        <span class="ar-text" style="display:none">لا توجد أقسام حالياً. يمكنك إنشاء بيانات الطبيب الآن وربطها لاحقاً.</span>
+                                    </div>
+                                }
+                                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Email</span>
+                                    <span class="ar-text" style="display:none">البريد الإلكتروني</span>
+                                </label>
+                                @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                                {
+                                    <input asp-for="Email" class="form-control" placeholder="doctor@novahealth.com" data-ar-placeholder="doctor@novahealth.com" readonly />
+                                    <div class="form-text">
+                                        <span class="en-text">This email matches your account email and cannot be changed.</span>
+                                        <span class="ar-text" style="display:none">هذا البريد الإلكتروني يطابق بريد حسابك ولا يمكن تغييره.</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input asp-for="Email" class="form-control" placeholder="doctor@novahealth.com" data-ar-placeholder="doctor@novahealth.com" required />
+                                }
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Temporary Password (optional)</span>
+                                    <span class="ar-text" style="display:none">كلمة مرور مؤقتة (اختياري)</span>
+                                </label>
+                                <input asp-for="AccountPassword" type="password" class="form-control" placeholder="Doctor@123" data-ar-placeholder="Doctor@123" />
+                                <div class="form-text">
+                                    <span class="en-text">Leave empty to use the default password (Doctor@123). Share the value with the doctor so they can log in and change it.</span>
+                                    <span class="ar-text" style="display:none">اتركه فارغاً لاستخدام كلمة المرور الافتراضية (Doctor@123). شارك القيمة مع الطبيب ليسجل الدخول ويغيرها.</span>
+                                </div>
+                                <span asp-validation-for="AccountPassword" class="text-danger"></span>
+                            </div>
+                        }
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Phone</span>
+                                    <span class="ar-text" style="display:none">الهاتف</span>
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="(555) 123-4567" data-ar-placeholder="(555) 123-4567" required />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Education</span>
+                                    <span class="ar-text" style="display:none">التعليم</span>
+                                </label>
+                                <input asp-for="Education" class="form-control" placeholder="MD, Harvard Medical School" data-ar-placeholder="دكتوراه، جامعة هارفارد" required />
+                                <span asp-validation-for="Education" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Years of Experience</span>
+                                    <span class="ar-text" style="display:none">سنوات الخبرة</span>
+                                </label>
+                                <input asp-for="ExpertYears" type="number" min="0" class="form-control" placeholder="10" data-ar-placeholder="10" />
+                                <span asp-validation-for="ExpertYears" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <span class="en-text">Bio / Description</span>
+                                    <span class="ar-text" style="display:none">السيرة الذاتية / الوصف</span>
+                                </label>
+                                <textarea asp-for="Bio" rows="4" class="form-control" placeholder="Brief description about the doctor..." data-ar-placeholder="نبذة عن الطبيب..." required></textarea>
+                                <span asp-validation-for="Bio" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <span class="en-text">Profile Photo</span>
+                                    <span class="ar-text" style="display:none">صورة الملف الشخصي</span>
+                                </label>
+                                <input asp-for="Image" type="file" class="form-control" accept="image/*" />
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-end gap-3">
+                            @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="Dashboard" asp-action="Doctor" class="btn btn-outline-custom">
+                                    <span class="en-text">Cancel</span>
+                                    <span class="ar-text" style="display:none">إلغاء</span>
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <span class="en-text">Create Profile</span>
+                                    <span class="ar-text" style="display:none">إنشاء الملف</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" class="btn btn-outline-custom">
+                                    <span class="en-text">Cancel</span>
+                                    <span class="ar-text" style="display:none">إلغاء</span>
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    <span class="en-text">Add Doctor</span>
+                                    <span class="ar-text" style="display:none">إضافة الطبيب</span>
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/doctors.js" asp-append-version="true"></script>
+}

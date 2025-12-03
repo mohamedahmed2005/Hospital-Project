@@ -1,0 +1,259 @@
+@model IEnumerable<Hospital.DAL.Models.MedicalRecordModule.MedicalRecord>
+@{
+    ViewData["Title"] = "Medical Records";
+    var records = Model?.ToList() ?? new List<Hospital.DAL.Models.MedicalRecordModule.MedicalRecord>();
+    var patients = ViewBag.Patients as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var selectedPatientId = ViewBag.SelectedPatientId as int?;
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Medical Records</span>
+                    <span class="ar-text" style="display:none">السجلات الطبية</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Manage patient medical records and history</span>
+                    <span class="ar-text" style="display:none">إدارة السجلات الطبية للمرضى والتاريخ</span>
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                <a class="btn btn-primary-custom" asp-action="Create" asp-route-patientId="@selectedPatientId">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    <span class="en-text">Add New Record</span>
+                    <span class="ar-text" style="display:none">إضافة سجل جديد</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        @if (TempData["Success"] is string successMessage)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @successMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] is string errorMessage)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row mb-4 g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="searchInput"
+                           placeholder="Search records by patient name, diagnosis, or treatment..."
+                           data-ar-placeholder="ابحث عن السجلات باسم المريض أو التشخيص أو العلاج..." />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="patientFilter">
+                    <option value="" data-en="All Patients" data-ar="جميع المرضى">All Patients</option>
+                    @foreach (var patient in patients)
+                    {
+                        if (selectedPatientId.HasValue && selectedPatientId.Value == patient.Id)
+                        {
+                            <option value="@patient.Id" selected>@patient.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@patient.Id">@patient.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th><span class="en-text">Patient</span><span class="ar-text" style="display:none">المريض</span></th>
+                        <th><span class="en-text">Date</span><span class="ar-text" style="display:none">التاريخ</span></th>
+                        <th><span class="en-text">Diagnosis</span><span class="ar-text" style="display:none">التشخيص</span></th>
+                        <th><span class="en-text">Treatment</span><span class="ar-text" style="display:none">العلاج</span></th>
+                        <th><span class="en-text">Prescription</span><span class="ar-text" style="display:none">الوصفة</span></th>
+                        <th><span class="en-text">Actions</span><span class="ar-text" style="display:none">الإجراءات</span></th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                    @if (records == null || !records.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-file-medical display-4 d-block mb-3"></i>
+                                    <p class="mb-0">
+                                        <span class="en-text">No medical records found. Start by adding a new record.</span>
+                                        <span class="ar-text" style="display:none">لا توجد سجلات طبية. ابدأ بإضافة سجل جديد.</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var record in records)
+                        {
+                            var searchKey = $"{record.Patient?.Name ?? ""} {record.Diagnosis} {record.Treatment} {record.Prescription}".ToLowerInvariant();
+                            var patientId = record.PatientId.ToString();
+                            <tr data-keywords="@searchKey" data-patient-id="@patientId">
+                                <td>
+                                    <strong>@(record.Patient?.Name ?? "Unknown Patient")</strong>
+                                </td>
+                                <td>
+                                    <div>@record.RecordDate.ToString("MMM dd, yyyy")</div>
+                                    <div class="text-muted small">@record.RecordDate.ToString("h:mm tt")</div>
+                                </td>
+                                <td>
+                                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="@record.Diagnosis">
+                                        @(record.Diagnosis.Length > 50 ? record.Diagnosis.Substring(0, 50) + "..." : record.Diagnosis)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="@record.Treatment">
+                                        @(record.Treatment.Length > 50 ? record.Treatment.Substring(0, 50) + "..." : record.Treatment)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-truncate d-inline-block" style="max-width: 200px;" title="@record.Prescription">
+                                        @(record.Prescription.Length > 50 ? record.Prescription.Substring(0, 50) + "..." : record.Prescription)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                           asp-action="Details"
+                                           asp-route-id="@record.Id">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                           asp-action="Edit"
+                                           asp-route-id="@record.Id">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@record.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                                    onclick="return confirm('Are you sure you want to delete this medical record?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-toolbar mt-3" id="recordsPaginationToolbar">
+            <div class="page-size">
+                <label for="recordsPageSize" class="form-label mb-0">
+                    <span class="en-text">Show</span>
+                    <span class="ar-text" style="display:none">عرض</span>
+                </label>
+                <select class="form-select form-select-sm w-auto" id="recordsPageSize">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span class="text-muted small">
+                    <span class="en-text">per page</span>
+                    <span class="ar-text" style="display:none">لكل صفحة</span>
+                </span>
+            </div>
+            <div class="pagination-wrapper" id="recordsPagination"></div>
+        </div>
+
+        <div class="alert alert-info mt-3 d-none" id="recordsEmptyState">
+            <span class="en-text">No records match your current filters.</span>
+            <span class="ar-text" style="display:none">لا توجد سجلات تطابق عوامل التصفية الحالية.</span>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="mb-0" style="color: var(--text-light);">
+                <span class="en-text" id="recordsCountLabelEn" data-total="@(records?.Count() ?? 0)">Showing @(records?.Count() ?? 0) record(s)</span>
+                <span class="ar-text" style="display:none" id="recordsCountLabelAr" data-total="@(records?.Count() ?? 0)">إظهار @(records?.Count() ?? 0) سجل</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const patientFilter = document.getElementById('patientFilter');
+            const tableBody = document.getElementById('recordsTableBody');
+            const emptyState = document.getElementById('recordsEmptyState');
+            const countLabelEn = document.getElementById('recordsCountLabelEn');
+            const countLabelAr = document.getElementById('recordsCountLabelAr');
+
+            function filterRecords() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const patientId = patientFilter.value;
+
+                let visibleCount = 0;
+                const rows = tableBody.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    const keywords = row.getAttribute('data-keywords') || '';
+                    const rowPatientId = row.getAttribute('data-patient-id') || '';
+
+                    const matchesSearch = keywords.includes(searchTerm);
+                    const matchesPatient = !patientId || rowPatientId === patientId;
+
+                    if (matchesSearch && matchesPatient) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    emptyState.classList.remove('d-none');
+                } else {
+                    emptyState.classList.add('d-none');
+                }
+
+                // Update count
+                const total = parseInt(countLabelEn.getAttribute('data-total') || '0');
+                countLabelEn.textContent = `Showing ${visibleCount} record(s)`;
+                if (countLabelAr) {
+                    countLabelAr.textContent = `إظهار ${visibleCount} سجل`;
+                }
+            }
+
+            searchInput.addEventListener('input', filterRecords);
+            patientFilter.addEventListener('change', function() {
+                if (this.value) {
+                    window.location.href = '@Url.Action("Index")?patientId=' + this.value;
+                } else {
+                    window.location.href = '@Url.Action("Index")';
+                }
+            });
+        });
+    </script>
+}
+

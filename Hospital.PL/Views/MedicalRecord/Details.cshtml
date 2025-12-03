@@ -1,0 +1,145 @@
+@model Hospital.DAL.Models.MedicalRecordModule.MedicalRecord
+@{
+    ViewData["Title"] = "Medical Record Details";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Medical Record Details</span>
+                    <span class="ar-text" style="display:none">تفاصيل السجل الطبي</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Complete medical record information and history.</span>
+                    <span class="ar-text" style="display:none">معلومات السجل الطبي الكاملة والتاريخ.</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom me-2">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Records</span>
+                    <span class="ar-text" style="display:none">العودة للسجلات</span>
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                    <i class="bi bi-pencil me-2"></i>
+                    <span class="en-text">Edit Record</span>
+                    <span class="ar-text" style="display:none">تعديل السجل</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Patient Information</span>
+                            <span class="ar-text" style="display:none">معلومات المريض</span>
+                        </h5>
+                        <ul class="list-unstyled details-list">
+                            <li class="mb-2">
+                                <strong style="color: var(--primary-color);"><span class="en-text">Patient:</span><span class="ar-text" style="display:none">المريض:</span></strong>
+                                <span style="color: var(--text-light);">@(Model.Patient?.Name ?? "Unknown Patient")</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong style="color: var(--primary-color);"><span class="en-text">Doctor:</span><span class="ar-text" style="display:none">الطبيب:</span></strong>
+                                <span style="color: var(--text-dark);">@(Model.Doctor?.Name ?? "Unknown Doctor")</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong style="color: var(--primary-color);"><span class="en-text">Record Date:</span><span class="ar-text" style="display:none">تاريخ السجل:</span></strong>
+                                <span style="color: var(--text-dark);">@Model.RecordDate.ToString("MMMM dd, yyyy")</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong style="color: var(--primary-color);"><span class="en-text">Time:</span><span class="ar-text" style="display:none">الوقت:</span></strong>
+                                <span style="color: var(--text-dark);">@Model.RecordDate.ToString("h:mm tt")</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Record Information</span>
+                            <span class="ar-text" style="display:none">معلومات السجل</span>
+                        </h5>
+                        <ul class="list-unstyled details-list">
+                            <li class="mb-2">
+                                <strong style="color: var(--primary-color);"><span class="en-text">Record ID:</span><span class="ar-text" style="display:none">معرف السجل:</span></strong>
+                                <span style="color: var(--text-dark);">MR-@Model.Id.ToString("D4")</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Diagnosis</span>
+                            <span class="ar-text" style="display:none">التشخيص</span>
+                        </h5>
+                        <div class="card-custom p-3" style="background-color: var(--bg-light);">
+                            <p class="mb-0" style="color: var(--text-dark);">@Model.Diagnosis</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Treatment</span>
+                            <span class="ar-text" style="display:none">العلاج</span>
+                        </h5>
+                        <div class="card-custom p-3" style="background-color: var(--bg-light);">
+                            <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@Model.Treatment</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Prescription</span>
+                            <span class="ar-text" style="display:none">الوصفة</span>
+                        </h5>
+                        <div class="card-custom p-3" style="background-color: var(--bg-light);">
+                            <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@Model.Prescription</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-primary-color mb-3">
+                            <span class="en-text">Additional Notes</span>
+                            <span class="ar-text" style="display:none">ملاحظات إضافية</span>
+                        </h5>
+                        <div class="card-custom p-3" style="background-color: var(--bg-light);">
+                            <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Notes) ? "No additional notes." : Model.Notes)</p>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.AttachmentName))
+                {
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 class="text-primary-color mb-3">
+                                <span class="en-text">Attachments</span>
+                                <span class="ar-text" style="display:none">المرفقات</span>
+                            </h5>
+                            <div class="card-custom p-3" style="background-color: var(--bg-light);">
+                                <p class="mb-0" style="color: var(--text-dark);">
+                                    <i class="bi bi-paperclip me-2"></i>
+                                    @Model.AttachmentName
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+

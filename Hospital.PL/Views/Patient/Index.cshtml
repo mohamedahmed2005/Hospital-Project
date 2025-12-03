@@ -1,0 +1,244 @@
+@model IEnumerable<Hospital.BBL.DTOs.PatientDTOs.GetAllPatientsDto>
+@using Hospital.DAL.Models.PatientModule
+@{
+    ViewData["Title"] = "Patients Management";
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+
+    string GetStatusBadgeClass(PatientStatus status) => status switch
+    {
+        PatientStatus.Active => "badge-active",
+        PatientStatus.InActive => "badge-inactive",
+        PatientStatus.New => "badge-new",
+        _ => "badge-active"
+    };
+
+    string FormatStatus(PatientStatus status) => status switch
+    {
+        PatientStatus.Active => "Active",
+        PatientStatus.InActive => "Inactive",
+        PatientStatus.New => "New",
+        _ => status.ToString()
+    };
+
+    string FormatBloodType(BloodType type) => type switch
+    {
+        BloodType.A_Pos => "A+",
+        BloodType.A_Neg => "A-",
+        BloodType.B_Pos => "B+",
+        BloodType.B_Neg => "B-",
+        BloodType.AB_Pos => "AB+",
+        BloodType.AB_Neg => "AB-",
+        BloodType.O_Pos => "O+",
+        BloodType.O_Neg => "O-",
+        _ => type.ToString()
+    };
+
+    string ResolvePhoto(string? imageUrl, int seed) =>
+        !string.IsNullOrWhiteSpace(imageUrl)
+            ? $"~/Files/Images/{imageUrl}"
+            : $"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80&sig={seed}";
+
+    string BuildSearchKey(Hospital.BBL.DTOs.PatientDTOs.GetAllPatientsDto patient) =>
+        $"{patient.Name} {patient.Email} {patient.PhoneNumber ?? string.Empty}".ToLowerInvariant();
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/patients.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Patients Management</span>
+                    <span class="ar-text" style="display:none">إدارة المرضى</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Manage patient records and medical information</span>
+                    <span class="ar-text" style="display:none">إدارة سجلات المرضى والمعلومات الطبية</span>
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                {
+                    <a class="btn btn-primary-custom" asp-action="Create">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="en-text">Add New Patient</span>
+                        <span class="ar-text" style="display:none">إضافة مريض جديد</span>
+                    </a>
+                }
+                @if (isAuthenticated && User.IsInRole("Patient") && ViewBag.HasProfile == false)
+                {
+                    <a class="btn btn-primary-custom" asp-action="Create">
+                        <i class="bi bi-person-plus me-2"></i>
+                        <span class="en-text">Create Profile</span>
+                        <span class="ar-text" style="display:none">إنشاء ملف شخصي</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        @if (TempData["GeneratedCredentials"] is string credentialMessage)
+        {
+            <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+                @credentialMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <div class="row mb-4 g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="searchInput"
+                           placeholder="Search patients by name, email, or phone..."
+                           data-ar-placeholder="ابحث عن المرضى بالاسم أو البريد الإلكتروني أو الهاتف..." />
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="statusFilter">
+                    <option value="" data-en="All Statuses" data-ar="جميع الحالات">All Statuses</option>
+                    <option value="active" data-en="Active" data-ar="نشط">Active</option>
+                    <option value="inactive" data-en="Inactive" data-ar="غير نشط">Inactive</option>
+                    <option value="new" data-en="New" data-ar="جديد">New</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th><span class="en-text">Photo</span><span class="ar-text" style="display:none">الصورة</span></th>
+                        <th><span class="en-text">Name</span><span class="ar-text" style="display:none">الاسم</span></th>
+                        <th><span class="en-text">Email</span><span class="ar-text" style="display:none">البريد الإلكتروني</span></th>
+                        <th><span class="en-text">Phone</span><span class="ar-text" style="display:none">الهاتف</span></th>
+                        <th><span class="en-text">Age</span><span class="ar-text" style="display:none">العمر</span></th>
+                        <th><span class="en-text">Gender</span><span class="ar-text" style="display:none">الجنس</span></th>
+                        <th><span class="en-text">Blood Type</span><span class="ar-text" style="display:none">فصيلة الدم</span></th>
+                        <th><span class="en-text">Status</span><span class="ar-text" style="display:none">الحالة</span></th>
+                        <th><span class="en-text">Actions</span><span class="ar-text" style="display:none">الإجراءات</span></th>
+                    </tr>
+                </thead>
+                <tbody id="patientsTableBody">
+                    @if (Model is null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-people display-4 d-block mb-3"></i>
+                                    <p class="mb-0">
+                                        <span class="en-text">No patients found. Start by adding a new patient.</span>
+                                        <span class="ar-text" style="display:none">لا يوجد مرضى. ابدأ بإضافة مريض جديد.</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        var index = 0;
+                        foreach (var patient in Model)
+                        {
+                            index++;
+                            var searchKey = BuildSearchKey(patient);
+                            var statusValue = patient.Status.ToString().ToLowerInvariant();
+                            <tr data-keywords="@searchKey" data-status="@statusValue">
+                                <td>
+                                    <img src="@Url.Content(ResolvePhoto(patient.Image, index))"
+                                         alt="@patient.Name"
+                                         class="patient-image" />
+                                </td>
+                                <td>@patient.Name</td>
+                                <td>@patient.Email</td>
+                                <td>@patient.PhoneNumber</td>
+                                <td>@patient.Age</td>
+                                <td>
+                                    <span class="en-text">@patient.Gender</span>
+                                    <span class="ar-text" style="display:none">@patient.Gender</span>
+                                </td>
+                                <td>@FormatBloodType(patient.BloodType)</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(patient.Status)">
+                                        <span class="en-text">@FormatStatus(patient.Status)</span>
+                                        <span class="ar-text" style="display:none">@FormatStatus(patient.Status)</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                           asp-action="Details"
+                                           asp-route-id="@patient.Id">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                                        {
+                                            <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                               asp-action="Edit"
+                                               asp-route-id="@patient.Id">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form asp-action="Delete" 
+                                                  asp-route-id="@patient.Id" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to delete this patient? This will also delete all related appointments.');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-custom btn-sm-custom">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-toolbar mt-3" id="patientsPaginationToolbar">
+            <div class="page-size">
+                <label for="patientsPageSize" class="form-label mb-0">
+                    <span class="en-text">Show</span>
+                    <span class="ar-text" style="display:none">عرض</span>
+                </label>
+                <select class="form-select form-select-sm w-auto" id="patientsPageSize">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span class="text-muted small">
+                    <span class="en-text">per page</span>
+                    <span class="ar-text" style="display:none">لكل صفحة</span>
+                </span>
+            </div>
+            <div class="pagination-wrapper" id="patientsPagination"></div>
+        </div>
+
+        <div class="alert alert-info mt-3 d-none" id="patientsEmptyState">
+            <span class="en-text">No patients match your current filters.</span>
+            <span class="ar-text" style="display:none">لا يوجد مرضى يطابقون عوامل التصفية الحالية.</span>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="mb-0" style="color: var(--text-light);">
+                <span class="en-text" id="patientsCountLabelEn" data-total="@((Model?.Count() ?? 0))">Showing @((Model?.Count() ?? 0)) patient(s)</span>
+                <span class="ar-text" style="display:none" id="patientsCountLabelAr" data-total="@((Model?.Count() ?? 0))">إظهار @((Model?.Count() ?? 0)) مريض</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/patients.js" asp-append-version="true"></script>
+}
+

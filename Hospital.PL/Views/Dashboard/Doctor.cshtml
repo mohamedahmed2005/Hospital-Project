@@ -1,0 +1,293 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Doctor Dashboard";
+    var doctor = ViewBag.Doctor as dynamic;
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<section class="dashboard-section">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="dashboard-title">
+                    <span class="en-text">Doctor Dashboard</span>
+                    <span class="ar-text" style="display:none">لوحة تحكم الطبيب</span>
+                </h1>
+                <p class="dashboard-subtitle">
+                    @if (doctor != null)
+                    {
+                        <span class="en-text">Welcome, Dr. @doctor.Name! Manage your appointments and patients.</span>
+                        <span class="ar-text" style="display:none">مرحباً، د. @doctor.Name! إدارة مواعيدك ومرضاك.</span>
+                    }
+                    else
+                    {
+                        <span class="en-text">Welcome! Please contact administrator to set up your doctor profile.</span>
+                        <span class="ar-text" style="display:none">مرحباً! يرجى الاتصال بالمسؤول لإعداد ملف الطبيب الخاص بك.</span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        @if (doctor != null)
+        {
+            <!-- Doctor Info Card -->
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card fade-in">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h3>Dr. @doctor.Name</h3>
+                                <p class="text-primary-color mb-2">@doctor.Specialization</p>
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-envelope"></i> @doctor.Email
+                                </p>
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-telephone"></i> @doctor.PhoneNumber
+                                </p>
+                                <p class="text-muted">
+                                    <i class="bi bi-building"></i> @(doctor.Department ?? "No Department")
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <a asp-controller="Doctor" asp-action="Details" asp-route-id="@doctor.Id" class="btn btn-primary-custom">
+                                    <span class="en-text">View Profile</span>
+                                    <span class="ar-text" style="display:none">عرض الملف</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="stat-card fade-in">
+                        <div class="stat-icon bg-primary-color">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">@ViewBag.AppointmentCount</h3>
+                            <p class="stat-label">
+                                <span class="en-text">Total Appointments</span>
+                                <span class="ar-text" style="display:none">إجمالي المواعيد</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="stat-card fade-in">
+                        <div class="stat-icon bg-secondary-color">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">@(((IEnumerable<dynamic>)ViewBag.TodayAppointments).Count())</h3>
+                            <p class="stat-label">
+                                <span class="en-text">Today's Appointments</span>
+                                <span class="ar-text" style="display:none">مواعيد اليوم</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="stat-card fade-in">
+                        <div class="stat-icon bg-accent-color">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="stat-value">@ViewBag.PatientCount</h3>
+                            <p class="stat-label">
+                                <span class="en-text">Total Patients</span>
+                                <span class="ar-text" style="display:none">إجمالي المرضى</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @if (ViewBag.MedicalRecordsCount != null)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card fade-in">
+                            <div class="stat-icon @(ViewBag.MedicalRecordsWorking != null && (bool)ViewBag.MedicalRecordsWorking ? "bg-success" : "bg-danger")">
+                                <i class="bi bi-file-medical"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">@ViewBag.MedicalRecordsCount</h3>
+                                <p class="stat-label">
+                                    <span class="en-text">Medical Records</span>
+                                    <span class="ar-text" style="display:none">السجلات الطبية</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="dashboard-card fade-in">
+                        <h3 class="card-title">
+                            <span class="en-text">Quick Actions</span>
+                            <span class="ar-text" style="display:none">إجراءات سريعة</span>
+                        </h3>
+                        <div class="row g-3">
+                            <div class="col-md-4 col-sm-6">
+                                <a asp-controller="DoctorAppointment" asp-action="MyAppointments" class="quick-action-btn">
+                                    <i class="bi bi-calendar-check"></i>
+                                    <span class="en-text">Manage My Appointments</span>
+                                    <span class="ar-text" style="display:none">إدارة مواعيدي</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <a asp-controller="Appointment" asp-action="Index" class="quick-action-btn">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span class="en-text">View All Appointments</span>
+                                    <span class="ar-text" style="display:none">عرض جميع المواعيد</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <a asp-controller="Patient" asp-action="Index" class="quick-action-btn">
+                                    <i class="bi bi-people"></i>
+                                    <span class="en-text">View Patients</span>
+                                    <span class="ar-text" style="display:none">عرض المرضى</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <a asp-controller="MedicalRecord" asp-action="Index" class="quick-action-btn">
+                                    <i class="bi bi-file-medical"></i>
+                                    <span class="en-text">Medical Records</span>
+                                    <span class="ar-text" style="display:none">السجلات الطبية</span>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <a asp-controller="Doctor" asp-action="Edit" asp-route-id="@doctor.Id" class="quick-action-btn">
+                                    <i class="bi bi-pencil"></i>
+                                    <span class="en-text">Edit Profile</span>
+                                    <span class="ar-text" style="display:none">تعديل الملف</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Appointments -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="dashboard-card fade-in">
+                        <h3 class="card-title">
+                            <span class="en-text">Today's Appointments</span>
+                            <span class="ar-text" style="display:none">مواعيد اليوم</span>
+                        </h3>
+                        <div class="appointment-list">
+                            @if (ViewBag.TodayAppointments != null && ((IEnumerable<dynamic>)ViewBag.TodayAppointments).Any())
+                            {
+                                @foreach (var appointment in ViewBag.TodayAppointments)
+                                {
+                                    <div class="appointment-item">
+                                        <div class="appointment-time">
+                                            <span class="time-hour">@appointment.Appointment_Time.ToString(@"hh\:mm")</span>
+                                        </div>
+                                        <div class="appointment-details">
+                                            <h5>@(appointment.PatientName ?? "N/A")</h5>
+                                            <p class="text-muted small mb-1">
+                                                <i class="bi bi-calendar"></i> @appointment.Appointment_Date.ToString("MMM dd, yyyy")
+                                            </p>
+                                            <p class="text-muted small">
+                                                <i class="bi bi-info-circle"></i> @(appointment.Notes ?? "No notes")
+                                            </p>
+                                        </div>
+                                        <a asp-controller="Appointment" asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-outline-custom">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted text-center py-4">
+                                    <span class="en-text">No appointments scheduled for today</span>
+                                    <span class="ar-text" style="display:none">لا توجد مواعيد مجدولة لليوم</span>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="dashboard-card fade-in">
+                        <h3 class="card-title">
+                            <span class="en-text">Upcoming Appointments</span>
+                            <span class="ar-text" style="display:none">المواعيد القادمة</span>
+                        </h3>
+                        <div class="appointment-list">
+                            @if (ViewBag.UpcomingAppointments != null && ((IEnumerable<dynamic>)ViewBag.UpcomingAppointments).Any())
+                            {
+                                @foreach (var appointment in ViewBag.UpcomingAppointments)
+                                {
+                                    <div class="appointment-item">
+                                        <div class="appointment-date">
+                                            <span class="date-day">@appointment.Appointment_Date.Day.ToString("00")</span>
+                                            <span class="date-month">@appointment.Appointment_Date.ToString("MMM")</span>
+                                        </div>
+                                        <div class="appointment-details">
+                                            <h5>@(appointment.PatientName ?? "N/A")</h5>
+                                            <p class="text-muted small mb-1">
+                                                <i class="bi bi-clock"></i> @appointment.Appointment_Time.ToString(@"hh\:mm")
+                                            </p>
+                                            <p class="text-muted small">
+                                                <i class="bi bi-info-circle"></i> @(appointment.Notes ?? "No notes")
+                                            </p>
+                                        </div>
+                                        <a asp-controller="Appointment" asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-outline-custom">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted text-center py-4">
+                                    <span class="en-text">No upcoming appointments</span>
+                                    <span class="ar-text" style="display:none">لا توجد مواعيد قادمة</span>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="dashboard-card fade-in">
+                        <div class="text-center py-5">
+                            <i class="bi bi-person-plus display-1 text-primary mb-3"></i>
+                            <h3>
+                                <span class="en-text">Complete Your Doctor Profile</span>
+                                <span class="ar-text" style="display:none">أكمل ملف الطبيب الخاص بك</span>
+                            </h3>
+                            <p class="text-muted mb-4">
+                                <span class="en-text">You need to create your doctor profile to start managing appointments.</span>
+                                <span class="ar-text" style="display:none">تحتاج إلى إنشاء ملف الطبيب الخاص بك لبدء إدارة المواعيد.</span>
+                            </p>
+                            <a asp-controller="Doctor" asp-action="Create" class="btn btn-primary-custom btn-lg">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                <span class="en-text">Create My Profile</span>
+                                <span class="ar-text" style="display:none">إنشاء ملفي</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}
+

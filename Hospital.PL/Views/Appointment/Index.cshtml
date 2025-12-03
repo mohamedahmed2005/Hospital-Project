@@ -1,0 +1,308 @@
+@model IEnumerable<Hospital.BBL.DTOs.AppointmentDTOs.GetAllAppointmentsDto>
+@using Hospital.DAL.Models.AppointmentModule
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Appointments Management";
+    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+
+    string GetStatusBadgeClass(AppointmentStatus status) => status switch
+    {
+        AppointmentStatus.Scheduled => "badge-scheduled",
+        AppointmentStatus.confirmed => "badge-confirmed",
+        AppointmentStatus.Completed => "badge-completed",
+        AppointmentStatus.pending => "badge-pending",
+        AppointmentStatus.cancelled => "badge-cancelled",
+        _ => "badge-scheduled"
+    };
+
+    string FormatStatus(AppointmentStatus status) => status switch
+    {
+        AppointmentStatus.confirmed => "Confirmed",
+        AppointmentStatus.cancelled => "Cancelled",
+        AppointmentStatus.pending => "Pending",
+        _ => status.ToString()
+    };
+
+    string FormatType(AppointmentType type) => type switch
+    {
+        AppointmentType.FollowUp => "Follow-up",
+        AppointmentType.Checkup => "Check-up",
+        _ => type.ToString()
+    };
+
+    string FormatTime(TimeSpan time) =>
+        DateTime.Today.Add(time).ToString("h:mm tt");
+
+    string ResolvePersonImage(string? url, int seed) =>
+        !string.IsNullOrWhiteSpace(url)
+            ? url
+            : $"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80&seed={seed}";
+
+    string BuildSearchKey(Hospital.BBL.DTOs.AppointmentDTOs.GetAllAppointmentsDto appointment) =>
+        $"{appointment.PatientName ?? string.Empty} {appointment.DoctorName ?? string.Empty} {appointment.AppointmentType} {appointment.Status}".ToLowerInvariant();
+
+    var startOfWeek = DateOnly.FromDateTime(DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek));
+    var endOfWeek = startOfWeek.AddDays(6);
+    var calendarAppointments = (Model ?? Enumerable.Empty<Hospital.BBL.DTOs.AppointmentDTOs.GetAllAppointmentsDto>())
+        .Select(appointment => new
+        {
+            AppointmentId = appointment.Id,
+            AppointmentDate = appointment.Appointment_Date.ToString("yyyy-MM-dd"),
+            PatientName = appointment.PatientName ?? "Unknown Patient",
+            DoctorName = appointment.DoctorName ?? "Unassigned",
+            AppointmentType = FormatType(appointment.AppointmentType),
+            Status = FormatStatus(appointment.Status),
+            StatusValue = appointment.Status.ToString().ToLowerInvariant(),
+            Time = FormatTime(appointment.Appointment_Time),
+            SearchKey = BuildSearchKey(appointment),
+            DetailsUrl = Url.Action("Details", "Appointment", new { id = appointment.Id })
+        });
+    var calendarAppointmentsJson = JsonSerializer.Serialize(
+        calendarAppointments,
+        new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/appointments.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Appointments Management</span>
+                    <span class="ar-text" style="display:none">إدارة المواعيد</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Schedule and manage patient appointments</span>
+                    <span class="ar-text" style="display:none">جدولة وإدارة مواعيد المرضى</span>
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                @if (isAuthenticated)
+                {
+                    <a class="btn btn-primary-custom" asp-action="Create">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span class="en-text">Schedule Appointment</span>
+                        <span class="ar-text" style="display:none">جدولة موعد</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        @if (TempData["AppointmentError"] is string appointmentError)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                @appointmentError
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <div class="row mb-4 g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           id="searchInput"
+                           placeholder="Search appointments by patient, doctor, or department..."
+                           data-ar-placeholder="ابحث عن المواعيد بالاسم، الطبيب، أو القسم..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="statusFilter">
+                    <option value="" data-en="All Statuses" data-ar="جميع الحالات">All Statuses</option>
+                    <option value="scheduled" data-en="Scheduled" data-ar="مجدول">Scheduled</option>
+                    <option value="confirmed" data-en="Confirmed" data-ar="مؤكد">Confirmed</option>
+                    <option value="completed" data-en="Completed" data-ar="مكتمل">Completed</option>
+                    <option value="cancelled" data-en="Cancelled" data-ar="ملغي">Cancelled</option>
+                    <option value="pending" data-en="Pending" data-ar="قيد الانتظار">Pending</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="dateFilter" />
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" id="tableViewBtn">
+                        <i class="bi bi-list-ul me-2"></i>
+                        <span class="en-text">Table View</span>
+                        <span class="ar-text" style="display:none">عرض الجدول</span>
+                    </button>
+                    <button class="view-toggle-btn" id="calendarViewBtn">
+                        <i class="bi bi-calendar-week me-2"></i>
+                        <span class="en-text">Calendar View</span>
+                        <span class="ar-text" style="display:none">عرض التقويم</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tableView">
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th><span class="en-text">Patient</span><span class="ar-text" style="display:none">المريض</span></th>
+                            <th><span class="en-text">Doctor</span><span class="ar-text" style="display:none">الطبيب</span></th>
+                            <th><span class="en-text">Date &amp; Time</span><span class="ar-text" style="display:none">التاريخ والوقت</span></th>
+                            <th><span class="en-text">Type</span><span class="ar-text" style="display:none">النوع</span></th>
+                            <th><span class="en-text">Status</span><span class="ar-text" style="display:none">الحالة</span></th>
+                            <th><span class="en-text">Actions</span><span class="ar-text" style="display:none">الإجراءات</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        @if (Model is null || !Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="empty-state">
+                                        <i class="bi bi-calendar-x display-4 d-block mb-3"></i>
+                                        <p class="mb-0">
+                                            <span class="en-text">No appointments scheduled.</span>
+                                            <span class="ar-text" style="display:none">لا توجد مواعيد مجدولة.</span>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            var rowSeed = 0;
+                            foreach (var appointment in Model)
+                            {
+                                rowSeed++;
+                                var searchKey = BuildSearchKey(appointment);
+                                var statusValue = appointment.Status.ToString().ToLowerInvariant();
+                                var dateValue = appointment.Appointment_Date.ToString("yyyy-MM-dd");
+                                var isCompleted = appointment.Status == AppointmentStatus.Completed;
+                                var deleteOnClick = isCompleted ? "return false;" : "return confirm('Are you sure you want to cancel this appointment?');";
+                                <tr data-keywords="@searchKey" data-status="@statusValue" data-date="@dateValue">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@ResolvePersonImage(appointment.Image, rowSeed)"
+                                                 alt="@appointment.PatientName"
+                                                 class="rounded-circle me-3"
+                                                 style="width: 40px; height: 40px; object-fit: cover;" />
+                                            <div>
+                                                <strong>@(appointment.PatientName ?? "Unknown Patient")</strong>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@(appointment.DoctorName ?? "Unassigned")</td>
+                                    <td>
+                                        <div>@appointment.Appointment_Date.ToString("MMM dd, yyyy")</div>
+                                        <div class="text-muted small">@FormatTime(appointment.Appointment_Time)</div>
+                                    </td>
+                                    <td>@FormatType(appointment.AppointmentType)</td>
+                                    <td>
+                                        <span class="badge @GetStatusBadgeClass(appointment.Status)">
+                                            <span class="en-text">@FormatStatus(appointment.Status)</span>
+                                            <span class="ar-text" style="display:none">@FormatStatus(appointment.Status)</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                               asp-action="Details"
+                                               asp-route-id="@appointment.Id">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (isAuthenticated)
+                                            {
+                                                <a class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@appointment.Id">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-custom btn-sm-custom"
+                                                            title="@(isCompleted ? "Completed appointments cannot be deleted." : "Cancel appointment")"
+                                                            @(isCompleted ? "disabled=\"disabled\"" : string.Empty)
+                                                            aria-disabled="@(isCompleted ? "true" : "false")"
+                                                            onclick="@deleteOnClick">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-toolbar mt-3" id="appointmentsPaginationToolbar">
+                <div class="page-size">
+                    <label for="appointmentsPageSize" class="form-label mb-0">
+                        <span class="en-text">Show</span>
+                        <span class="ar-text" style="display:none">عرض</span>
+                    </label>
+                    <select class="form-select form-select-sm w-auto" id="appointmentsPageSize">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                    <span class="text-muted small">
+                        <span class="en-text">per page</span>
+                        <span class="ar-text" style="display:none">لكل صفحة</span>
+                    </span>
+                </div>
+                <div class="pagination-wrapper" id="appointmentsPagination"></div>
+            </div>
+
+            <div class="alert alert-info mt-3 d-none" id="appointmentsEmptyState">
+                <span class="en-text">No appointments match your current filters.</span>
+                <span class="ar-text" style="display:none">لا توجد مواعيد تطابق عوامل التصفية الحالية.</span>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="mb-0" style="color: var(--text-light);">
+                    <span class="en-text" id="appointmentsCountLabelEn" data-total="@((Model?.Count() ?? 0))">Showing @((Model?.Count() ?? 0)) appointment(s)</span>
+                    <span class="ar-text" style="display:none" id="appointmentsCountLabelAr" data-total="@((Model?.Count() ?? 0))">إظهار @((Model?.Count() ?? 0)) موعد</span>
+                </p>
+            </div>
+        </div>
+
+        <div id="calendarView" class="calendar-view" style="display:none">
+            <div class="calendar-header">
+                <button class="btn btn-outline-custom btn-sm-custom" id="prevWeek">
+                    <i class="bi bi-chevron-left"></i>
+                    <span class="en-text">Previous Week</span>
+                    <span class="ar-text" style="display:none">الأسبوع السابق</span>
+                </button>
+                <h4 id="calendarWeek">@startOfWeek.ToString("MMMM dd") - @endOfWeek.ToString("MMMM dd, yyyy")</h4>
+                <button class="btn btn-outline-custom btn-sm-custom" id="nextWeek">
+                    <span class="en-text">Next Week</span>
+                    <span class="ar-text" style="display:none">الأسبوع التالي</span>
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="text-center text-muted py-5">
+                    <span class="en-text">Loading calendar...</span>
+                    <span class="ar-text" style="display:none">جاري تحميل التقويم...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script id="appointmentsData" type="application/json">
+        @Html.Raw(calendarAppointmentsJson)
+    </script>
+    <script src="~/js/appointments.js" asp-append-version="true"></script>
+}
+

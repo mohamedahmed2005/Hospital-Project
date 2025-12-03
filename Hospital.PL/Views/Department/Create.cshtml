@@ -1,0 +1,150 @@
+@model Hospital.PL.ViewModels.DepartmentViewModel
+
+@{
+    ViewData["Title"] = "Add Department";
+    var doctors = Model?.Doctors ?? Enumerable.Empty<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+    var hasDoctors = doctors.Any();
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/departments.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Create Department</span>
+                    <span class="ar-text" style="display:none">إنشاء قسم جديد</span>
+                </h1>
+                <p class="lead mb-0">
+                    <span class="en-text">Outline the new department's purpose, services, and optional lead doctor.</span>
+                    <span class="ar-text" style="display:none">عرّف القسم الجديد وخدماته والطبيب المسؤول (اختياري).</span>
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Departments</span>
+                    <span class="ar-text" style="display:none">العودة للأقسام</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                @if (ViewBag.Errors is IEnumerable<string> errors && errors.Any())
+                {
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach (var error in errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Department Name</span>
+                                <span class="ar-text" style="display:none">اسم القسم</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Cardiology" data-ar-placeholder="طب القلب" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Speciality</span>
+                                <span class="ar-text" style="display:none">التخصص</span>
+                            </label>
+                            <input asp-for="DepartmentSpeciality" class="form-control" placeholder="Heart & Vascular" data-ar-placeholder="القلب والأوعية" required />
+                            <span asp-validation-for="DepartmentSpeciality" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Location</span>
+                                <span class="ar-text" style="display:none">الموقع</span>
+                            </label>
+                            <input asp-for="Location" class="form-control" placeholder="Building A - 3rd Floor" data-ar-placeholder="المبنى أ - الطابق الثالث" required />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Department Status</span>
+                                <span class="ar-text" style="display:none">حالة القسم</span>
+                            </label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<Hospital.DAL.Models.DepartmentModule.DepartmentStatus>()" required>
+                                <option value="" data-en="Select status" data-ar="اختر الحالة">Select status</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Lead Doctor (optional)</span>
+                                <span class="ar-text" style="display:none">الطبيب المسؤول (اختياري)</span>
+                            </label>
+                            @if (hasDoctors)
+                            {
+                                <select asp-for="DoctorId" class="form-select" asp-items="doctors">
+                                    <option value="" data-en="Select doctor" data-ar="اختر الطبيب">Select doctor</option>
+                                </select>
+                                <div class="form-text en-text">You can assign a lead doctor now or later.</div>
+                                <div class="form-text ar-text" style="display:none">يمكنك تعيين الطبيب المسؤول الآن أو لاحقاً.</div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info mb-0">
+                                    <span class="en-text">No doctors available yet. Create the department first, then add doctors when ready.</span>
+                                    <span class="ar-text" style="display:none">لا يوجد أطباء حالياً. أنشئ القسم أولاً ثم أضف الأطباء لاحقاً.</span>
+                                </div>
+                            }
+                            <span asp-validation-for="DoctorId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <span class="en-text">Key Services</span>
+                                <span class="ar-text" style="display:none">الخدمات الرئيسية</span>
+                            </label>
+                            <input asp-for="KeyServices" class="form-control" placeholder="Emergency care, diagnostics, rehab" data-ar-placeholder="الرعاية الطارئة، التشخيص، التأهيل" required />
+                            <span asp-validation-for="KeyServices" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">
+                                <span class="en-text">Department Overview</span>
+                                <span class="ar-text" style="display:none">وصف القسم</span>
+                            </label>
+                            <textarea asp-for="Description" rows="4" class="form-control" placeholder="Outline the department's mission, equipment, and focus areas." data-ar-placeholder="اشرح مهمة القسم وتجهيزاته ومجالات التركيز." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end gap-3">
+                        <a asp-action="Index" class="btn btn-outline-custom">
+                            <span class="en-text">Cancel</span>
+                            <span class="ar-text" style="display:none">إلغاء</span>
+                        </a>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            <span class="en-text">Add Department</span>
+                            <span class="ar-text" style="display:none">إضافة القسم</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,0 +1,567 @@
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Contact NovaHealth";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header-content">
+            <h1 class="display-3 fw-bold mb-3">
+                <span class="en-text">Contact Us</span>
+                <span class="ar-text" style="display:none">اتصل بنا</span>
+            </h1>
+            <p class="lead mb-4">
+                <span class="en-text">We're here to help you with all your healthcare needs</span>
+                <span class="ar-text" style="display:none">نحن هنا لمساعدتك في جميع احتياجاتك الصحية</span>
+            </p>
+            <p class="mb-0">
+                <span class="en-text">Reach out to us anytime - our team is ready to assist you</span>
+                <span class="ar-text" style="display:none">تواصل معنا في أي وقت - فريقنا جاهز لمساعدتك</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="emergency-banner fade-in">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3 class="mb-2">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span class="en-text">Emergency Medical Assistance</span>
+                        <span class="ar-text" style="display:none">المساعدة الطبية الطارئة</span>
+                    </h3>
+                    <p class="mb-0">
+                        <span class="en-text">If you're experiencing a medical emergency, please call our emergency line immediately or visit our emergency department.</span>
+                        <span class="ar-text" style="display:none">إذا كنت تعاني من حالة طبية طارئة، يرجى الاتصال بخط الطوارئ لدينا على الفور أو زيارة قسم الطوارئ.</span>
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <button class="btn btn-light btn-lg px-4 py-2 fw-bold">
+                        <i class="bi bi-telephone-fill me-2"></i>
+                        <span class="en-text">Call 911</span>
+                        <span class="ar-text" style="display:none">اتصل بالطوارئ</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Get In Touch</span>
+                    <span class="ar-text" style="display:none">تواصل معنا</span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Multiple ways to reach us for appointments, inquiries, or support</span>
+                    <span class="ar-text" style="display:none">طرق متعددة للتواصل معنا للحصول على المواعيد أو الاستفسارات أو الدعم</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom contact-card fade-in">
+                    <div class="contact-icon float-animation">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Phone & Fax</span>
+                        <span class="ar-text" style="display:none">الهاتف والفاكس</span>
+                    </h4>
+                    <p class="mb-4">
+                        <span class="en-text">Speak directly with our team</span>
+                        <span class="ar-text" style="display:none">تحدث مباشرة مع فريقنا</span>
+                    </p>
+                    <div class="text-start">
+                        <p><strong><span class="en-text">Main Line:</span><span class="ar-text" style="display:none">الخط الرئيسي:</span></strong><br />(555) 123-4567</p>
+                        <p><strong><span class="en-text">Appointments:</span><span class="ar-text" style="display:none">المواعيد:</span></strong><br />(555) 123-4568</p>
+                        <p><strong><span class="en-text">Emergency:</span><span class="ar-text" style="display:none">الطوارئ:</span></strong><br />(555) 123-4569</p>
+                        <p><strong><span class="en-text">Fax:</span><span class="ar-text" style="display:none">الفاكس:</span></strong><br />(555) 123-4570</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom contact-card fade-in">
+                    <div class="contact-icon float-animation">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Email & Digital</span>
+                        <span class="ar-text" style="display:none">البريد الإلكتروني والرقمي</span>
+                    </h4>
+                    <p class="mb-4">
+                        <span class="en-text">Send us a message online</span>
+                        <span class="ar-text" style="display:none">أرسل لنا رسالة عبر الإنترنت</span>
+                    </p>
+                    <div class="text-start">
+                        <p><strong><span class="en-text">General:</span><span class="ar-text" style="display:none">الاستفسارات العامة:</span></strong><br />info@@novahealth.com</p>
+                        <p><strong><span class="en-text">Appointments:</span><span class="ar-text" style="display:none">المواعيد:</span></strong><br />appointments@@novahealth.com</p>
+                        <p><strong><span class="en-text">Billing:</span><span class="ar-text" style="display:none">الفواتير:</span></strong><br />billing@@novahealth.com</p>
+                        <p><strong><span class="en-text">Support:</span><span class="ar-text" style="display:none">الدعم:</span></strong><br />support@@novahealth.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-custom contact-card fade-in">
+                    <div class="contact-icon float-animation">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <h4>
+                        <span class="en-text">Visit Us</span>
+                        <span class="ar-text" style="display:none">زرنا</span>
+                    </h4>
+                    <p class="mb-4">
+                        <span class="en-text">Come see us in person</span>
+                        <span class="ar-text" style="display:none">تعال لرؤيتنا شخصياً</span>
+                    </p>
+                    <div class="text-start">
+                        <p>
+                            <strong><span class="en-text">Main Hospital:</span><span class="ar-text" style="display:none">المستشفى الرئيسي:</span></strong><br />
+                            123 Medical Drive<br />Health City, HC 12345
+                        </p>
+                        <p>
+                            <strong><span class="en-text">Hours:</span><span class="ar-text" style="display:none">ساعات العمل:</span></strong><br />
+                            <span class="en-text">24/7 Emergency • Mon-Fri 7AM-9PM</span><br />
+                            <span class="en-text">Sat-Sun 8AM-6PM</span>
+                            <span class="ar-text" style="display:none">الطوارئ 24/7 • الإثنين-الجمعة 7ص-9م • السبت-الأحد 8ص-6م</span>
+                        </p>
+                        <p>
+                            <strong><span class="en-text">Parking:</span><span class="ar-text" style="display:none">مواقف السيارات:</span></strong><br />
+                            <span class="en-text">Free parking available</span>
+                            <span class="ar-text" style="display:none">مواقف مجانية متاحة</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <div class="form-section fade-in">
+                    <h3 class="mb-4">
+                        <span class="en-text">Send Us a Message</span>
+                        <span class="ar-text" style="display:none">أرسل لنا رسالة</span>
+                    </h3>
+                    <p class="mb-4">
+                        <span class="en-text">Fill out the form below and we'll get back to you within 24 hours.</span>
+                        <span class="ar-text" style="display:none">املأ النموذج أدناه وسنرد عليك في غضون 24 ساعة.</span>
+                    </p>
+                    <form class="needs-validation" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">First Name *</span>
+                                    <span class="ar-text" style="display:none">الاسم الأول *</span>
+                                </label>
+                                <input type="text" class="form-control" required />
+                                <div class="invalid-feedback">
+                                    <span class="en-text">Please provide a valid first name.</span>
+                                    <span class="ar-text" style="display:none">يرجى تقديم اسم أول صالح.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Last Name *</span>
+                                    <span class="ar-text" style="display:none">الاسم الأخير *</span>
+                                </label>
+                                <input type="text" class="form-control" required />
+                                <div class="invalid-feedback">
+                                    <span class="en-text">Please provide a valid last name.</span>
+                                    <span class="ar-text" style="display:none">يرجى تقديم اسم أخير صالح.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Email Address *</span>
+                                    <span class="ar-text" style="display:none">عنوان البريد الإلكتروني *</span>
+                                </label>
+                                <input type="email" class="form-control" required />
+                                <div class="invalid-feedback">
+                                    <span class="en-text">Please provide a valid email address.</span>
+                                    <span class="ar-text" style="display:none">يرجى تقديم عنوان بريد إلكتروني صالح.</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="en-text">Phone Number</span>
+                                    <span class="ar-text" style="display:none">رقم الهاتف</span>
+                                </label>
+                                <input type="tel" class="form-control" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <span class="en-text">Department</span>
+                                    <span class="ar-text" style="display:none">القسم</span>
+                                </label>
+                                <select class="form-select">
+                                    <option value="" data-en="Select a department" data-ar="اختر قسماً">Select a department</option>
+                                    <option value="cardiology">Cardiology</option>
+                                    <option value="neurology">Neurology</option>
+                                    <option value="orthopedics">Orthopedics</option>
+                                    <option value="pediatrics">Pediatrics</option>
+                                    <option value="emergency">Emergency Care</option>
+                                    <option value="billing">Billing Department</option>
+                                    <option value="general">General Inquiry</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <span class="en-text">Subject *</span>
+                                    <span class="ar-text" style="display:none">الموضوع *</span>
+                                </label>
+                                <input type="text" class="form-control" required />
+                                <div class="invalid-feedback">
+                                    <span class="en-text">Please provide a subject.</span>
+                                    <span class="ar-text" style="display:none">يرجى تقديم موضوع.</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <span class="en-text">Message *</span>
+                                    <span class="ar-text" style="display:none">الرسالة *</span>
+                                </label>
+                                <textarea class="form-control form-textarea" rows="5" required></textarea>
+                                <div class="invalid-feedback">
+                                    <span class="en-text">Please provide a message.</span>
+                                    <span class="ar-text" style="display:none">يرجى تقديم رسالة.</span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="urgent" />
+                                    <label class="form-check-label" for="urgent">
+                                        <span class="en-text">This is an urgent matter</span>
+                                        <span class="ar-text" style="display:none">هذه مسألة عاجلة</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary-custom px-4">
+                                    <span class="en-text">Send Message</span>
+                                    <span class="ar-text" style="display:none">إرسال الرسالة</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="mb-5 fade-in">
+                    <h3 class="mb-4">
+                        <span class="en-text">Getting Here</span>
+                        <span class="ar-text" style="display:none">كيفية الوصول إلينا</span>
+                    </h3>
+                    <div class="card-custom p-4">
+                        <div class="location-info">
+                            <div class="location-item mb-4">
+                                <div class="location-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                                <div class="location-details">
+                                    <h5 class="mb-2">
+                                        <span class="en-text">Main Hospital Location</span>
+                                        <span class="ar-text" style="display:none">موقع المستشفى الرئيسي</span>
+                                    </h5>
+                                    <p class="mb-2">123 Medical Drive, Health City, HC 12345</p>
+                                    <button class="btn btn-sm btn-outline-primary mt-1">
+                                        <i class="bi bi-clipboard me-1"></i>
+                                        <span class="en-text">Copy Address</span>
+                                        <span class="ar-text" style="display:none">نسخ العنوان</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="location-item mb-4">
+                                <div class="location-icon">
+                                    <i class="bi bi-bus-front"></i>
+                                </div>
+                                <div class="location-details">
+                                    <h5 class="mb-2">
+                                        <span class="en-text">Public Transportation</span>
+                                        <span class="ar-text" style="display:none">النقل العام</span>
+                                    </h5>
+                                    <p class="mb-1">
+                                        <span class="en-text">Bus routes: 12, 24, 36</span>
+                                        <span class="ar-text" style="display:none">خطوط الحافلات: 12، 24، 36</span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <span class="en-text">Metro: Health City Station (Blue Line)</span>
+                                        <span class="ar-text" style="display:none">المترو: محطة مدينة الصحة (الخط الأزرق)</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span class="en-text">Free shuttle from transit center</span>
+                                        <span class="ar-text" style="display:none">مكوك مجاني من مركز النقل</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="location-item mb-4">
+                                <div class="location-icon">
+                                    <i class="bi bi-car-front"></i>
+                                </div>
+                                <div class="location-details">
+                                    <h5 class="mb-2">
+                                        <span class="en-text">Driving Directions</span>
+                                        <span class="ar-text" style="display:none">اتجاهات القيادة</span>
+                                    </h5>
+                                    <p class="mb-1">
+                                        <span class="en-text">From downtown: Take Medical Expressway exit 12</span>
+                                        <span class="ar-text" style="display:none">من وسط المدينة: خذ مخرج الطريق السريع الطبي 12</span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <span class="en-text">From north: Highway 7 to Medical Drive</span>
+                                        <span class="ar-text" style="display:none">من الشمال: الطريق السريع 7 إلى الطريق الطبي</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span class="en-text">Follow signs for Emergency entrance</span>
+                                        <span class="ar-text" style="display:none">اتبع الإشارات إلى مدخل الطوارئ</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="location-item">
+                                <div class="location-icon">
+                                    <i class="bi bi-universal-access"></i>
+                                </div>
+                                <div class="location-details">
+                                    <h5 class="mb-2">
+                                        <span class="en-text">Accessibility</span>
+                                        <span class="ar-text" style="display:none">إمكانية الوصول</span>
+                                    </h5>
+                                    <p class="mb-1">
+                                        <span class="en-text">Wheelchair accessible entrances</span>
+                                        <span class="ar-text" style="display:none">مداخل متاحة للكراسي المتحركة</span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <span class="en-text">Designated parking near all entrances</span>
+                                        <span class="ar-text" style="display:none">مواقف مخصصة بالقرب من جميع المداخل</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span class="en-text">Assistance available at information desk</span>
+                                        <span class="ar-text" style="display:none">مساعدة متاحة في مكتب المعلومات</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-custom p-4 fade-in">
+                    <h4 class="mb-4">
+                        <span class="en-text">Operating Hours</span>
+                        <span class="ar-text" style="display:none">ساعات العمل</span>
+                    </h4>
+                    <table class="hours-table">
+                        <tr>
+                            <td><span class="en-text">Monday - Friday</span><span class="ar-text" style="display:none">الإثنين - الجمعة</span></td>
+                            <td>7:00 AM - 9:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="en-text">Saturday</span><span class="ar-text" style="display:none">السبت</span></td>
+                            <td>8:00 AM - 6:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="en-text">Sunday</span><span class="ar-text" style="display:none">الأحد</span></td>
+                            <td>8:00 AM - 6:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td><span class="en-text">Emergency Department</span><span class="ar-text" style="display:none">قسم الطوارئ</span></td>
+                            <td>24/7</td>
+                        </tr>
+                        <tr>
+                            <td><span class="en-text">Pharmacy</span><span class="ar-text" style="display:none">الصيدلية</span></td>
+                            <td>7:00 AM - 10:00 PM</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold mb-3">
+                    <span class="en-text">Department Contacts</span>
+                    <span class="ar-text" style="display:none">جهات اتصال الأقسام</span>
+                </h2>
+                <p class="lead">
+                    <span class="en-text">Direct lines to specific departments and services</span>
+                    <span class="ar-text" style="display:none">خطوط مباشرة لأقسام وخدمات محددة</span>
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @{
+                var contacts = new[] {
+                        new { TitleEn = "Cardiology Department", TitleAr = "قسم طب القلب", DescEn = "Heart and cardiovascular care", DescAr = "رعاية القلب والأوعية الدموية", Phone = "(555) 123-4601" },
+                        new { TitleEn = "Neurology Department", TitleAr = "قسم طب الأعصاب", DescEn = "Brain and nervous system care", DescAr = "رعاية الدماغ والجهاز العصبي", Phone = "(555) 123-4602" },
+                        new { TitleEn = "Orthopedics Department", TitleAr = "قسم جراحة العظام", DescEn = "Bones, joints, and musculoskeletal care", DescAr = "رعاية العظام والمفاصل والعضلات", Phone = "(555) 123-4603" },
+                        new { TitleEn = "Pediatrics Department", TitleAr = "قسم طب الأطفال", DescEn = "Children's healthcare", DescAr = "رعاية الأطفال الصحية", Phone = "(555) 123-4604" },
+                        new { TitleEn = "Emergency Department", TitleAr = "قسم الطوارئ", DescEn = "24/7 emergency care", DescAr = "رعاية الطوارئ على مدار الساعة", Phone = "(555) 123-4605" },
+                        new { TitleEn = "Radiology Department", TitleAr = "قسم الأشعة", DescEn = "Imaging and diagnostics", DescAr = "التصوير والتشخيص", Phone = "(555) 123-4606" }
+                        };
+            }
+            @foreach (var dept in contacts)
+            {
+                <div class="col-lg-6">
+                    <div class="department-contact fade-in">
+                        <h5 class="mb-2">
+                            <span class="en-text">@dept.TitleEn</span>
+                            <span class="ar-text" style="display:none">@dept.TitleAr</span>
+                        </h5>
+                        <p class="mb-2">
+                            <span class="en-text">@dept.DescEn</span>
+                            <span class="ar-text" style="display:none">@dept.DescAr</span>
+                        </p>
+                        <p class="mb-0"><i class="bi bi-telephone me-2"></i>@dept.Phone</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <span class="en-text">Other Ways to Connect</span>
+                        <span class="ar-text" style="display:none">طرق أخرى للتواصل</span>
+                    </h2>
+                    <p class="lead">
+                        <span class="en-text">We're available through multiple channels for your convenience</span>
+                        <span class="ar-text" style="display:none">نحن متاحون عبر قنوات متعددة لراحتك</span>
+                    </p>
+                </div>
+                <div class="row g-4">
+                    @{
+                        var methods = new[] {
+                                        new { Icon = "bi bi-chat-dots", TitleEn = "Live Chat", TitleAr = "الدردشة المباشرة", DescEn = "Chat with our support team in real-time during business hours", DescAr = "تحدث مع فريق الدعم في الوقت الفعلي خلال ساعات العمل" },
+                                        new { Icon = "bi bi-whatsapp", TitleEn = "WhatsApp", TitleAr = "واتساب", DescEn = "Message us on WhatsApp for quick responses", DescAr = "راسلنا على واتساب للحصول على ردود سريعة" },
+                                        new { Icon = "bi bi-camera-video", TitleEn = "Video Consultations", TitleAr = "الاستشارات عبر الفيديو", DescEn = "Schedule virtual appointments with our specialists", DescAr = "جدول مواعيد افتراضية مع متخصصينا" },
+                                        new { Icon = "bi bi-person", TitleEn = "Patient Portal", TitleAr = "بوابة المريض", DescEn = "Access your medical records and communicate securely", DescAr = "الوصول إلى سجلاتك الطبية والتواصل بأمان" }
+                                        };
+                    }
+                    @foreach (var method in methods)
+                    {
+                        <div class="col-md-6">
+                            <div class="contact-method fade-in">
+                                <div class="contact-method-icon">
+                                    <i class="@method.Icon"></i>
+                                </div>
+                                <div>
+                                    <h5>
+                                        <span class="en-text">@method.TitleEn</span>
+                                        <span class="ar-text" style="display:none">@method.TitleAr</span>
+                                    </h5>
+                                    <p class="mb-0">
+                                        <span class="en-text">@method.DescEn</span>
+                                        <span class="ar-text" style="display:none">@method.DescAr</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">
+                        <span class="en-text">Contact FAQs</span>
+                        <span class="ar-text" style="display:none">الأسئلة الشائعة للاتصال</span>
+                    </h2>
+                    <p class="lead">
+                        <span class="en-text">Quick answers to common contact-related questions</span>
+                        <span class="ar-text" style="display:none">إجابات سريعة للأسئلة الشائعة المتعلقة بالاتصال</span>
+                    </p>
+                </div>
+                <div class="accordion accordion-custom" id="contactFAQ">
+                    @{
+                        var contactFaqs = new[] {
+                                        new { Id = "cf1", TitleEn = "What's the best way to reach a specific doctor?", TitleAr = "ما هي أفضل طريقة للوصول إلى طبيب معين؟", BodyEn = "Call our main line and ask for the doctor's extension, or email firstname.lastname@@novahealth.com. You can also leave a message with their department secretary.", BodyAr = "اتصل بالخط الرئيسي واطلب تحويلة الطبيب، أو أرسل بريداً إلكترونياً إلى firstname.lastname@@novahealth.com. يمكنك أيضاً ترك رسالة مع سكرتير القسم." },
+                                        new { Id = "cf2", TitleEn = "How quickly will I receive a response to my email?", TitleAr = "ما مدى سرعة تلقي رد على بريدي الإلكتروني؟", BodyEn = "We respond to all emails within 24 hours during business days. Urgent matters receive responses within 2-4 hours. For immediate help, call our main line.", BodyAr = "نرد على جميع رسائل البريد الإلكتروني في غضون 24 ساعة خلال أيام العمل. يتم الرد على المسائل العاجلة خلال 2-4 ساعات. للمساعدة الفورية، اتصل بالخط الرئيسي." },
+                                        new { Id = "cf3", TitleEn = "Can I schedule appointments outside business hours?", TitleAr = "هل يمكنني جدولة المواعيد خارج ساعات العمل؟", BodyEn = "Yes, schedule appointments anytime through our patient portal. Phone scheduling is available via our automated system, or leave a voicemail for next business day follow-up.", BodyAr = "نعم، يمكنك جدولة المواعيد في أي وقت عبر بوابة المريض. تتوفر جدولة الهاتف عبر نظامنا الآلي، أو اترك رسالة ليتم الرد عليك في يوم العمل التالي." },
+                                        new { Id = "cf4", TitleEn = "Is there parking available at the hospital?", TitleAr = "هل توجد مواقف سيارات متاحة في المستشفى؟", BodyEn = "Yes, we offer free parking with over 500 spaces, including emergency, disabled, and short-term parking. Valet parking is available at the main entrance.", BodyAr = "نعم، نوفر مواقف مجانية تضم أكثر من 500 مكان، بما في ذلك الطوارئ وذوي الاحتياجات الخاصة ومواقف الزيارات القصيرة. تتوفر خدمة صف السيارات عند المدخل الرئيسي." }
+                                        };
+                    }
+                    @for (int i = 0; i < contactFaqs.Length; i++)
+                    {
+                        var item = contactFaqs[i];
+                        var show = i == 0 ? "show" : string.Empty;
+                        var collapsed = i == 0 ? string.Empty : "collapsed";
+                        <div class="accordion-item fade-in">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button @collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@item.Id">
+                                    <span class="en-text">@item.TitleEn</span>
+                                    <span class="ar-text" style="display:none">@item.TitleAr</span>
+                                </button>
+                            </h2>
+                            <div id="@item.Id" class="accordion-collapse collapse @show" data-bs-parent="#contactFAQ">
+                                <div class="accordion-body">
+                                    <span class="en-text">@item.BodyEn</span>
+                                    <span class="ar-text" style="display:none">@item.BodyAr</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="p-5" style="background-color: var(--primary-color); color: var(--bg-white);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                <h3 class="fw-bold mb-0 me-lg-3">
+                    <span class="en-text">Need Immediate Assistance?</span>
+                    <span class="ar-text" style="display: none">هل تحتاج إلى مساعدة فورية؟</span>
+                </h3>
+                <p class="mb-0">
+                    <span class="en-text">Don't hesitate to reach out - our team is here to help you 24/7.</span>
+                    <span class="ar-text" style="display: none">لا تتردد في التواصل - فريقنا هنا لمساعدتك على مدار 24/7.</span>
+                </p>
+            </div>
+            <div class="col-lg-4 d-flex justify-content-lg-end align-items-center gap-2 mt-3 mt-lg-0">
+                <button class="btn btn-light px-3 py-1 fw-bold">
+                    <i class="bi bi-telephone me-2"></i>
+                    <span class="en-text">Call Now</span>
+                    <span class="ar-text" style="display: none">اتصل الآن</span>
+                </button>
+                <button class="btn btn-outline-light px-3 py-1">
+                    <span class="en-text">Emergency Info</span>
+                    <span class="ar-text" style="display: none">معلومات الطوارئ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/contact.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,103 @@
+@model Hospital.PL.ViewModels.AccountViewModels.LoginViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Sign In";
+}
+
+<section class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <div class="auth-logo-icon float-animation">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="auth-logo-text">
+                        <span class="en-text">NovaHealth</span>
+                        <span class="ar-text" style="display:none">نوفا هيلث</span>
+                    </h1>
+                </div>
+            </div>
+            <h2 class="auth-title">
+                <span class="en-text">Welcome Back</span>
+                <span class="ar-text" style="display:none">مرحباً بعودتك</span>
+            </h2>
+            <p class="auth-subtitle">
+                <span class="en-text">Sign in to continue</span>
+                <span class="ar-text" style="display:none">قم بتسجيل الدخول للمتابعة</span>
+            </p>
+        </div>
+
+        <form asp-action="Login" method="post" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    <span class="en-text">Email Address</span>
+                    <span class="ar-text" style="display:none">البريد الإلكتروني</span>
+                </label>
+                <input asp-for="Email" class="form-control" placeholder="you@novahealth.com" required />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">
+                    <span class="en-text">Password</span>
+                    <span class="ar-text" style="display:none">كلمة المرور</span>
+                </label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                    <button class="btn btn-outline-secondary" type="button" data-password-toggle="Password">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        <span class="en-text">Remember me</span>
+                        <span class="ar-text" style="display:none">تذكرني</span>
+                    </label>
+                </div>
+                <a asp-action="ForgetPassword" class="text-primary-color small">
+                    <span class="en-text">Forgot password?</span>
+                    <span class="ar-text" style="display:none">نسيت كلمة المرور؟</span>
+                </a>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 mb-3">
+                <span class="en-text">Sign In</span>
+                <span class="ar-text" style="display:none">تسجيل الدخول</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>
+                <span class="en-text">Don't have an account?</span>
+                <span class="ar-text" style="display:none">ليس لديك حساب؟</span>
+                <a asp-action="Register">
+                    <span class="en-text">Create one</span>
+                    <span class="ar-text" style="display:none">أنشئ حساباً</span>
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-password-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.getAttribute('data-password-toggle'));
+                if (!input) return;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                button.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+            });
+        });
+    </script>
+}
+

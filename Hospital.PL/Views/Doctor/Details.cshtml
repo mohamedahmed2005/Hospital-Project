@@ -1,0 +1,140 @@
+@model Hospital.BBL.DTOs.DoctorDTOs.GetDoctorByIdDto
+@using Hospital.DAL.Models.DoctorModule
+@{
+    ViewData["Title"] = "Doctor Details";
+
+    string ResolveAvatar(string? url) =>
+        string.IsNullOrWhiteSpace(url)
+            ? "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80"
+            : $"~/Files/Images/{url}";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/doctors.css" asp-append-version="true" />
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3" style="color: var(--primary-color);">
+                    <span class="en-text">Doctor Profile</span>
+                    <span class="ar-text" style="display:none">ملف الطبيب</span>
+                </h1>
+                <p class="lead mb-0" style="color: var(--text-light);">
+                    <span class="en-text">Comprehensive overview of qualifications, experience, and contact details.</span>
+                    <span class="ar-text" style="display:none">نظرة شاملة على المؤهلات والخبرة وبيانات الاتصال.</span>
+                </p>
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a asp-action="Index" class="btn btn-outline-custom me-2">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    <span class="en-text">Back to Doctors</span>
+                    <span class="ar-text" style="display:none">العودة للأطباء</span>
+                </a>
+
+                @if (User.IsInRole("Admin") || (User.IsInRole("Doctor") && !User.IsInRole("Admin")))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                        <i class="bi bi-pencil me-2"></i>
+                        <span class="en-text">Edit Doctor</span>
+                        <span class="ar-text" style="display:none">تعديل الطبيب</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <div class="row mb-4">
+                    <div class="col-lg-4 border-end text-center">
+                        <img src="@Url.Content(ResolveAvatar(Model.Image))"
+                             alt="@Model.Name"
+                             class="doctor-profile-image mb-3" />
+
+                        <h3 style="color: var(--text-light);">@Model.Name</h3>
+
+                        <p style="color: var(--primary-color);" class="mb-1">@Model.Specialization</p>
+
+                        <p style="color: var(--text-light);">@Model.Department</p>
+
+                        @{
+                            var statusClass = Model.Status switch
+                            {
+                                DoctorStatus.Active => "badge bg-success",
+                                DoctorStatus.OnLeave => "badge bg-warning",
+                                _ => "badge bg-secondary text-white"
+                            };
+                        }
+
+                        <span class="@statusClass">
+                            <span class="en-text">@Model.Status</span>
+                            <span class="ar-text" style="display:none">
+                                @(Model.Status == DoctorStatus.Active ? "نشط" :
+                                    Model.Status == DoctorStatus.OnLeave ? "في إجازة" : "غير متاح")
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <h5 style="color: var(--primary-color);" class="mb-3">
+                            <span class="en-text">Education</span>
+                            <span class="ar-text" style="display:none">التعليم</span>
+                        </h5>
+
+                        <p style="color: var(--text-light); font-size: 0.95rem;">
+                            @Model.Education
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Contact Information</span>
+                            <span class="ar-text" style="display:none">بيانات الاتصال</span>
+                        </h5>
+
+                        <ul class="list-unstyled details-list" style="color: var(--text-light);">
+                            <li>
+                                <strong>
+                                    <span class="en-text">Email:</span>
+                                    <span class="ar-text" style="display:none">البريد الإلكتروني:</span>
+                                </strong>
+                                @Model.Email
+                            </li>
+
+                            <li>
+                                <strong>
+                                    <span class="en-text">Phone:</span>
+                                    <span class="ar-text" style="display:none">الهاتف:</span>
+                                </strong>
+                                @Model.PhoneNumber
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <span class="en-text">Biography</span>
+                            <span class="ar-text" style="display:none">نبذة</span>
+                        </h5>
+
+                        <p style="color: var(--text-light);">
+                            @Model.Bio
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

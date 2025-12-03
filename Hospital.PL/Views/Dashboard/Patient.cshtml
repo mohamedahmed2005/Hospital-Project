@@ -1,0 +1,197 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Patient Dashboard";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<section class="dashboard-section">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="dashboard-title">
+                    <span class="en-text">Patient Dashboard</span>
+                    <span class="ar-text" style="display:none">لوحة تحكم المريض</span>
+                </h1>
+                <p class="dashboard-subtitle">
+                    <span class="en-text">Welcome! Manage your appointments and medical information.</span>
+                    <span class="ar-text" style="display:none">مرحباً! إدارة مواعيدك والمعلومات الطبية.</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card fade-in">
+                    <div class="stat-icon bg-primary-color">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">@ViewBag.AppointmentCount</h3>
+                        <p class="stat-label">
+                            <span class="en-text">Total Appointments</span>
+                            <span class="ar-text" style="display:none">إجمالي المواعيد</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card fade-in">
+                    <div class="stat-icon bg-secondary-color">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">@(((IEnumerable<dynamic>)ViewBag.UpcomingAppointments).Count())</h3>
+                        <p class="stat-label">
+                            <span class="en-text">Upcoming</span>
+                            <span class="ar-text" style="display:none">القادمة</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card fade-in">
+                    <div class="stat-icon bg-accent-color">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">@(((IEnumerable<dynamic>)ViewBag.PastAppointments).Count())</h3>
+                        <p class="stat-label">
+                            <span class="en-text">Past Appointments</span>
+                            <span class="ar-text" style="display:none">المواعيد السابقة</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="dashboard-card fade-in">
+                    <h3 class="card-title">
+                        <span class="en-text">Quick Actions</span>
+                        <span class="ar-text" style="display:none">إجراءات سريعة</span>
+                    </h3>
+                    <div class="row g-3">
+                        <div class="col-md-4 col-sm-6">
+                            <a asp-controller="Appointment" asp-action="Create" class="quick-action-btn">
+                                <i class="bi bi-calendar-plus"></i>
+                                <span class="en-text">Book Appointment</span>
+                                <span class="ar-text" style="display:none">حجز موعد</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <a asp-controller="Appointment" asp-action="Index" class="quick-action-btn">
+                                <i class="bi bi-calendar3"></i>
+                                <span class="en-text">View All Appointments</span>
+                                <span class="ar-text" style="display:none">عرض جميع المواعيد</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <a asp-controller="Doctor" asp-action="Index" class="quick-action-btn">
+                                <i class="bi bi-person-badge"></i>
+                                <span class="en-text">Find Doctors</span>
+                                <span class="ar-text" style="display:none">البحث عن أطباء</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="dashboard-card fade-in">
+                    <h3 class="card-title">
+                        <span class="en-text">Upcoming Appointments</span>
+                        <span class="ar-text" style="display:none">المواعيد القادمة</span>
+                    </h3>
+                    <div class="appointment-list">
+                        @if (ViewBag.UpcomingAppointments != null && ((IEnumerable<dynamic>)ViewBag.UpcomingAppointments).Any())
+                        {
+                            @foreach (var appointment in ViewBag.UpcomingAppointments)
+                            {
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="date-day">@appointment.Appointment_Date.Day</span>
+                                        <span class="date-month">@appointment.Appointment_Date.ToString("MMM")</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h5>@(appointment.PatientName ?? appointment.DoctorName ?? "N/A")</h5>
+                                        <p class="text-muted small mb-1">
+                                            <i class="bi bi-clock"></i> @appointment.Appointment_Time.ToString(@"hh\:mm")
+                                        </p>
+                                        <p class="text-muted small">
+                                            <i class="bi bi-info-circle"></i> @(string.IsNullOrWhiteSpace(appointment.Notes) ? "none" : appointment.Notes)
+                                        </p>
+                                    </div>
+                                    <a asp-controller="Appointment" asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-outline-custom">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center py-4">
+                                <span class="en-text">No upcoming appointments</span>
+                                <span class="ar-text" style="display:none">لا توجد مواعيد قادمة</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-card fade-in">
+                    <h3 class="card-title">
+                        <span class="en-text">Recent Appointments</span>
+                        <span class="ar-text" style="display:none">المواعيد الأخيرة</span>
+                    </h3>
+                    <div class="appointment-list">
+                        @if (ViewBag.PastAppointments != null && ((IEnumerable<dynamic>)ViewBag.PastAppointments).Any())
+                        {
+                            @foreach (var appointment in ViewBag.PastAppointments)
+                            {
+                                <div class="appointment-item">
+                                    <div class="appointment-date">
+                                        <span class="date-day">@appointment.Appointment_Date.Day.ToString("00")</span>
+                                        <span class="date-month">@appointment.Appointment_Date.ToString("MMM")</span>
+                                    </div>
+                                    <div class="appointment-details">
+                                        <h5>@(appointment.DoctorName ?? "N/A")</h5>
+                                        <p class="text-muted small mb-1">
+                                            <i class="bi bi-clock"></i> @appointment.Appointment_Time.ToString(@"hh\:mm")
+                                        </p>
+                                        <p class="text-muted small">
+                                            <i class="bi bi-info-circle"></i> @(appointment.Notes ?? "No notes")
+                                        </p>
+                                    </div>
+                                    <a asp-controller="Appointment" asp-action="Details" asp-route-id="@appointment.Id" class="btn btn-sm btn-outline-custom">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center py-4">
+                                <span class="en-text">No past appointments</span>
+                                <span class="ar-text" style="display:none">لا توجد مواعيد سابقة</span>
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}
+

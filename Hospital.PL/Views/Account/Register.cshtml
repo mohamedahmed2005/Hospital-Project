@@ -1,0 +1,162 @@
+@model Hospital.PL.ViewModels.AccountViewModels.RegisterViewModel
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Sign Up";
+}
+
+<section class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <div class="auth-logo-icon float-animation">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="auth-logo-text">
+                        <span class="en-text">NovaHealth</span>
+                        <span class="ar-text" style="display:none">نوفا هيلث</span>
+                    </h1>
+                </div>
+            </div>
+            <h2 class="auth-title">
+                <span class="en-text">Create Account</span>
+                <span class="ar-text" style="display:none">إنشاء حساب</span>
+            </h2>
+            <p class="auth-subtitle">
+                <span class="en-text">Get started with NovaHealth</span>
+                <span class="ar-text" style="display:none">ابدأ مع نوفا هيلث</span>
+            </p>
+        </div>
+
+        <form asp-action="Register" method="post" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label">
+                        <span class="en-text">First Name</span>
+                        <span class="ar-text" style="display:none">الاسم الأول</span>
+                    </label>
+                    <input asp-for="FirstName" class="form-control" placeholder="Omar" required />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label">
+                        <span class="en-text">Last Name</span>
+                        <span class="ar-text" style="display:none">اسم العائلة</span>
+                    </label>
+                    <input asp-for="LastName" class="form-control" placeholder="Hassan" required />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    <span class="en-text">Email Address</span>
+                    <span class="ar-text" style="display:none">البريد الإلكتروني</span>
+                </label>
+                <input asp-for="Email" class="form-control" placeholder="you@novahealth.com" required />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UserType" class="form-label">
+                    <span class="en-text">I am a</span>
+                    <span class="ar-text" style="display:none">أنا</span>
+                </label>
+                <div class="d-flex gap-3">
+                    <div class="form-check flex-fill">
+                        <input class="form-check-input" type="radio" asp-for="UserType" id="userTypeDoctor" value="Doctor" required />
+                        <label class="form-check-label w-100" for="userTypeDoctor">
+                            <i class="bi bi-person-badge me-2"></i>
+                            <span class="en-text">Doctor</span>
+                            <span class="ar-text" style="display:none">طبيب</span>
+                        </label>
+                    </div>
+                    <div class="form-check flex-fill">
+                        <input class="form-check-input" type="radio" asp-for="UserType" id="userTypePatient" value="Patient" required />
+                        <label class="form-check-label w-100" for="userTypePatient">
+                            <i class="bi bi-person-heart me-2"></i>
+                            <span class="en-text">Patient</span>
+                            <span class="ar-text" style="display:none">مريض</span>
+                        </label>
+                    </div>
+                </div>
+                <span asp-validation-for="UserType" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Password" class="form-label">
+                        <span class="en-text">Password</span>
+                        <span class="ar-text" style="display:none">كلمة المرور</span>
+                    </label>
+                    <div class="input-group">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                        <button class="btn btn-outline-secondary" type="button" data-password-toggle="Password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-1">
+                        <span class="en-text">At least 8 characters</span>
+                        <span class="ar-text" style="display:none">٨ أحرف على الأقل</span>
+                    </small>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label">
+                        <span class="en-text">Confirm Password</span>
+                        <span class="ar-text" style="display:none">تأكيد كلمة المرور</span>
+                    </label>
+                    <div class="input-group">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" required />
+                        <button class="btn btn-outline-secondary" type="button" data-password-toggle="ConfirmPassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-4 form-check">
+                <input asp-for="IsAgree" class="form-check-input" />
+                <label asp-for="IsAgree" class="form-check-label">
+                    <span class="en-text">I agree to the terms &amp; privacy policy</span>
+                    <span class="ar-text" style="display:none">أوافق على الشروط وسياسة الخصوصية</span>
+                </label>
+                <span asp-validation-for="IsAgree" class="text-danger small d-block"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 mb-3">
+                <span class="en-text">Create Account</span>
+                <span class="ar-text" style="display:none">إنشاء حساب</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>
+                <span class="en-text">Already have an account?</span>
+                <span class="ar-text" style="display:none">هل لديك حساب؟</span>
+                <a asp-action="Login">
+                    <span class="en-text">Sign in</span>
+                    <span class="ar-text" style="display:none">تسجيل الدخول</span>
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-password-toggle]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.getAttribute('data-password-toggle'));
+                if (!input) return;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                button.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+            });
+        });
+    </script>
+}
+
