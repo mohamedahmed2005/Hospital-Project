@@ -73,6 +73,21 @@
             </button>
         </form>
 
+        <div class="text-center mb-3">
+            <span class="text-muted en-text">or</span>
+            <span class="text-muted ar-text" style="display:none">أو</span>
+        </div>
+
+        <form asp-action="ExternalLogin" method="post" class="mb-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="provider" value="Google" />
+            <button type="submit" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-google"></i>
+                <span class="en-text">Continue with Google</span>
+                <span class="ar-text" style="display:none">تسجيل الدخول باستخدام جوجل</span>
+            </button>
+        </form>
+
         <div class="auth-footer">
             <p>
                 <span class="en-text">Don't have an account?</span>

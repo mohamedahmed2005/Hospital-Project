@@ -1,14 +1,35 @@
 ﻿using Hospital.DAL.Models.Shared;
 using Hospital.PL.Helper;
 using Hospital.PL.ViewModels.AccountViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Hospital.PL.Controllers
 {
     public class AccountController(UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> _signInManager, RoleManager<IdentityRole> _roleManager) : Controller
     {
+        #region Helpers
+        private IActionResult RedirectToDashboard(ApplicationUser user)
+        {
+            // This helper assumes the user is already signed in.
+            // It redirects based on the user's role, matching the existing logic.
+            var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
+
+            if (roles.Contains("Admin"))
+                return RedirectToAction("Admin", "Dashboard");
+            else if (roles.Contains("Doctor"))
+                return RedirectToAction("Doctor", "Dashboard");
+            else if (roles.Contains("Patient"))
+                return RedirectToAction("Patient", "Dashboard");
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+        #endregion
+
         #region Register
         [HttpGet]
         public IActionResult Register() => View();
@@ -82,15 +103,7 @@ namespace Hospital.PL.Controllers
                     }
 
                     // Redirect to appropriate dashboard based on user role
-                    var roles = await _userManager.GetRolesAsync(user);
-                    if (roles.Contains("Admin"))
-                        return RedirectToAction("Admin", "Dashboard");
-                    else if (roles.Contains("Doctor"))
-                        return RedirectToAction("Doctor", "Dashboard");
-                    else if (roles.Contains("Patient"))
-                        return RedirectToAction("Patient", "Dashboard");
-                    else
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                    return RedirectToDashboard(user);
                 }
                 else
                 {
@@ -100,6 +113,113 @@ namespace Hospital.PL.Controllers
 
             }
             return View(loginView);
+        }
+        #endregion
+
+        #region External Login (Google)
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
+        {
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            returnUrl ??= Url.Content("~/");
+
+            if (remoteError is not null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info is null)
+            {
+                // If we cannot get info, redirect to normal login
+                return RedirectToAction(nameof(Login));
+            }
+
+            // Try to sign in the user with the external login provider
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (signInResult.Succeeded)
+            {
+                // User already has a local account linked to this Google account
+                var existingUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                if (existingUser is not null)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+
+                    return RedirectToDashboard(existingUser);
+                }
+
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+
+            // If the user does not have an account, create one automatically using their Google email
+            var email = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ModelState.AddModelError(string.Empty, "Email not provided by external provider.");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    foreach (var error in createResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return RedirectToAction(nameof(Login));
+                }
+
+                // By default, treat Google sign-ins as Patients (you can change this behavior if needed)
+                if (!await _roleManager.RoleExistsAsync("Patient"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Patient"));
+                }
+                await _userManager.AddToRoleAsync(user, "Patient");
+            }
+
+            var addLoginResult = await _userManager.AddLoginAsync(user, info);
+            if (!addLoginResult.Succeeded)
+            {
+                foreach (var error in addLoginResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return RedirectToAction(nameof(Login));
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToDashboard(user);
         }
         #endregion
 

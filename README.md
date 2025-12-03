@@ -155,6 +155,35 @@ Store sensitive values (e.g. SMTP passwords, production connection strings) **ou
 
 When adding new roles or policies, configure them centrally in `Program.cs` and keep authorization logic declarative.
 
+#### 🔑 Google Login (OAuth 2.0)
+
+The app supports **“Continue with Google”** on the login page using Google OAuth:
+
+- **1. Create OAuth client in Google Cloud Console**
+  - Go to `APIs & Services` → `Credentials` → **Create Credentials** → **OAuth client ID** → **Web application**.
+  - Add an **Authorized redirect URI** matching your dev URL, e.g.:
+    - `https://localhost:5001/signin-google` (adjust port to your actual dev port).
+
+- **2. Configure `appsettings.json`**
+  - In `Hospital.PL/appsettings.json`, set:
+    ```json
+    "Authentication": {
+      "Google": {
+        "ClientId": "YOUR_GOOGLE_CLIENT_ID",
+        "ClientSecret": "YOUR_GOOGLE_CLIENT_SECRET",
+        "CallbackPath": "/signin-google"
+      }
+    }
+    ```
+
+- **3. How it works in the app**
+  - `Program.cs` wires Google via `builder.Services.AddAuthentication().AddGoogle(...)` using the config above.
+  - `AccountController` exposes `ExternalLogin` (POST) and `ExternalLoginCallback` (GET) actions.
+  - `Views/Account/Login.cshtml` shows a **“Continue with Google”** button that posts to `ExternalLogin`.
+  - On first Google login, a local user is created (default role: **Patient**) and linked to the Google account, then redirected to the appropriate dashboard.
+
+> ⚠️ For real deployments, **do not commit** real Google secrets. Use **User Secrets** or environment variables and regenerate the secret if it was ever exposed.
+
 ---
 
 ### 🎨 Styling, Theming & Localization

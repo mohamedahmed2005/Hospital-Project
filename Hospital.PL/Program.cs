@@ -6,6 +6,8 @@ using Hospital.DAL.Contexts;
 using Hospital.DAL.Models.Shared;
 using Hospital.DAL.Repositories.Classes;
 using Hospital.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +59,22 @@ namespace Hospital.PL
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            // External authentication (Google)
+            builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    var googleAuthSection = builder.Configuration.GetSection("Authentication:Google");
+                    options.ClientId = googleAuthSection["ClientId"] ?? string.Empty;
+                    options.ClientSecret = googleAuthSection["ClientSecret"] ?? string.Empty;
+
+                    // Optional: allow overriding callback path from configuration
+                    var callbackPath = googleAuthSection["CallbackPath"];
+                    if (!string.IsNullOrWhiteSpace(callbackPath))
+                    {
+                        options.CallbackPath = callbackPath;
+                    }
+                });
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
