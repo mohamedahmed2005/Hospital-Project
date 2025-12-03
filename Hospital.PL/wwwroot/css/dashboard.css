@@ -394,14 +394,14 @@ body.rtl .navbar .dropdown-item i {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   background: var(--bg-light);
   border: 2px solid transparent;
   border-radius: 12px;
   text-decoration: none;
   color: var(--text-dark);
   transition: var(--transition);
-  min-height: 120px;
+  min-height: 100px;
 }
 
 .quick-action-btn:hover {
@@ -413,12 +413,12 @@ body.rtl .navbar .dropdown-item i {
 }
 
 .quick-action-btn i {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .quick-action-btn span {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 /* Recent List */
@@ -474,6 +474,39 @@ body.rtl .navbar .dropdown-item i {
 
 .card-footer-link a:hover {
   color: var(--primary-dark);
+}
+
+/* Chart Containers & Styling */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: 16px;
+  padding: 0.75rem;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.08), transparent 55%);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.15);
+  overflow: hidden;
+}
+
+.chart-container-lg {
+  height: 280px;
+}
+
+.chart-container-sm {
+  height: 260px;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.dark-mode .chart-container {
+  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.12), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(45, 212, 191, 0.12), transparent 55%);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.5);
 }
 
 /* Appointment Items */

@@ -74,6 +74,34 @@ namespace Hospital.PL.Controllers
             ViewBag.RecentDoctors = doctors.Take(5);
             ViewBag.RecentAppointments = appointments.Take(5);
 
+            // Analytics: appointments over the last 7 days
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var last7Days = Enumerable.Range(0, 7)
+                .Select(offset => today.AddDays(-6 + offset))
+                .ToList();
+
+            var dailyAppointments = last7Days
+                .Select(d => new
+                {
+                    Date = d,
+                    Label = d.ToString("MMM dd"),
+                    Count = appointments.Count(a => a.Appointment_Date == d)
+                })
+                .ToList();
+
+            // Analytics: appointments by status
+            var statusGroups = Enum.GetValues(typeof(Hospital.DAL.Models.AppointmentModule.AppointmentStatus))
+                .Cast<Hospital.DAL.Models.AppointmentModule.AppointmentStatus>()
+                .Select(status => new
+                {
+                    Status = status.ToString(),
+                    Count = appointments.Count(a => a.Status == status)
+                })
+                .ToList();
+
+            ViewBag.DailyAppointments = dailyAppointments;
+            ViewBag.AppointmentStatusDistribution = statusGroups;
+
             return View();
         }
 
