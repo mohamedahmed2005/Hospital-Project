@@ -850,6 +850,8 @@ body.rtl .nav-link::after {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  max-height: 60vh;          /* make large menus scrollable */
+  overflow-y: auto;
 }
 
 /* Ensure dropdown appears above all content on all pages */
@@ -1216,6 +1218,44 @@ body.rtl .navbar .dropdown-menu-end {
   font-weight: 600;
 }
 
+/* Ensure primary buttons inside navbar look the same for all roles (Admin/Doctor/Patient) */
+.navbar .btn-primary-custom {
+  width: auto;
+}
+
+/* Doctor role navbar: slightly smaller typography and tighter spacing */
+.navbar-doctor .nav-link {
+  font-size: 0.68rem;
+  padding: 0.3rem 0.45rem !important;
+  margin: 0 0.15rem;
+}
+
+.navbar-doctor .navbar-nav {
+  gap: 0.15rem;
+}
+
+.navbar-doctor .btn {
+  font-size: 0.7rem !important;
+  padding: 0.35rem 0.75rem !important;
+}
+
+/* When viewport is not wide enough (or heavily zoomed), allow navbar content to wrap instead of overflowing */
+@media (max-width: 1400px) {
+  .navbar .navbar-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar .nav-item {
+    margin-bottom: 0.15rem;
+  }
+
+  .navbar .d-flex {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 /* General navbar positioning and layout */
 .navbar .container {
   display: flex;
@@ -1230,6 +1270,25 @@ body.rtl .navbar .dropdown-menu-end {
   align-items: center;
   gap: 0.25rem;
   flex-wrap: nowrap;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Thin horizontal scrollbar for overflowing nav items (Chrome/Edge/Safari) */
+.navbar .navbar-nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.navbar .navbar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navbar .navbar-nav::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.6);
+  border-radius: 999px;
 }
 
 .navbar .nav-item {
@@ -1263,6 +1322,7 @@ body.rtl .navbar .dropdown-menu-end {
   flex-shrink: 0;
   display: flex;
   flex-wrap: nowrap;
+  min-width: 0;
 }
 
 /* Ensure buttons display icon and text inline */
@@ -1307,6 +1367,7 @@ body.rtl .navbar .d-flex {
     align-items: center;
     gap: 0.35rem;
     margin-bottom: 1rem;
+    overflow-x: visible; /* stack vertically on small screens */
   }
 
   .navbar .nav-item,

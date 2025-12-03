@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\final phase\\hospitalmvcproject\\hospitalmvcproject\\hospital.pl\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\final phase\\hospitalmvcproject\\hospitalmvcproject\\hospital.pl\\views\\dashboard\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\views\\dashboard\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\final phase\\hospitalmvcproject\\hospitalmvcproject\\hospital.pl\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -55,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\wwwroot\\css\\dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\final phase\\hospitalmvcproject\\hospitalmvcproject\\hospital.pl\\views\\dashboard\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\views\\dashboard\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\final phase\\hospitalmvcproject\\hospitalmvcproject\\hospital.pl\\views\\dashboard\\doctor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\views\\dashboard\\doctor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -95,6 +99,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "Hospital.PL\\Controllers\\DashboardController.cs",
+              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "Hospital.PL\\Controllers\\DashboardController.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAqwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T12:17:36.673Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\appsettings.json",
               "RelativeDocumentMoniker": "Hospital.PL\\appsettings.json",
@@ -102,36 +119,11 @@
               "RelativeToolTip": "Hospital.PL\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-03T11:55:27.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-03T11:55:27.045Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Program.cs",
-              "RelativeDocumentMoniker": "Hospital.PL\\Program.cs",
-              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Program.cs",
-              "RelativeToolTip": "Hospital.PL\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-03T11:50:54.499Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Hospital.PL\\Controllers\\AccountController.cs",
-              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Hospital.PL\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAJ0AAAAAAAAAAAAmwKkAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-03T11:16:36.203Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "AppointementController.cs",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\AppointementController.cs",
               "RelativeDocumentMoniker": "Hospital.PL\\Controllers\\AppointementController.cs",
@@ -143,7 +135,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "additional-methods.js",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
@@ -155,7 +147,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "About.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Home\\About.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Home\\About.cshtml",
@@ -167,7 +159,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "patients.js",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\js\\patients.js",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\js\\patients.js",
@@ -179,7 +171,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "home.css",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\css\\home.css",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\css\\home.css",
@@ -191,7 +183,43 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 1,
+              "Title": "Admin.cshtml",
+              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
+              "RelativeDocumentMoniker": "Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
+              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
+              "RelativeToolTip": "Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
+              "ViewState": "AgIAAAkBAAAAAAAAAAAAAA4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-01T20:33:39.698Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Hospital.PL\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Hospital.PL\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAJ0AAAAAAAAAAAAmwKkAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T11:16:36.203Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Program.cs",
+              "RelativeDocumentMoniker": "Hospital.PL\\Program.cs",
+              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Program.cs",
+              "RelativeToolTip": "Hospital.PL\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T11:50:54.499Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "style.css",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\css\\style.css",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\css\\style.css",
@@ -203,7 +231,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Shared\\_Layout.cshtml",
@@ -215,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "_Navbar.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
@@ -227,19 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Admin.cshtml",
-              "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
-              "RelativeDocumentMoniker": "Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
-              "ToolTip": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
-              "RelativeToolTip": "Hospital.PL\\Views\\Dashboard\\Admin.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-01T20:33:39.698Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Doctor.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Doctor.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Dashboard\\Doctor.cshtml",
@@ -251,7 +267,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "Patient.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\Views\\Dashboard\\Patient.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Dashboard\\Patient.cshtml",
@@ -263,7 +279,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "contact.css",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\css\\contact.css",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\css\\contact.css",
@@ -275,7 +291,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "dashboard.css",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\css\\dashboard.css",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\css\\dashboard.css",
@@ -287,7 +303,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "departments.css",
               "DocumentMoniker": "D:\\DEPi Project\\final phase\\HospitalMVCProject\\HospitalMVCProject\\Hospital.PL\\wwwroot\\css\\departments.css",
               "RelativeDocumentMoniker": "Hospital.PL\\wwwroot\\css\\departments.css",

@@ -1,3 +1,4 @@
+@model Hospital.PL.ViewModels.ContactViewModel
 @{
     Layout = "_LandingLayout";
     ViewData["Title"] = "Contact NovaHealth";
@@ -151,111 +152,143 @@
         <div class="row g-5">
             <div class="col-lg-7">
                 <div class="form-section fade-in">
-                    <h3 class="mb-4">
-                        <span class="en-text">Send Us a Message</span>
-                        <span class="ar-text" style="display:none">أرسل لنا رسالة</span>
-                    </h3>
-                    <p class="mb-4">
-                        <span class="en-text">Fill out the form below and we'll get back to you within 24 hours.</span>
-                        <span class="ar-text" style="display:none">املأ النموذج أدناه وسنرد عليك في غضون 24 ساعة.</span>
-                    </p>
-                    <form class="needs-validation" novalidate>
-                        <div class="row g-3">
+                    @if (TempData["ContactSuccess"] is string contactSuccess)
+                    {
+                        <div class="auth-card contact-success-card mb-4">
+                            <div class="auth-header">
+                                <div class="auth-logo">
+                                    <div class="auth-logo-icon float-animation">
+                                        <i class="bi bi-envelope-check"></i>
+                                    </div>
+                                    <div>
+                                        <h1 class="auth-logo-text">
+                                            <span class="en-text">NovaHealth</span>
+                                            <span class="ar-text" style="display:none">نوفا هيلث</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <h2 class="auth-title">
+                                    <span class="en-text">Message Sent</span>
+                                    <span class="ar-text" style="display:none">تم إرسال الرسالة</span>
+                                </h2>
+                                <p class="auth-subtitle">
+                                    <span class="en-text">@contactSuccess</span>
+                                    <span class="ar-text" style="display:none">تم إرسال رسالتك بنجاح، وقد تم إرسال نسخة إلى بريدك الإلكتروني.</span>
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <p>
+                                    <span class="en-text">
+                                        Please check your inbox (and spam folder) for a copy of your message and our confirmation.
+                                    </span>
+                                    <span class="ar-text" style="display:none">
+                                        يرجى التحقق من بريدك الوارد (ورسائل الغير مرغوب فيها) لنسخة من رسالتك وتأكيدنا.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <h3 class="mb-4">
+                            <span class="en-text">Send Us a Message</span>
+                            <span class="ar-text" style="display:none">أرسل لنا رسالة</span>
+                        </h3>
+                        <p class="mb-4">
+                            <span class="en-text">Fill out the form below and we'll get back to you within 24 hours.</span>
+                            <span class="ar-text" style="display:none">املأ النموذج أدناه وسنرد عليك في غضون 24 ساعة.</span>
+                        </p>
+                    }
+
+                    @if (TempData["ContactSuccess"] is null)
+                    {
+                        <form asp-action="Contact" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                            <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">
                                     <span class="en-text">First Name *</span>
                                     <span class="ar-text" style="display:none">الاسم الأول *</span>
                                 </label>
-                                <input type="text" class="form-control" required />
-                                <div class="invalid-feedback">
-                                    <span class="en-text">Please provide a valid first name.</span>
-                                    <span class="ar-text" style="display:none">يرجى تقديم اسم أول صالح.</span>
-                                </div>
+                                <input asp-for="FirstName" class="form-control" required />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">
                                     <span class="en-text">Last Name *</span>
                                     <span class="ar-text" style="display:none">الاسم الأخير *</span>
                                 </label>
-                                <input type="text" class="form-control" required />
-                                <div class="invalid-feedback">
-                                    <span class="en-text">Please provide a valid last name.</span>
-                                    <span class="ar-text" style="display:none">يرجى تقديم اسم أخير صالح.</span>
-                                </div>
+                                <input asp-for="LastName" class="form-control" required />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">
                                     <span class="en-text">Email Address *</span>
                                     <span class="ar-text" style="display:none">عنوان البريد الإلكتروني *</span>
                                 </label>
-                                <input type="email" class="form-control" required />
-                                <div class="invalid-feedback">
-                                    <span class="en-text">Please provide a valid email address.</span>
-                                    <span class="ar-text" style="display:none">يرجى تقديم عنوان بريد إلكتروني صالح.</span>
-                                </div>
+                                <input asp-for="Email" class="form-control" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">
                                     <span class="en-text">Phone Number</span>
                                     <span class="ar-text" style="display:none">رقم الهاتف</span>
                                 </label>
-                                <input type="tel" class="form-control" />
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">
                                     <span class="en-text">Department</span>
                                     <span class="ar-text" style="display:none">القسم</span>
                                 </label>
-                                <select class="form-select">
+                                <select asp-for="Department" class="form-select">
                                     <option value="" data-en="Select a department" data-ar="اختر قسماً">Select a department</option>
-                                    <option value="cardiology">Cardiology</option>
-                                    <option value="neurology">Neurology</option>
-                                    <option value="orthopedics">Orthopedics</option>
-                                    <option value="pediatrics">Pediatrics</option>
-                                    <option value="emergency">Emergency Care</option>
-                                    <option value="billing">Billing Department</option>
-                                    <option value="general">General Inquiry</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Emergency">Emergency Care</option>
+                                    <option value="Billing">Billing Department</option>
+                                    <option value="General">General Inquiry</option>
                                 </select>
+                                <span asp-validation-for="Department" class="text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">
                                     <span class="en-text">Subject *</span>
                                     <span class="ar-text" style="display:none">الموضوع *</span>
                                 </label>
-                                <input type="text" class="form-control" required />
-                                <div class="invalid-feedback">
-                                    <span class="en-text">Please provide a subject.</span>
-                                    <span class="ar-text" style="display:none">يرجى تقديم موضوع.</span>
-                                </div>
+                                <input asp-for="Subject" class="form-control" required />
+                                <span asp-validation-for="Subject" class="text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">
                                     <span class="en-text">Message *</span>
                                     <span class="ar-text" style="display:none">الرسالة *</span>
                                 </label>
-                                <textarea class="form-control form-textarea" rows="5" required></textarea>
-                                <div class="invalid-feedback">
-                                    <span class="en-text">Please provide a message.</span>
-                                    <span class="ar-text" style="display:none">يرجى تقديم رسالة.</span>
-                                </div>
+                                <textarea asp-for="Message" class="form-control form-textarea" rows="5" required></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="urgent" />
+                                    <input asp-for="IsUrgent" class="form-check-input" id="urgent" />
                                     <label class="form-check-label" for="urgent">
                                         <span class="en-text">This is an urgent matter</span>
                                         <span class="ar-text" style="display:none">هذه مسألة عاجلة</span>
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-primary-custom px-4">
-                                    <span class="en-text">Send Message</span>
-                                    <span class="ar-text" style="display:none">إرسال الرسالة</span>
-                                </button>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom px-4 w-100">
+                                        <span class="en-text">Send Message</span>
+                                        <span class="ar-text" style="display:none">إرسال الرسالة</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    }
                 </div>
             </div>
             <div class="col-lg-5">

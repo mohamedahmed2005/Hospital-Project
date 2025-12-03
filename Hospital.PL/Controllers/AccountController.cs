@@ -177,8 +177,27 @@ namespace Hospital.PL.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
             {
+                // Try to get name details from external provider (Google)
+                var givenName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName);
+                var surname = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname);
+                var fullName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Name);
+
+                if (string.IsNullOrWhiteSpace(givenName) && string.IsNullOrWhiteSpace(surname) && !string.IsNullOrWhiteSpace(fullName))
+                {
+                    var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    givenName = parts.Length > 0 ? parts[0] : "Google";
+                    surname = parts.Length > 1 ? string.Join(' ', parts.Skip(1)) : "User";
+                }
+
+                if (string.IsNullOrWhiteSpace(givenName))
+                    givenName = "Google";
+                if (string.IsNullOrWhiteSpace(surname))
+                    surname = "User";
+
                 user = new ApplicationUser
                 {
+                    FirstName = givenName,
+                    LastName = surname,
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true
