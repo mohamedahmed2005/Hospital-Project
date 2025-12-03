@@ -1,216 +1,217 @@
-## NovaHealth Hospital Management System
+## 🏥 NovaHealth Hospital Management System
 
-Modern hospital management system built with **ASP.NET Core MVC**, implementing a multi‑role (Admin / Doctor / Patient) workflow for managing appointments, doctors, patients, departments, and medical records.
+Modern, multi‑layered **ASP.NET Core MVC** application for managing **patients, doctors, departments, appointments, and medical records** with role‑based access for **Admin**, **Doctor**, and **Patient**.  
+Designed with a clean architecture, responsive UI, and bilingual support (EN/AR) for real‑world hospital workflows.
 
 ---
 
-### Features
+### ✨ Key Features
 
-- **Authentication & Authorization**
+- **🔐 Authentication & Authorization**
   - Email/password registration and login.
-  - Distinct roles: **Admin**, **Doctor**, **Patient**.
-  - Remember‑me support and password reset flow.
+  - Role‑based access: **Admin**, **Doctor**, **Patient**.
+  - Remember‑me, password reset, and secure identity management.
 
-- **Admin Portal**
+- **🧑‍💼 Admin Portal**
   - Dashboard with overall hospital insights.
-  - CRUD management for **Patients**, **Doctors**, **Departments**.
-  - Global appointment management and schedule control.
+  - Full CRUD for **Patients**, **Doctors**, **Departments**.
+  - Global appointment and scheduling management.
 
-- **Doctor Portal**
-  - Personal dashboard and appointment list.
+- **🩺 Doctor Portal**
+  - Personalized dashboard and daily appointment list.
   - Access to assigned patients and **medical records**.
-  - Ability to update diagnosis and treatment plans.
+  - Update diagnoses, notes, and treatment plans.
 
-- **Patient Portal**
-  - Personal dashboard with upcoming and past appointments.
-  - Self‑service appointment booking and cancellation (within rules).
-  - View own medical records and doctor information.
+- **👤 Patient Portal**
+  - View upcoming and past appointments.
+  - Self‑service appointment booking & cancellation (within rules).
+  - Access own medical records and doctor information.
 
-- **Appointments & Medical Records**
-  - Central **Appointment** module with doctor/patient linkage.
-  - **Medical Record** module for diagnoses, notes, and history.
+- **📅 Appointments & 📝 Medical Records**
+  - Centralized **Appointment** module linking doctor and patient.
+  - **Medical Record** module for diagnoses, history, and medications.
 
-- **Modern UI & UX**
-  - Responsive layout using **Bootstrap 5**.
-  - Shared **light / dark mode** and **language toggle (EN/AR)**.
-  - Consistent, component‑based styling for navbar, auth pages, and dashboards.
-
----
-
-### Technology Stack
-
-- **Backend**
-  - ASP.NET Core MVC (`Hospital.PL`)
-  - Business Logic Layer (`Hospital.BBL`)
-  - Repository & Service pattern (`Hospital.DAL`, `Hospital.BBL.Services`)
-
-- **Data**
-  - Entity Framework Core
-  - SQL Server (default)
-
-- **Frontend**
-  - Razor views (`.cshtml`)
-  - Bootstrap 5 + Bootstrap Icons
-  - Custom theming in `wwwroot/css/style.css`
+- **💎 Modern UI & UX**
+  - Responsive **Bootstrap 5** layout.
+  - **Light / Dark mode** and **language toggle (EN/AR)**.
+  - Consistent component‑based design for dashboards and forms.
 
 ---
 
-### Solution Structure
+### 🧱 Project Structure
 
 At the root you will find `HospitalMVCProject.sln` with three main projects:
 
-- **`Hospital.PL`** – Presentation layer (ASP.NET Core MVC)
-  - `Controllers/` – MVC controllers (Account, Home, Patient, Doctor, Department, Appointment, Dashboard, etc.).
-  - `Views/` – Razor views organized by feature (Account, Appointment, Doctor, Patient, Dashboard, Home, Shared, etc.).
-  - `ViewModels/` – View models for account and domain screens.
-  - `wwwroot/` – Static assets (CSS, JS, images, Bootstrap bundles).
+```text
+HospitalMVCProject/
+└─ HospitalMVCProject/
+   ├─ Hospital.PL/              # 🖥️ Presentation layer (ASP.NET Core MVC)
+   │  ├─ Controllers/           # MVC controllers (Account, Home, Patient, Doctor, Department, Appointment, Dashboard, etc.)
+   │  ├─ Views/                 # Razor views by feature (Account, Appointment, Doctor, Patient, Dashboard, Home, Shared, ...)
+   │  ├─ ViewModels/            # View models for UI screens
+   │  ├─ Helper/                # Helper classes (e.g. Email)
+   │  ├─ wwwroot/               # Static assets (CSS, JS, images, Bootstrap, libs)
+   │  └─ Program.cs             # Application startup
+   │
+   ├─ Hospital.BBL/             # ⚙️ Business Logic Layer
+   │  ├─ DTOs/                  # Data Transfer Objects (Doctor, Patient, Department, Appointment, MedicalRecord)
+   │  ├─ Mapping/               # Mapping profiles (e.g. AutoMapper) between entities and DTOs
+   │  └─ Services/              # Service interfaces & implementations (business rules, orchestration)
+   │
+   └─ Hospital.DAL/             # 🗄️ Data Access Layer
+      ├─ Contexts/              # EF Core DbContext (`ApplicationDbContext`)
+      ├─ Models/                # Entity models (Appointment, Department, Doctor, Patient, MedicalRecord, Shared)
+      ├─ Repositories/          # Repository interfaces & implementations
+      └─ Migrations/            # EF Core migrations history
+```
 
-- **`Hospital.BBL`** – Business / service layer
-  - `DTOs/` – Data transfer objects for each aggregate (Doctor, Patient, Department, Appointment, MedicalRecord).
-  - `Services/` – Service interfaces and implementations encapsulating business rules.
-  - `Mapping/` – Mapping profiles (AutoMapper) between entities and DTOs.
-
-- **`Hospital.DAL`** – Data access layer
-  - `Contexts/ApplicationDbContext.cs` – EF Core `DbContext`.
-  - `Models/` – Entity models for all modules (Appointment, Department, Doctor, Patient, MedicalRecord, Shared).
-  - `Repositories/` – Repository interfaces and implementations.
-  - `Migrations/` – EF Core migrations for schema evolution.
+This structure follows a **clean separation of concerns**: UI (`Hospital.PL`), business logic (`Hospital.BBL`), and persistence (`Hospital.DAL`).
 
 ---
 
-### Getting Started
+### 🛠️ Technology Stack
 
-#### Prerequisites
+- **Backend**
+  - ASP.NET Core MVC (`Hospital.PL`)
+  - Layered architecture: **PL → BBL → DAL**
+  - Repository & Service pattern
 
-- **.NET SDK** (version matching the projects, e.g. `.NET 9.0` based on the `bin/Debug/net9.0` output)
+- **Data**
+  - Entity Framework Core
+  - SQL Server (LocalDB / full instance)
+
+- **Frontend**
+  - Razor Views (`.cshtml`)
+  - Bootstrap 5 + Bootstrap Icons
+  - Custom theming in `wwwroot/css`
+
+---
+
+### 🚀 Getting Started
+
+#### ✅ Prerequisites
+
+- **.NET SDK** (matching the projects, e.g. `.NET 9.0` – see `bin/Debug/net9.0`)
 - **SQL Server** (LocalDB, Developer, or any reachable instance)
-- An editor or IDE such as **Visual Studio 2022** or **VS Code** with C# support
+- **Visual Studio 2022** or **VS Code** with C# tools
 
-#### 1. Clone the Repository
+#### 1️⃣ Clone the Repository
 
 ```bash
 git clone <your-repo-url>
 cd HospitalMVCProject/HospitalMVCProject
 ```
 
-#### 2. Configure the Database
+#### 2️⃣ Configure the Database
 
 1. Open `Hospital.PL/appsettings.json`.
-2. Update the `ConnectionStrings:DefaultConnection` value to point to your SQL Server instance.
-3. From the solution root (where the `.sln` lives), open a terminal and run:
+2. Update `ConnectionStrings:DefaultConnection` to your SQL Server instance.
+3. From the solution root (where the `.sln` is), run:
 
 ```bash
 cd Hospital.PL
 dotnet ef database update
 ```
 
-This applies all migrations in `Hospital.DAL/Migrations` to create the database schema.
+This applies all migrations from `Hospital.DAL/Migrations` and creates the database schema.
 
-> If `dotnet ef` is not available, install the EF Core CLI tools:
+> If `dotnet ef` is missing, install EF Core CLI:
 > ```bash
 > dotnet tool install --global dotnet-ef
 > ```
 
-#### 3. Run the Application
+#### 3️⃣ Run the Application
 
-From the `Hospital.PL` project directory:
+From the `Hospital.PL` directory:
 
 ```bash
 dotnet run
 ```
 
-Or use **Visual Studio**:
+Or via **Visual Studio**:
 
 - Set `Hospital.PL` as the **Startup Project**.
 - Press **F5** (Debug) or **Ctrl+F5** (Run without debugging).
 
-The app will start on the configured URL (typically `https://localhost:<port>`).  
-Navigate to the home page and use the navbar **Log In / Sign Up** buttons to access the authentication flow.
+Open the browser at the shown URL (e.g. `https://localhost:<port>`) and use the navbar to **Register / Log In** based on your role.
 
 ---
 
-### Environments & Configuration
+### ⚙️ Configuration & Environments
 
 - **`appsettings.json`** – Base configuration (connection strings, email settings, etc.).
 - **`appsettings.Development.json`** – Development overrides.
-- The active environment is controlled by the `ASPNETCORE_ENVIRONMENT` variable (`Development`, `Staging`, `Production`, …).
+- Active environment controlled by `ASPNETCORE_ENVIRONMENT` (`Development`, `Staging`, `Production`, ...).
 
-Sensitive settings (like SMTP passwords or production connection strings) should be stored **outside source control** (user secrets, environment variables, or secure config providers).
-
----
-
-### Authentication & Roles
-
-- Identity entities live in the **Shared** model and are wired through `ApplicationDbContext`.
-- Registration supports different **user types** (Doctor / Patient) with a tailored UX.
-- Role‑based checks are used throughout the UI (for example, the navbar shows different menu items for Admin, Doctor, Patient, or Guest).
-
-If you add new roles or policies, centralize them in the authorization setup in `Program.cs` and use `[Authorize(Roles = "...")]` where appropriate.
+Store sensitive values (e.g. SMTP passwords, production connection strings) **outside source control** (User Secrets, environment variables, or a secure config store).
 
 ---
 
-### Styling & Theming
+### 👥 Authentication, Roles & Access Control
 
-- Global theme variables and layout styles are defined in:
-  - `wwwroot/css/style.css`
-- Key UX elements:
-  - `dark-mode` CSS variable overrides for dark theme.
-  - Language switching (`en-text` / `ar-text`) and `body.rtl` support.
-  - Reusable components such as:
-    - Auth cards (`_AuthLayout`, `Login.cshtml`, `Register.cshtml`)
-    - Public layout with navbar and footer (`_LandingLayout`, `_Navbar`).
+- Identity is wired through `ApplicationDbContext` in the DAL/PL.
+- Supports **Admin**, **Doctor**, **Patient** with tailored UI.
+- Controllers and views use `[Authorize(Roles = "...")]` and `User.IsInRole(...)` checks to control visibility and access.
 
-When adding new pages, reuse the existing layouts:
-
-- Public pages → `Views/_ViewStart.cshtml` (uses `_LandingLayout`).
-- Auth pages → set `Layout = "_AuthLayout";` inside the view.
+When adding new roles or policies, configure them centrally in `Program.cs` and keep authorization logic declarative.
 
 ---
 
-### Development Tips
+### 🎨 Styling, Theming & Localization
+
+- Global styles in `wwwroot/css` (including main theming file).
+- Dark mode via CSS variables and theme toggles.
+- EN/AR language toggling using paired `en-text` / `ar-text` elements and RTL support via `body.rtl`.
+- Reusable layouts:
+  - Public pages → `_Layout` / landing layout in `Views/Shared`.
+  - Auth pages → `_AuthLayout` for login/register flows.
+
+When adding new pages, reuse existing layouts and CSS utilities to keep UX consistent.
+
+---
+
+### 💡 Development Tips
 
 - **Migrations**
-  - Add a new migration:
+  - Add:
     ```bash
     cd Hospital.DAL
     dotnet ef migrations add <MigrationName> -s ../Hospital.PL
     ```
-  - Apply migrations:
+  - Apply:
     ```bash
     cd Hospital.PL
     dotnet ef database update
     ```
 
-- **Layered Architecture**
-  - Use **DTOs** and **services** (in `Hospital.BBL`) between controllers and EF entities.
-  - Keep controllers lean; business rules belong in the **service layer**.
+- **Clean Architecture**
+  - Keep controllers thin; push business rules into **services** in `Hospital.BBL`.
+  - Use **DTOs** between BBL and PL; avoid exposing EF entities directly to the views.
 
-- **Localization / RTL**
-  - Use paired `en-text` / `ar-text` spans and the language switcher to toggle languages.
-  - For layout mirroring, rely on the `body.rtl` class and the RTL utilities already present in `style.css`.
+- **Localization & RTL**
+  - Use `en-text` / `ar-text` spans for text.
+  - Use existing RTL classes and `body.rtl` to mirror layouts when needed.
 
 ---
 
-### Contributing
+### 🤝 Contributing
 
 1. Fork the repository.
 2. Create a feature branch:
    ```bash
    git checkout -b feature/my-new-feature
    ```
-3. Commit your changes with clear messages.
-4. Open a pull request describing:
+3. Commit changes with clear, descriptive messages.
+4. Open a Pull Request describing:
    - What you changed.
    - Why it’s needed.
    - Any migration or configuration steps required.
 
-Please follow existing **coding style**, keep controllers thin, and add or update unit/integration tests where relevant.
+Please follow existing **coding style**, respect the layered architecture, and add/update tests when relevant.
 
 ---
 
-### License
+### 📄 License
 
 This project is currently provided **for educational and internal use**.  
-Add an explicit license (MIT, Apache 2.0, proprietary, etc.) here if you intend to distribute it publicly.
-
-
+Add a formal license (MIT, Apache 2.0, proprietary, etc.) here before public distribution.

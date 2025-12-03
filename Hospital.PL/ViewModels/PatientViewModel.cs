@@ -17,6 +17,10 @@ namespace Hospital.PL.ViewModels
         public PatientStatus Status { get; set; }
         public decimal Height { get; set; }
         public decimal Weight { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Date of Birth")]
+        [Range(typeof(DateTime), "1900-01-01", "2100-01-01", ErrorMessage = "Date of birth must be between 1900 and 2100.")]
         public DateTime DateOfBirth { get; set; }
         public int Age { get => DateTime.Now.Year - DateOfBirth.Year; }
         public string Address { get; set; } = null!;

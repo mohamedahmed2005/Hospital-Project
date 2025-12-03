@@ -119,7 +119,13 @@
                                 <span class="en-text">Date of Birth</span>
                                 <span class="ar-text" style="display:none">تاريخ الميلاد</span>
                             </label>
-                            <input asp-for="DateOfBirth" type="date" class="form-control" required />
+                            <input asp-for="DateOfBirth"
+                                   type="date"
+                                   class="form-control"
+                                   min="1900-01-01"
+                                   max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                   value="@(Model.DateOfBirth.Year < 1900 ? string.Empty : Model.DateOfBirth.ToString("yyyy-MM-dd"))"
+                                   required />
                             <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">

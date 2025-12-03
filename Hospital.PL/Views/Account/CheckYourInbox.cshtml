@@ -1,0 +1,54 @@
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Check Your Inbox";
+}
+
+<section class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <div class="auth-logo-icon float-animation">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="auth-logo-text">
+                        <span class="en-text">NovaHealth</span>
+                        <span class="ar-text" style="display:none">نوفا هيلث</span>
+                    </h1>
+                </div>
+            </div>
+            <h2 class="auth-title">
+                <span class="en-text">Check Your Inbox</span>
+                <span class="ar-text" style="display:none">تحقق من بريدك الإلكتروني</span>
+            </h2>
+            <p class="auth-subtitle">
+                <span class="en-text">If an account exists for this email, we’ve sent a password reset link.</span>
+                <span class="ar-text" style="display:none">إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، فقد أرسلنا رابط إعادة تعيين كلمة المرور.</span>
+            </p>
+        </div>
+
+        <div class="mb-4">
+            <p>
+                <span class="en-text">
+                    Please check your email inbox (and spam folder) and click the link to reset your password.
+                </span>
+                <span class="ar-text" style="display:none">
+                    يرجى التحقق من بريدك الوارد (ورسائل الغير مرغوب فيها) ثم اضغط على الرابط لإعادة تعيين كلمة المرور.
+                </span>
+            </p>
+        </div>
+
+        <div class="auth-footer">
+            <p>
+                <span class="en-text">Already remembered your password?</span>
+                <span class="ar-text" style="display:none">تذكرت كلمة المرور؟</span>
+                <a asp-action="Login">
+                    <span class="en-text">Back to sign in</span>
+                    <span class="ar-text" style="display:none">العودة لتسجيل الدخول</span>
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
+
+

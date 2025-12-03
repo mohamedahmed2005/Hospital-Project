@@ -10,6 +10,12 @@
 
 <section class="dashboard-section">
     <div class="container-fluid">
+        @if (TempData["PasswordResetSuccess"] is string pwdMessage)
+        {
+            <div id="password-reset-success" class="alert alert-success mb-3" role="alert">
+                @pwdMessage
+            </div>
+        }
         <div class="row mb-4">
             <div class="col-12">
                 <h1 class="dashboard-title">
@@ -289,5 +295,13 @@
 
 @section Scripts {
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById('password-reset-success');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }, 10000);
+    </script>
 }
 

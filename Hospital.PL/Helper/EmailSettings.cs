@@ -7,10 +7,20 @@ namespace Hospital.PL.Helper
     {
         public static void SendEmail(Email email)
         {
-            var Client = new SmtpClient("smtp.gmail.com", 587);
-            Client.EnableSsl = true;
-            Client.Credentials = new NetworkCredential("youssefislam217@gmail.com", "zukzskidtkvixgml");
-            Client.Send("youssefislam217@gmail.com", email.To, email.Subject, email.Body);
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential("youssefislam217@gmail.com", "zukzskidtkvixgml")
+            };
+
+            using var message = new MailMessage("youssefislam217@gmail.com", email.To)
+            {
+                Subject = email.Subject,
+                Body = email.Body,
+                IsBodyHtml = email.IsHtml
+            };
+
+            client.Send(message);
         }
     }
 }
