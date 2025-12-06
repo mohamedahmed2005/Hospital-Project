@@ -22,11 +22,22 @@
                 </p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
-                    <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Doctors</span>
-                    <span class="ar-text" style="display:none">العودة للأطباء</span>
-                </a>
+                @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                {
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-custom" style="white-space: nowrap;">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Profile</span>
+                        <span class="ar-text" style="display:none">العودة للملف الشخصي</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Doctors</span>
+                        <span class="ar-text" style="display:none">العودة للأطباء</span>
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -170,10 +181,20 @@
                     </div>
 
                     <div class="mt-4 d-flex justify-content-end gap-3">
-                        <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
-                            <span class="en-text">Cancel</span>
-                            <span class="ar-text" style="display:none">إلغاء</span>
-                        </a>
+                        @if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-custom" style="white-space: nowrap;">
+                                <span class="en-text">Cancel</span>
+                                <span class="ar-text" style="display:none">إلغاء</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" class="btn btn-outline-custom" style="white-space: nowrap;">
+                                <span class="en-text">Cancel</span>
+                                <span class="ar-text" style="display:none">إلغاء</span>
+                            </a>
+                        }
                         <button type="submit" class="btn btn-primary-custom" style="white-space: nowrap;">
                             <i class="bi bi-check-circle me-2"></i>
                             <span class="en-text">Update Doctor</span>

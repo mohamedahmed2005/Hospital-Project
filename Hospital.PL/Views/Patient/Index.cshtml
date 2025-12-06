@@ -170,6 +170,14 @@
                 </p>
             </div>
             <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                @if (isAuthenticated && User.IsInRole("Patient") && ViewBag.CurrentUserPatientId != null)
+                {
+                    <a class="btn btn-primary-custom me-2" asp-action="Details" asp-route-id="@ViewBag.CurrentUserPatientId">
+                        <i class="bi bi-person me-2"></i>
+                        <span class="en-text">My Profile</span>
+                        <span class="ar-text" style="display:none">ملفي الشخصي</span>
+                    </a>
+                }
                 @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
                 {
                     <a class="btn btn-primary-custom" asp-action="Create">
@@ -287,13 +295,32 @@
                                            asp-route-id="@patient.Id">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        @if (isAuthenticated && (ViewBag.CanModify == true || User.IsInRole("Admin")))
+                                        @{
+                                            bool canEdit = false;
+                                            bool isOwnProfile = false;
+                                            if (isAuthenticated)
+                                            {
+                                                if (User.IsInRole("Admin"))
+                                                {
+                                                    canEdit = true;
+                                                }
+                                                else if (User.IsInRole("Patient") && ViewBag.CurrentUserPatientId != null && patient.Id == (int)ViewBag.CurrentUserPatientId)
+                                                {
+                                                    canEdit = true;
+                                                    isOwnProfile = true;
+                                                }
+                                            }
+                                        }
+                                        @if (canEdit)
                                         {
                                             <a class="btn btn-sm btn-outline-custom btn-sm-custom"
                                                asp-action="Edit"
                                                asp-route-id="@patient.Id">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
+                                        }
+                                        @if (isAuthenticated && User.IsInRole("Admin"))
+                                        {
                                             <button type="button" class="btn btn-sm btn-outline-custom btn-sm-custom" data-bs-toggle="modal" data-bs-target="#@patient.Id">
 
                                                 <i class="bi bi-trash"></i>

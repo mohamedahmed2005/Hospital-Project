@@ -62,11 +62,22 @@
                 </p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom">
-                    <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Patients</span>
-                    <span class="ar-text" style="display:none">العودة للمرضى</span>
-                </a>
+                @if (ViewBag.IsPatient == true)
+                {
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-custom">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Profile</span>
+                        <span class="ar-text" style="display:none">العودة للملف الشخصي</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Index" class="btn btn-outline-custom">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Patients</span>
+                        <span class="ar-text" style="display:none">العودة للمرضى</span>
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -120,7 +131,18 @@
                                         <span class="en-text">Email</span>
                                         <span class="ar-text" style="display:none">البريد الإلكتروني</span>
                                     </label>
-                                    <input asp-for="Email" class="form-control" required />
+                                    @if (ViewBag.IsPatient == true)
+                                    {
+                                        <input asp-for="Email" class="form-control" readonly />
+                                        <div class="form-text">
+                                            <span class="en-text">Email cannot be changed</span>
+                                            <span class="ar-text" style="display:none">لا يمكن تغيير البريد الإلكتروني</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="Email" class="form-control" required />
+                                    }
                                     <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -188,16 +210,23 @@
                                     </select>
                                     <span asp-validation-for="BloodType" class="text-danger small"></span>
                                 </div>
-                                <div class="col-md-6">
-                                    <label asp-for="Status" class="form-label">
-                                        <span class="en-text">Status</span>
-                                        <span class="ar-text" style="display:none">الحالة</span>
-                                    </label>
-                                    <select asp-for="Status" class="form-select" asp-items="statusOptions">
-                                        <option value="">Select Status</option>
-                                    </select>
-                                    <span asp-validation-for="Status" class="text-danger small"></span>
-                                </div>
+                                @if (ViewBag.IsPatient != true)
+                                {
+                                    <div class="col-md-6">
+                                        <label asp-for="Status" class="form-label">
+                                            <span class="en-text">Status</span>
+                                            <span class="ar-text" style="display:none">الحالة</span>
+                                        </label>
+                                        <select asp-for="Status" class="form-select" asp-items="statusOptions">
+                                            <option value="">Select Status</option>
+                                        </select>
+                                        <span asp-validation-for="Status" class="text-danger small"></span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="Status" />
+                                }
                                 <div class="col-md-6">
                                     <label asp-for="Height" class="form-label">
                                         <span class="en-text">Height (cm)</span>
@@ -243,10 +272,20 @@
                     </div>
 
                     <div class="d-flex justify-content-end gap-3 mt-4">
-                        <a asp-action="Index" class="btn btn-outline-custom">
-                            <span class="en-text">Cancel</span>
-                            <span class="ar-text" style="display:none">إلغاء</span>
-                        </a>
+                        @if (ViewBag.IsPatient == true)
+                        {
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-custom">
+                                <span class="en-text">Cancel</span>
+                                <span class="ar-text" style="display:none">إلغاء</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Index" class="btn btn-outline-custom">
+                                <span class="en-text">Cancel</span>
+                                <span class="ar-text" style="display:none">إلغاء</span>
+                            </a>
+                        }
                         <button type="submit" class="btn btn-primary-custom">
                             <span class="en-text">Update Patient</span>
                             <span class="ar-text" style="display:none">تحديث المريض</span>

@@ -45,6 +45,24 @@ namespace Hospital.PL.Controllers
             ViewBag.CanModify = User.IsInRole("Admin") || (User.IsInRole("Doctor") && !User.IsInRole("Admin"));
             return View(doctors);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> MyProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var doctors = _doctorService.GetAllDoctors(true);
+            var existingDoctor = doctors.FirstOrDefault(d => d.Email == user.Email);
+
+            if (existingDoctor != null)
+            {
+                return RedirectToAction(nameof(Details), new { id = existingDoctor.Id });
+            }
+
+            return RedirectToAction(nameof(Create));
+        }
         #endregion
 
         #region Create - AddDoctor
@@ -188,12 +206,25 @@ namespace Hospital.PL.Controllers
         #region Details - GetDoctorById
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (!id.HasValue) return BadRequest();
 
             var doctor = _doctorService.GetDoctorById(id.Value);
             if (doctor is null) return NotFound();
+
+            // Check if current user is viewing their own profile
+            bool isOwnProfile = false;
+            if (User.Identity?.IsAuthenticated == true && User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null && doctor.Email == user.Email)
+                {
+                    isOwnProfile = true;
+                }
+            }
+
+            ViewBag.IsOwnProfile = isOwnProfile;
 
             return View(doctor);
         }

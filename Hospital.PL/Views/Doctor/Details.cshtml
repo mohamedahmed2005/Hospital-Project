@@ -28,11 +28,14 @@
             </div>
 
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom me-2">
-                    <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Doctors</span>
-                    <span class="ar-text" style="display:none">العودة للأطباء</span>
-                </a>
+                @if (ViewBag.IsOwnProfile != true)
+                {
+                    <a asp-action="Index" class="btn btn-outline-custom me-2">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Doctors</span>
+                        <span class="ar-text" style="display:none">العودة للأطباء</span>
+                    </a>
+                }
 
                 @if (User.IsInRole("Admin") || (User.IsInRole("Doctor") && !User.IsInRole("Admin")))
                 {

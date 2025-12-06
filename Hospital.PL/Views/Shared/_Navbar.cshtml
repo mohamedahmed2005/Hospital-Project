@@ -122,35 +122,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
-                            <span class="en-text">Doctors</span>
-                            <span class="ar-text" style="display:none">الأطباء</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
-                            <span class="en-text">Departments</span>
-                            <span class="ar-text" style="display:none">الأقسام</span>
-                        </a>
-                    </li>
-                }
-                @* Patient Navigation *@
-                else if (isAuthenticated && User.IsInRole("Patient"))
-                {
-                   
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Appointment")" href="@Url.Action("Index", "Appointment")">
-                            <span class="en-text">My Appointments</span>
-                            <span class="ar-text" style="display:none">مواعيدي</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
-                            <span class="en-text">Doctors</span>
-                            <span class="ar-text" style="display:none">الأطباء</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
                             <span class="en-text">Departments</span>
                             <span class="ar-text" style="display:none">الأقسام</span>
@@ -266,13 +237,13 @@
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="@Url.Action("MyProfile", "Doctor")">
+                                    <span class="en-text">My Profile</span>
+                                    <span class="ar-text" style="display:none">ملفي الشخصي</span>
+                                </a></li>
                                 <li><a class="dropdown-item" href="@Url.Action("Doctor", "Dashboard")">
                                     <span class="en-text">Dashboard</span>
                                     <span class="ar-text" style="display:none">لوحة التحكم</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Edit", "Doctor")">
-                                    <span class="en-text">Edit Profile</span>
-                                    <span class="ar-text" style="display:none">تعديل الملف</span>
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">
@@ -312,6 +283,10 @@
                                 <li><a class="dropdown-item" href="@Url.Action("Patient", "Dashboard")">
                                     <span class="en-text">Dashboard</span>
                                     <span class="ar-text" style="display:none">لوحة التحكم</span>
+                                </a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("MyProfile", "Patient")">
+                                    <span class="en-text">My Profile</span>
+                                    <span class="ar-text" style="display:none">ملفي الشخصي</span>
                                 </a></li>
                                 <li><a class="dropdown-item" href="@Url.Action("Index", "Appointment")">
                                     <span class="en-text">My Appointments</span>

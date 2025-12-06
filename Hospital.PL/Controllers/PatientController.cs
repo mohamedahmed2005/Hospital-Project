@@ -31,6 +31,7 @@ namespace Hospital.PL.Controllers
             ViewBag.CanModify = User.IsInRole("Admin");
 
             // Check if current user is a Patient and has a profile
+            int? currentUserPatientId = null;
             if (User.IsInRole("Patient") && !User.IsInRole("Admin"))
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -38,10 +39,34 @@ namespace Hospital.PL.Controllers
                 {
                     var existingPatient = patients.FirstOrDefault(p => p.Email == user.Email);
                     ViewBag.HasProfile = existingPatient != null;
+                    if (existingPatient != null)
+                    {
+                        currentUserPatientId = existingPatient.Id;
+                    }
                 }
             }
 
+            ViewBag.CurrentUserPatientId = currentUserPatientId;
+
             return View(patients);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> MyProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var patients = _patientService.GetAllPatients(true);
+            var existingPatient = patients.FirstOrDefault(p => p.Email == user.Email);
+
+            if (existingPatient != null)
+            {
+                return RedirectToAction(nameof(Details), new { id = existingPatient.Id });
+            }
+
+            return RedirectToAction(nameof(Create));
         }
         #endregion
 
@@ -164,12 +189,26 @@ namespace Hospital.PL.Controllers
         #region Details
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (!id.HasValue) return BadRequest();
 
             var patient = _patientService.GetPatientById(id.Value);
             if (patient is null) return NotFound();
+
+            // Check if current user is viewing their own profile
+            bool isOwnProfile = false;
+            if (User.Identity?.IsAuthenticated == true && User.IsInRole("Patient") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null && patient.Email == user.Email)
+                {
+                    isOwnProfile = true;
+                }
+            }
+
+            ViewBag.IsOwnProfile = isOwnProfile;
+            ViewBag.CanEdit = User.IsInRole("Admin") || isOwnProfile;
 
             return View(patient);
         }
@@ -178,13 +217,23 @@ namespace Hospital.PL.Controllers
 
         #region Edit
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(int? id)
+        [Authorize(Roles = "Admin,Patient")]
+        public async Task<IActionResult> Edit(int? id)
         {
             if (!id.HasValue) return BadRequest();
 
             var patient = _patientService.GetPatientById(id.Value);
             if (patient is null) return NotFound();
+
+            // If user is Patient (not Admin), verify they can only edit their own profile
+            if (User.IsInRole("Patient") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null || patient.Email != user.Email)
+                {
+                    return Forbid(); // Access denied
+                }
+            }
 
             var vm = new PatientViewModel
             {
@@ -205,18 +254,49 @@ namespace Hospital.PL.Controllers
                 CurrentMedications = patient.CurrentMedications
             };
 
+            // Pass flag to view to hide Status field for patients
+            ViewBag.IsPatient = User.IsInRole("Patient") && !User.IsInRole("Admin");
+
             return View(vm);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit([FromRoute] int id, PatientViewModel viewModel)
+        [Authorize(Roles = "Admin,Patient")]
+        public async Task<IActionResult> Edit([FromRoute] int id, PatientViewModel viewModel)
         {
+            // If user is Patient (not Admin), verify they can only edit their own profile
+            if (User.IsInRole("Patient") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Forbid();
+                }
+
+                var patient = _patientService.GetPatientById(id);
+                if (patient == null || patient.Email != user.Email)
+                {
+                    return Forbid(); // Access denied
+                }
+
+                // Force email to match user's email (patients can't change their email)
+                viewModel.Email = user.Email;
+            }
+
             if (!ModelState.IsValid)
+            {
+                ViewBag.IsPatient = User.IsInRole("Patient") && !User.IsInRole("Admin");
                 return View(viewModel);
+            }
 
             try
             {
+                var existingPatient = _patientService.GetPatientById(id);
+                if (existingPatient == null)
+                {
+                    return NotFound();
+                }
+
                 var dto = new UpdatePatientDto()
                 {
                     Id = id,
@@ -226,7 +306,8 @@ namespace Hospital.PL.Controllers
                     PhoneNumber = viewModel.PhoneNumber,
                     Gender = viewModel.Gender,
                     BloodType = viewModel.BloodType,
-                    Status = viewModel.Status,
+                    // Only Admin can change Status
+                    Status = User.IsInRole("Admin") ? viewModel.Status : existingPatient.Status,
                     Height = viewModel.Height,
                     Weight = viewModel.Weight,
                     DateOfBirth = viewModel.DateOfBirth,
@@ -241,11 +322,17 @@ namespace Hospital.PL.Controllers
 
                 if (result > 0)
                 {
-                    TempData["Edited"] = "Paitent Updated successfully";
+                    TempData["Edited"] = "Patient Updated successfully";
+                    // If patient edited their own profile, redirect to Details instead of Index
+                    if (User.IsInRole("Patient") && !User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("Details", new { id = id });
+                    }
                     return RedirectToAction(nameof(Index));
                 }
 
                 ModelState.AddModelError(string.Empty, "Failed to update patient.");
+                ViewBag.IsPatient = User.IsInRole("Patient") && !User.IsInRole("Admin");
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -255,6 +342,7 @@ namespace Hospital.PL.Controllers
                 else
                     _logger.LogError(ex.Message);
 
+                ViewBag.IsPatient = User.IsInRole("Patient") && !User.IsInRole("Admin");
                 return View(viewModel);
             }
         }

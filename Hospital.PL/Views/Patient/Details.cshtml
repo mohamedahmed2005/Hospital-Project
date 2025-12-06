@@ -40,16 +40,22 @@
                 </p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom me-2">
-                    <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Patients</span>
-                    <span class="ar-text" style="display:none">العودة للمرضى</span>
-                </a>
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
-                    <i class="bi bi-pencil me-2"></i>
-                    <span class="en-text">Edit Patient</span>
-                    <span class="ar-text" style="display:none">تعديل المريض</span>
-                </a>
+                @if (ViewBag.IsOwnProfile != true)
+                {
+                    <a asp-action="Index" class="btn btn-outline-custom me-2">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        <span class="en-text">Back to Patients</span>
+                        <span class="ar-text" style="display:none">العودة للمرضى</span>
+                    </a>
+                }
+                @if (ViewBag.CanEdit == true)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                        <i class="bi bi-pencil me-2"></i>
+                        <span class="en-text">Edit @(ViewBag.IsOwnProfile == true ? "My Profile" : "Patient")</span>
+                        <span class="ar-text" style="display:none">تعديل @(ViewBag.IsOwnProfile == true ? "ملفي الشخصي" : "المريض")</span>
+                    </a>
+                }
             </div>
         </div>
     </div>

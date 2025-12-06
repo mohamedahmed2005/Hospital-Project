@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\DEPi Project\\Hospital-ForYoussef\\Hospital-Project\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\hospital-foryoussef\\hospital-project\\hospital.pl\\views\\shared\\_navbar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\views\\shared\\_navbar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|d:\\depi project\\hospital-foryoussef\\hospital-project\\hospital.pl\\views\\department\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{28465CC5-B6D9-4914-AF27-579D090A104B}|Hospital.PL\\Hospital.PL.csproj|solutionrelative:hospital.pl\\views\\department\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
@@ -35,12 +39,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "_Navbar.cshtml",
+              "DocumentMoniker": "D:\\DEPi Project\\Hospital-ForYoussef\\Hospital-Project\\Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
+              "RelativeDocumentMoniker": "Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
+              "ToolTip": "D:\\DEPi Project\\Hospital-ForYoussef\\Hospital-Project\\Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
+              "RelativeToolTip": "Hospital.PL\\Views\\Shared\\_Navbar.cshtml",
+              "ViewState": "AgIAADcBAAAAAAAAAAAAwFIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-06T18:47:48.99Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\DEPi Project\\Hospital-ForYoussef\\Hospital-Project\\Hospital.PL\\Views\\Department\\Index.cshtml",
               "RelativeDocumentMoniker": "Hospital.PL\\Views\\Department\\Index.cshtml",
               "ToolTip": "D:\\DEPi Project\\Hospital-ForYoussef\\Hospital-Project\\Hospital.PL\\Views\\Department\\Index.cshtml",
               "RelativeToolTip": "Hospital.PL\\Views\\Department\\Index.cshtml",
-              "ViewState": "AgIAAIoBAAAAAAAAAAAIwKUBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFQBAAAAAAAAAAAIwKUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-12-06T17:46:24.208Z",
               "EditorCaption": ""
