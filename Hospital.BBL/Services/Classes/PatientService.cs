@@ -6,7 +6,10 @@ using Hospital.BBL.Services.Interfaces;
 using Hospital.DAL.Models.AppointmentModule;
 using Hospital.DAL.Models.DoctorModule;
 using Hospital.DAL.Models.PatientModule;
+using Hospital.DAL.Models.Shared;
+using Hospital.DAL.Repositories.Classes;
 using Hospital.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +23,8 @@ namespace Hospital.BBL.Services.Classes
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IAttachementService _attachementService = attachementService;
+
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public IEnumerable<GetAllPatientsDto> GetAllPatients(bool WithTracking)
         {
@@ -84,6 +89,7 @@ namespace Hospital.BBL.Services.Classes
 
         public bool DeletePatient(int id)
         {
+
             var Patient = _unitOfWork.PatientRepository.GetById(id);
             if (Patient is null) return false;
 
@@ -103,6 +109,9 @@ namespace Hospital.BBL.Services.Classes
                 .Where(a => a.PatientId.HasValue && a.PatientId.Value == id && !a.IsDeleted)
                 .ToList();
 
+        
+            
+
             foreach (var appointment in relatedAppointments)
             {
                 _unitOfWork.AppointmentRepository.Delete(appointment);
@@ -111,6 +120,15 @@ namespace Hospital.BBL.Services.Classes
             // Delete the patient
             _unitOfWork.PatientRepository.Delete(Patient);
             return _unitOfWork.SaveChanges() > 0;
+        }
+
+        async Task<bool> DeleteAspPatient( Patient patient)//async function to perform te delete from Asp Table
+        {
+
+             //remove from AspNetUser table
+            var AspUser = await _userManager.FindByEmailAsync(patient.Email);
+            await _userManager.DeleteAsync(AspUser);
+            return true;
         }
 
 

@@ -35,7 +35,7 @@ namespace Hospital.PL
             #region Configure Services
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), 
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Hospital.DAL"));
                 options.UseLazyLoadingProxies();
 
@@ -83,6 +83,7 @@ namespace Hospital.PL
                 options.ReturnUrlParameter = "returnUrl";
             });
             builder.Services.AddScoped<IAttachementService, AttachementService>();
+            builder.Services.AddHttpClient();
             #endregion
 
             var app = builder.Build();

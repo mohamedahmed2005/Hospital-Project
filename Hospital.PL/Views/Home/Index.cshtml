@@ -3,6 +3,41 @@
     ViewData["Title"] = "NovaHealth";
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
 }
+@if (TempData["Created"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Created');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+<div class="toast-container position-fixed top-0 p-3">
+    <div id="Created" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary">
+
+            <strong class="me-auto text-white en-text">Saved</strong>
+            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
+
+            <small class="en-text">1 mins ago</small>
+            <small class="ar-text">قبل دقيقة واحدة</small>
+
+            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body text-success en-text">
+            Patient Created successfully
+        </div>
+        <div class="toast-body text-success ar-text">
+            تم إنشاء المريض بنجاح
+        </div>
+    </div>
+</div>
 
 @section PageStyles {
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
@@ -83,7 +118,7 @@
           <div class="row text-center">
             <div class="col-md-3 col-6">
               <div class="stat">
-                <span class="counter" data-target="250">0</span>
+                        <span class="counter" data-target="@ViewBag.DoctorCount">0</span>
                 <h3>
                   <span class="en-text">Expert Doctors</span>
                   <span class="ar-text" style="display: none">أطباء خبراء</span>
@@ -92,7 +127,7 @@
             </div>
             <div class="col-md-3 col-6">
               <div class="stat">
-                <span class="counter" data-target="50">0</span>
+                        <span class="counter" data-target="@ViewBag.departmentCount">0</span>
                 <h3>
                   <span class="en-text">Medical Departments</span>
                   <span class="ar-text" style="display: none">قسم طبي</span>

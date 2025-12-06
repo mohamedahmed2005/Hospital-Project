@@ -1,23 +1,65 @@
-using System.Diagnostics;
-using Hospital.PL.Models;
+using Hospital.BBL.Services.Classes;
+using Hospital.BBL.Services.Interfaces;
+using Hospital.DAL.Models.DoctorModule;
 using Hospital.PL.Helper;
+using Hospital.PL.Models;
 using Hospital.PL.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Xml.XPath;
 
 namespace Hospital.PL.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IPatientService _patientService;
+        private readonly IDoctorService _doctorService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IAppointmentService _appointmentService;
+        public HomeController(ILogger<HomeController> logger, 
+            IPatientService patientService,
+            IDoctorService doctorService,
+            IDepartmentService departmentService,
+            IAppointmentService appointmentService)
         {
             _logger = logger;
+            _patientService = patientService;
+            _doctorService = doctorService;
+            _departmentService = departmentService;
+            _appointmentService = appointmentService;
         }
 
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+           
+           
+            var doctors = _doctorService.GetAllDoctors(true);
+            var patients= _patientService.GetAllPatients(true);
+            var departments= _departmentService.GetAllDepartments(true);
+            ViewBag.DoctorCount=doctors.Count();
+            ViewBag.patientCount = patients.Count();
+            ViewBag.departmentCount = departments.Count();
+            return View();
+        }
 
-        public IActionResult About() => View();
+        public IActionResult About()
+        {
+            var doctors = _doctorService.GetAllDoctors(true);
+            var patients = _patientService.GetAllPatients(true);
+            var departments = _departmentService.GetAllDepartments(true);
+            
+            // Calculate years of excellence (from 2005 to current year)
+            var yearsOfExcellence = DateTime.Now.Year - 2005;
+            
+            ViewBag.YearsOfExcellence = yearsOfExcellence;
+            ViewBag.DoctorCount = doctors?.Count() ?? 0;
+            ViewBag.DepartmentCount = departments?.Count() ?? 0;
+            ViewBag.PatientCount = patients?.Count() ?? 0;
+            
+            return View();
+        }
 
         [HttpGet]
         public IActionResult Contact() => View(new ContactViewModel());

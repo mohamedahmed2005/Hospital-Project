@@ -161,7 +161,7 @@ namespace Hospital.PL.Controllers
                     int result = _appointmentService.AddAppointment(appointmentDto);
                     if (result > 0)
                     {
-                        TempData["Success"] = "Appointment created successfully!";
+                        TempData["Created"] = "Appointment created successfully!";
                         return RedirectToAction(nameof(Index));
                     }
                     else
@@ -234,7 +234,10 @@ namespace Hospital.PL.Controllers
             {
                 bool deleted = _appointmentService.DeleteAppointment(id);
                 if (deleted)
+                {
+                    TempData["Deleted"] = "Appointment deleted successfully";
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     TempData["AppointmentError"] = "Failed to delete appointment.";
@@ -355,7 +358,7 @@ namespace Hospital.PL.Controllers
 
                 if (result > 0)
                 {
-                    TempData["Success"] = "Appointment updated successfully!";
+                    TempData["Edited"] = "Appointment updated successfully!";
                     return RedirectToAction(nameof(Index));
                 }
                 else

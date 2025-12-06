@@ -1,10 +1,14 @@
 ﻿using Hospital.BBL.DTOs.PatientDTOs;
 using Hospital.BBL.Services.Interfaces;
-using Hospital.PL.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Hospital.DAL.Models.PatientModule;
 using Hospital.DAL.Models.Shared;
+using Hospital.DAL.Repositories.Classes;
+using Hospital.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Hospital.PL.Controllers
 {
@@ -136,8 +140,9 @@ namespace Hospital.PL.Controllers
                 if (result > 0)
                 {
                     await EnsurePatientIdentityAccountAsync(viewModel);
-
-                    return RedirectToAction(nameof(Index));
+                    TempData["Created"] = "Patient Created successfully";
+                    
+                    return RedirectToAction(nameof(Index), "Home");
                 }
 
                 ModelState.AddModelError(string.Empty, "Failed to add patient.");
@@ -235,7 +240,10 @@ namespace Hospital.PL.Controllers
                 int result = _patientService.UpdatePatient(dto);
 
                 if (result > 0)
+                {
+                    TempData["Edited"] = "Paitent Updated successfully";
                     return RedirectToAction(nameof(Index));
+                }
 
                 ModelState.AddModelError(string.Empty, "Failed to update patient.");
                 return View(viewModel);
@@ -257,16 +265,32 @@ namespace Hospital.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+        async Task<bool> DeleteAspPatient(GetPatientByIdDto patient)//async function to perform te delete from Asp Table
+        {
+
+            //remove from AspNetUser table
+            var AspUser = await _userManager.FindByEmailAsync(patient.Email);
+            await _userManager.DeleteAsync(AspUser);
+            return true;
+        }
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == 0) return BadRequest();
 
             try
             {
+               GetPatientByIdDto? UserPatient = _patientService.GetPatientById(id);
+
+               bool AspDelete= await DeleteAspPatient(UserPatient);
                 bool deleted = _patientService.DeletePatient(id);
 
+
+
                 if (deleted)
+                {
+                    TempData["Deleted"] = "Patient Deleted successfully";
                     return RedirectToAction(nameof(Index));
+                }
 
                 ModelState.AddModelError(string.Empty, "Failed to delete patient.");
                 return RedirectToAction(nameof(Index));

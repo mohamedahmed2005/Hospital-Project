@@ -7,7 +7,7 @@
     ViewData["Title"] = "Departments";
     var departments = Model?.ToList() ?? new List<GetAllDepartmentsDto>();
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-    var totalDepartments = departments.Count;
+    var totalDepartments = departments.Count();
     var activeDepartments = departments.Count(d => d.Status == DepartmentStatus.Active);
     var inactiveDepartments = departments.Count(d => d.Status == DepartmentStatus.InActive);
     var maintenanceDepartments = departments.Count(d => d.Status == DepartmentStatus.Maintenance);
@@ -26,6 +26,116 @@
 @section PageStyles {
     <link rel="stylesheet" href="~/css/departments.css" asp-append-version="true" />
 }
+@if (TempData["Edited"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Edited');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+
+@if (TempData["Created"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Created');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+
+@if (TempData["Deleted"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Deleted');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+
+<div class="toast-container position-fixed top-0 p-3">
+    <div id="Created" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary">
+
+            <strong class="me-auto text-white en-text">Saved</strong>
+            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
+
+            <small class="en-text">1 mins ago</small>
+            <small class="ar-text">قبل دقيقة واحدة</small>
+
+            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body text-success en-text">
+            Department Created successfully
+        </div>
+        <div class="toast-body text-success ar-text">
+            تم إنشاء القسم بنجاح
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 p-3">
+    <div id="Edited" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary">
+
+            <strong class="me-auto text-white en-text">Saved</strong>
+            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
+
+            <small class="en-text">1 mins ago</small>
+            <small class="ar-text">قبل دقيقة واحدة</small>
+
+            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body text-success en-text">
+            Department updated successfully
+        </div>
+        <div class="toast-body text-success ar-text">
+            تم تحديث القسم بنجاح
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 p-3">
+    <div id="Deleted" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary">
+
+            <strong class="me-auto text-white en-text">Done</strong>
+            <strong class="me-auto text-white ar-text">تم الانتهاء</strong>
+
+            <small class="en-text">1 mins ago</small>
+            <small class="ar-text">قبل دقيقة واحدة</small>
+
+            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body text-success en-text">
+            Department Deleted successfully
+        </div>
+        <div class="toast-body text-success ar-text">
+            تم حذف القسم بنجاح
+        </div>
+    </div>
+</div>
 
 <section class="page-header">
     <div class="container">
@@ -61,7 +171,7 @@
                 <div class="stat-card">
                     <span class="label en-text">Total Departments</span>
                     <span class="label ar-text" style="display:none">إجمالي الأقسام</span>
-                    <h3 id="totalDepartments">@totalDepartments</h3>
+                    <h3 id="@totalDepartments">@totalDepartments</h3>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -75,7 +185,7 @@
                 <div class="stat-card">
                     <span class="label en-text">Active Departments</span>
                     <span class="label ar-text" style="display:none">الأقسام النشطة</span>
-                    <h3 id="activeDepartments">@activeDepartments</h3>
+                    <h3 id="@activeDepartments">@activeDepartments</h3>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -169,16 +279,39 @@
                                             <a asp-action="Edit" asp-route-id="@department.Id" class="btn btn-sm btn-outline-custom btn-sm-custom">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form asp-action="Delete"
-                                                  asp-route-id="@department.Id"
-                                                  method="post"
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Delete this department?');">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-outline-custom btn-sm-custom">
+                                                <button type="button" class="btn btn-sm btn-outline-custom btn-sm-custom" data-bs-toggle="modal" data-bs-target="#@department.Id">
+
                                                     <i class="bi bi-trash"></i>
                                                 </button>
-                                            </form>
+                                                <div class="modal fade" id="@department.Id" tabindex="-1" aria-labelledby="Department_delete" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form asp-action="Delete"
+                                                              asp-route-id="@department.Id"
+                                                              method="post"
+                                                              class="d-inline">
+                                                            @Html.AntiForgeryToken()
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title en-text fs-5 text-primary" id="Department_delete">Confirmation Required</h1>
+                                                                    <h1 class="modal-title ar-text fs-5 text-primary" id="Department_delete">تأكيد مطلوب</h1>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body en-text text-secondary">
+                                                                    Do you want to delete the Department
+                                                                </div>
+                                                                <div class="modal-body ar-text text-secondary">
+                                                                    هل تريد حذف القسم
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn en-text btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" class="btn ar-text btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                                                                    <button type="submit" class="btn btn-primary en-text">Confirm</button>
+                                                                    <button type="submit" class="btn btn-primary ar-text">تأكيد</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                         }
                                         </div>
                                     </td>

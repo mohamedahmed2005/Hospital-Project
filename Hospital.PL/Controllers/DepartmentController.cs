@@ -1,9 +1,10 @@
 ﻿using Hospital.BBL.DTOs.DepartmentDTOs;
+using Hospital.BBL.Services.Classes;
 using Hospital.BBL.Services.Interfaces;
 using Hospital.DAL.Models.DepartmentModule;
 using Hospital.PL.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Hospital.PL.Controllers
@@ -15,7 +16,7 @@ namespace Hospital.PL.Controllers
         private readonly ILogger<DepartmentController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
         private readonly IDoctorService _doctorService = doctorService;
-
+       
         #region Index - GetAllDepartments
         [HttpGet]
         [AllowAnonymous]
@@ -24,6 +25,10 @@ namespace Hospital.PL.Controllers
             var departments = _departmentService.GetAllDepartments(true);
             // Doctors can view but not modify
             ViewBag.CanModify = User.IsInRole("Admin");
+            var doctors = _doctorService.GetAllDoctors(true);
+           
+            ViewBag.DoctorCount = doctors.Count();
+            ViewBag.departmentCount = departments.Count();
             return View(departments);
         }
         #endregion
@@ -65,7 +70,10 @@ namespace Hospital.PL.Controllers
                     int result = _departmentService.AddDepartment(dto);
 
                     if (result > 0)
+                    {
+                        TempData["Created"] = "department created successfully";
                         return RedirectToAction(nameof(Index));
+                    }
 
                     ModelState.AddModelError(string.Empty, "Failed to add department.");
                 }
@@ -126,7 +134,10 @@ namespace Hospital.PL.Controllers
                 bool deleted = _departmentService.DeleteDepartment(id);
 
                 if (deleted)
+                {
+                    TempData["Deleted"] = "Department deleted successfully";
                     return RedirectToAction(nameof(Index));
+                }
 
                 ModelState.AddModelError(string.Empty, "Failed to delete department.");
                 return RedirectToAction(nameof(Delete), new { id });
@@ -218,7 +229,10 @@ namespace Hospital.PL.Controllers
                 int result = _departmentService.UpdateDepartment(dto);
 
                 if (result > 0)
+                {
+                    TempData["Edited"] = "Department Updated Successfully";
                     return RedirectToAction(nameof(Index));
+                }
 
                 ModelState.AddModelError(string.Empty, "Failed to update department.");
 

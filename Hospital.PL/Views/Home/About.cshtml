@@ -25,10 +25,6 @@
     </div>
 </section>
 
-@section Scripts {
-    <script src="~/js/about.js" asp-append-version="true"></script>
-}
-
 <section class="section">
     <div class="container">
         <div class="row align-items-center">
@@ -89,7 +85,7 @@
         <div class="row text-center">
             <div class="col-md-3 col-6">
                 <div class="stat-item">
-                    <div class="stat-number counter" data-target="18">0</div>
+                    <div class="stat-number counter" data-target="@(ViewBag.YearsOfExcellence ?? 20)">0</div>
                     <div class="stat-label">
                         <span class="en-text">Years of Excellence</span>
                         <span class="ar-text" style="display:none">سنة من التميز</span>
@@ -98,7 +94,7 @@
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
-                    <div class="stat-number counter" data-target="250">0</div>
+                    <div class="stat-number counter" data-target="@(ViewBag.DoctorCount ?? 0)">0</div>
                     <div class="stat-label">
                         <span class="en-text">Expert Doctors</span>
                         <span class="ar-text" style="display:none">طبيب خبير</span>
@@ -107,7 +103,7 @@
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
-                    <div class="stat-number counter" data-target="50">0</div>
+                    <div class="stat-number counter" data-target="@(ViewBag.DepartmentCount ?? 0)">0</div>
                     <div class="stat-label">
                         <span class="en-text">Medical Departments</span>
                         <span class="ar-text" style="display:none">قسم طبي</span>
@@ -116,10 +112,10 @@
             </div>
             <div class="col-md-3 col-6">
                 <div class="stat-item">
-                    <div class="stat-number counter" data-target="150">0</div>
+                    <div class="stat-number counter" data-target="@(ViewBag.PatientCount ?? 0)">0</div>
                     <div class="stat-label">
                         <span class="en-text">Patients Treated</span>
-                        <span class="ar-text" style="display:none">ألف مريض تم علاجهم</span>
+                        <span class="ar-text" style="display:none">مريض تم علاجهم</span>
                     </div>
                 </div>
             </div>
@@ -452,3 +448,7 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/about.js" asp-append-version="true"></script>
+}

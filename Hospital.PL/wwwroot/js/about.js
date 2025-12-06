@@ -1,123 +1,5 @@
-const languageSwitcher = document.getElementById("languageSwitcher");
-const body = document.body;
-let currentLanguage = "en";
-
-if (localStorage.getItem("language") === "ar") {
-  switchToArabic();
-}
-
-languageSwitcher.addEventListener("click", () => {
-  if (currentLanguage === "en") {
-    switchToArabic();
-  } else {
-    switchToEnglish();
-  }
-});
-
-function switchToArabic() {
-  document.querySelectorAll(".en-text").forEach((el) => {
-    el.style.display = "none";
-  });
-  document.querySelectorAll(".ar-text").forEach((el) => {
-    el.style.display = "inline";
-  });
-
-  body.classList.add("rtl");
-  body.setAttribute("dir", "rtl");
-  document.documentElement.setAttribute("lang", "ar");
-  document.documentElement.setAttribute("dir", "rtl");
-
-  languageSwitcher.textContent = "EN";
-
-  currentLanguage = "ar";
-
-  localStorage.setItem("language", "ar");
-}
-
-function switchToEnglish() {
-  document.querySelectorAll(".ar-text").forEach((el) => {
-    el.style.display = "none";
-  });
-  document.querySelectorAll(".en-text").forEach((el) => {
-    el.style.display = "inline";
-  });
-
-  body.classList.remove("rtl");
-  body.setAttribute("dir", "ltr");
-  document.documentElement.setAttribute("lang", "en");
-  document.documentElement.setAttribute("dir", "ltr");
-
-  languageSwitcher.textContent = "ع";
-
-  currentLanguage = "en";
-
-  localStorage.setItem("language", "en");
-}
-
-const darkModeToggle = document.getElementById("darkModeToggle");
-
-if (
-  localStorage.getItem("theme") === "dark" ||
-  (window.matchMedia("(prefers-color-scheme: dark)").matches &&
-    !localStorage.getItem("theme"))
-) {
-  body.classList.add("dark-mode");
-  darkModeToggle.innerHTML = '<i class="bi bi-sun"></i>';
-}
-
-darkModeToggle.addEventListener("click", () => {
-  body.classList.toggle("dark-mode");
-
-  if (body.classList.contains("dark-mode")) {
-    darkModeToggle.innerHTML = '<i class="bi bi-sun"></i>';
-    localStorage.setItem("theme", "dark");
-  } else {
-    darkModeToggle.innerHTML = '<i class="bi bi-moon"></i>';
-    localStorage.setItem("theme", "light");
-  }
-});
-
-const fadeElements = document.querySelectorAll(".fade-in");
-
-const fadeInOnScroll = () => {
-  fadeElements.forEach((element) => {
-    const elementTop = element.getBoundingClientRect().top;
-    const elementVisible = 150;
-
-    if (elementTop < window.innerHeight - elementVisible) {
-      element.classList.add("visible");
-    }
-  });
-};
-
-window.addEventListener("load", fadeInOnScroll);
-window.addEventListener("scroll", fadeInOnScroll);
-
-function animateCounter(element, target, duration) {
-  let start = 0;
-  const increment = target / (duration / 16);
-
-  const updateCounter = () => {
-    start += increment;
-    if (start < target) {
-      element.textContent = Math.floor(start);
-      requestAnimationFrame(updateCounter);
-    } else {
-      element.textContent = target;
-    }
-  };
-
-  updateCounter();
-}
-
-function animateStats() {
-  const counters = document.querySelectorAll(".counter");
-
-  counters.forEach((counter) => {
-    const target = parseInt(counter.getAttribute("data-target"));
-    animateCounter(counter, target, 2000);
-  });
-}
+// Counter animation for About page - same as home.js
+// Note: Language switcher, dark mode, and fade-in are handled by index.js in the layout
 
 document.addEventListener("DOMContentLoaded", function () {
   const currentPage = window.location.pathname.split("/").pop();
@@ -131,5 +13,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  animateStats();
+  // Counter animation - exactly like home.js
+  animateCounters();
 });
+
+// Also run on window load as fallback
+window.addEventListener("load", function() {
+  animateCounters();
+});
+
+function animateCounters() {
+  const counters = document.querySelectorAll(".counter");
+
+  if (counters.length > 0) {
+    counters.forEach(counter => {
+      // Skip if already animated (has a number > 0 and not starting with 0)
+      const currentText = counter.textContent.trim();
+      if (currentText !== "0" && !isNaN(Number(currentText)) && Number(currentText) > 0) {
+        return; // Already animated
+      }
+
+      const targetAttr = counter.getAttribute("data-target");
+      const target = Number(targetAttr);
+      
+      // Only animate if target is a valid number and greater than 0
+      if (!isNaN(target) && target > 0) {
+        let value = 0;
+        const step = target / 100; // 100 updates
+
+        function update() {
+          value += step;
+
+          if (value < target) {
+            counter.textContent = Math.floor(value);
+            requestAnimationFrame(update);
+          } else {
+            counter.textContent = target;
+          }
+        }
+
+        update();
+      } else {
+        // If target is invalid, just show the current value or 0
+        counter.textContent = targetAttr || "0";
+      }
+    });
+  }
+}

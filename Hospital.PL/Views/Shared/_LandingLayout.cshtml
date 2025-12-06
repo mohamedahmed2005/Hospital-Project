@@ -119,6 +119,10 @@
 
     <script src="~/Bootstrap/JS/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/index.js" asp-append-version="true"></script>
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <script src="~/js/chatbot.js" asp-append-version="true"></script>
+    }
     @RenderSection("Scripts", required: false)
 </body>
 </html>

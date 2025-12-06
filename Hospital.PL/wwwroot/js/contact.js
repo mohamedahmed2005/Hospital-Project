@@ -1,89 +1,32 @@
-const languageSwitcher = document.getElementById('languageSwitcher');
-const body = document.body;
-let currentLanguage = 'en';
-
-if (localStorage.getItem('language') === 'ar') {
-    switchToArabic();
-}
-
-languageSwitcher.addEventListener('click', () => {
-    if (currentLanguage === 'en') {
-        switchToArabic();
-    } else {
-        switchToEnglish();
+// Get current language from index.js or default to 'en'
+function getCurrentLanguage() {
+    // Try to get from index.js if available
+    if (typeof currentLanguage !== 'undefined') {
+        return currentLanguage;
     }
-});
-
-function switchToArabic() {
-    document.querySelectorAll('.en-text').forEach(el => {
-        el.style.display = 'none';
-    });
-    document.querySelectorAll('.ar-text').forEach(el => {
-        el.style.display = 'inline';
-    });
-
-    document.querySelectorAll('option[data-ar]').forEach(el => {
-        el.textContent = el.dataset.ar;
-    });
-
-    body.classList.add('rtl');
-    body.setAttribute('dir', 'rtl');
-    document.documentElement.setAttribute('lang', 'ar');
-    document.documentElement.setAttribute('dir', 'rtl');
-
-    languageSwitcher.textContent = 'EN';
-
-    currentLanguage = 'ar';
-
-    localStorage.setItem('language', 'ar');
+    // Fallback to localStorage
+    return localStorage.getItem('language') === 'ar' ? 'ar' : 'en';
 }
 
-function switchToEnglish() {
-    document.querySelectorAll('.ar-text').forEach(el => {
-        el.style.display = 'none';
-    });
-    document.querySelectorAll('.en-text').forEach(el => {
-        el.style.display = 'inline';
-    });
-
-    document.querySelectorAll('option[data-en]').forEach(el => {
-        el.textContent = el.dataset.en;
-    });
-
-    body.classList.remove('rtl');
-    body.setAttribute('dir', 'ltr');
-    document.documentElement.setAttribute('lang', 'en');
-    document.documentElement.setAttribute('dir', 'ltr');
-
-    languageSwitcher.textContent = 'ع';
-
-    currentLanguage = 'en';
-
-    localStorage.setItem('language', 'en');
-}
-
-const darkModeToggle = document.getElementById('darkModeToggle');
-
-if (localStorage.getItem('theme') === 'dark' ||
-    (window.matchMedia('(prefers-color-scheme: dark)').matches && !localStorage.getItem('theme'))) {
-    body.classList.add('dark-mode');
-    darkModeToggle.innerHTML = '<i class="bi bi-sun"></i>';
-}
-
-darkModeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-
-    if (body.classList.contains('dark-mode')) {
-        darkModeToggle.innerHTML = '<i class="bi bi-sun"></i>';
-        localStorage.setItem('theme', 'dark');
-    } else {
-        darkModeToggle.innerHTML = '<i class="bi bi-moon"></i>';
-        localStorage.setItem('theme', 'light');
-    }
-});
-
+// Use showAlert from index.js if available, otherwise define our own
 function showAlert(message, type = 'success') {
-    const alertMessage = document.getElementById('alertMessage');
+    // Check if showAlert exists from index.js
+    if (typeof window.showAlert === 'function') {
+        window.showAlert(message, type);
+        return;
+    }
+    
+    // Fallback implementation
+    let alertMessage = document.getElementById('alertMessage');
+    
+    // Create element if it doesn't exist
+    if (!alertMessage) {
+        alertMessage = document.createElement('div');
+        alertMessage.id = 'alertMessage';
+        alertMessage.className = 'alert-message';
+        document.body.insertBefore(alertMessage, document.body.firstChild);
+    }
+    
     alertMessage.innerHTML = `
     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
       ${message}
@@ -97,6 +40,131 @@ function showAlert(message, type = 'success') {
     }, 5000);
 }
 
+// Global function for copying address (can be called from onclick)
+// Attach to window to ensure global scope
+window.copyAddressToClipboard = function(event) {
+    try {
+        
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        const addressElement = document.getElementById('hospitalAddress');
+        const address = addressElement ? addressElement.textContent.trim() : '123 Medical Drive, Health City, HC 12345';
+        const copyIcon = document.getElementById('copyIcon');
+        const copyText = document.getElementById('copyText');
+        const copyTextAr = document.getElementById('copyTextAr');
+            
+    // Function to update button visual feedback
+    function updateButtonFeedback(success) {
+        if (success) {
+            if (copyIcon) {
+                copyIcon.className = 'bi bi-check-circle me-1';
+            }
+            const originalTextEn = copyText ? copyText.textContent : 'Copy Address';
+            const originalTextAr = copyTextAr ? copyTextAr.textContent : 'نسخ العنوان';
+            
+            // Get current language
+            const lang = getCurrentLanguage();
+            
+            if (lang === 'en' && copyText) {
+                copyText.textContent = 'Copied!';
+            } else if (lang === 'ar' && copyTextAr) {
+                copyTextAr.textContent = 'تم النسخ!';
+            }
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                if (copyIcon) {
+                    copyIcon.className = 'bi bi-clipboard me-1';
+                }
+                if (copyText) {
+                    copyText.textContent = originalTextEn;
+                }
+                if (copyTextAr) {
+                    copyTextAr.textContent = originalTextAr;
+                }
+            }, 2000);
+        }
+    }
+    
+    // Function to show message
+    function showMessage(message, type) {
+        const alertMessage = document.getElementById('alertMessage');
+        if (alertMessage) {
+            showAlert(message, type);
+        } else {
+            // Fallback: use alert if element doesn't exist
+            alert(message);
+        }
+    }
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(address).then(() => {
+            updateButtonFeedback(true);
+            const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'en';
+            const message = lang === 'en'
+                ? 'Address copied to clipboard!'
+                : 'تم نسخ العنوان إلى الحافظة!';
+            showMessage(message, 'success');
+        }).catch(err => {
+            console.error('Clipboard API failed:', err);
+            // Fallback to execCommand
+            copyWithFallback();
+        });
+    } else {
+        // Fallback for older browsers
+        copyWithFallback();
+    }
+    
+    function copyWithFallback() {
+        const textArea = document.createElement('textarea');
+        textArea.value = address;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = '0';
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                updateButtonFeedback(true);
+                const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'en';
+                const message = lang === 'en'
+                    ? 'Address copied to clipboard!'
+                    : 'تم نسخ العنوان إلى الحافظة!';
+                showMessage(message, 'success');
+            } else {
+                throw new Error('execCommand failed');
+            }
+        } catch (err) {
+            console.error('Copy failed:', err);
+            const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'en';
+            const message = lang === 'en'
+                ? 'Failed to copy. Please copy manually: ' + address
+                : 'فشل النسخ. يرجى النسخ يدوياً: ' + address;
+            showMessage(message, 'danger');
+        } finally {
+            document.body.removeChild(textArea);
+        }
+    }
+    } catch (error) {
+        console.error('Error in copyAddressToClipboard:', error);
+        alert('An error occurred while copying the address. Please try again or copy manually.');
+    }
+};
+
 function validateForm(formId) {
     const form = document.getElementById(formId);
     if (!form.checkValidity()) {
@@ -107,17 +175,25 @@ function validateForm(formId) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const copyAddressBtn = document.querySelector('.btn-outline-primary');
+    const copyAddressBtn = document.getElementById('copyAddressBtn');
+    
+    
     if (copyAddressBtn) {
-        copyAddressBtn.addEventListener('click', function () {
-            const address = '123 Medical Drive, Health City, HC 12345';
-            navigator.clipboard.writeText(address).then(() => {
-                const message = currentLanguage === 'en'
-                    ? 'Address copied to clipboard!'
-                    : 'تم نسخ العنوان إلى الحافظة!';
-                showAlert(message, 'success');
-            });
+        // Add event listener for copy button
+        copyAddressBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Use window.copyAddressToClipboard to ensure we're calling the global function
+            if (window.copyAddressToClipboard) {
+                window.copyAddressToClipboard(e);
+            } else {
+                console.error('copyAddressToClipboard function not found!');
+                alert('Copy function not available. Please refresh the page.');
+            }
         });
+    } else {
+        console.error('Copy address button not found!');
     }
 
     const contactForm = document.querySelector('form.needs-validation');
@@ -137,9 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     urgent: this.querySelector('input[type="checkbox"]').checked
                 };
 
-                console.log('Form submitted:', formData);
-
-                const message = currentLanguage === 'en'
+                const message = getCurrentLanguage() === 'en'
                     ? 'Thank you for your message! We will get back to you within 24 hours.'
                     : 'شكرًا لك على رسالتك! سوف نعود إليك في غضون 24 ساعة.';
                 showAlert(message, 'success');
@@ -150,14 +224,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const currentPage = window.location.pathname.split('/').pop();
+    // Fix active link detection - match by pathname properly
+    const currentPath = window.location.pathname.toLowerCase();
     const navLinks = document.querySelectorAll('.nav-link');
 
     navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (href) {
+            // Normalize both paths for comparison (remove leading/trailing slashes)
+            const hrefPath = href.toLowerCase().replace(/^\/|\/$/g, '');
+            const currentPathNormalized = currentPath.replace(/^\/|\/$/g, '');
+            
+            // Check if current path matches the href path
+            // Handles cases like /Home/Contact matching href="/Home/Contact"
+            if (currentPathNormalized === hrefPath || 
+                currentPathNormalized.endsWith('/' + hrefPath) ||
+                currentPathNormalized === hrefPath.split('/').pop()) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
         }
     });
 

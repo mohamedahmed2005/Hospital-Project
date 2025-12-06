@@ -7,6 +7,55 @@
 @section PageStyles {
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 }
+@if (TempData["Created"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Created');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+
+@if (TempData["Edited"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastEl = document.getElementById('Edited');
+            if (toastEl) {
+
+                const toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+                toast.show();
+            }
+        });
+    </script>
+}
+<div class="toast-container position-fixed top-0 p-3">
+    <div id="Edited" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-primary">
+
+            <strong class="me-auto text-white en-text">Saved</strong>
+            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
+
+            <small class="en-text">1 mins ago</small>
+            <small class="ar-text">قبل دقيقة واحدة</small>
+
+            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body text-success en-text">
+            update is done successfully
+        </div>
+        <div class="toast-body text-success ar-text">
+            تم تحديث البيانات بنجاح
+        </div>
+    </div>
+</div>
 
 <section class="dashboard-section">
     <div class="container-fluid">

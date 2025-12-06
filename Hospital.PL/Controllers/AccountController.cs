@@ -1,4 +1,5 @@
-﻿using Hospital.DAL.Models.Shared;
+﻿using Hospital.DAL.Models.AppointmentModule;
+using Hospital.DAL.Models.Shared;
 using Hospital.PL.Helper;
 using Hospital.PL.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -15,6 +16,7 @@ namespace Hospital.PL.Controllers
         #region Helpers
         private IActionResult RedirectToDashboard(ApplicationUser user)
         {
+            
             // This helper assumes the user is already signed in.
             // It redirects based on the user's role, matching the existing logic.
             var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
@@ -92,7 +94,7 @@ namespace Hospital.PL.Controllers
             if (!ModelState.IsValid) return View(loginView);
             var user = await _userManager.FindByEmailAsync(loginView.Email);
             if (user is not null)
-            {
+            { 
                 var result = await _signInManager.PasswordSignInAsync(user, loginView.Password, loginView.RememberMe, false);
                 if (result.Succeeded)
                 {
@@ -112,7 +114,9 @@ namespace Hospital.PL.Controllers
                 }
 
             }
-            return View(loginView);
+            else { ModelState.AddModelError(string.Empty, "user isn't found"); }//if user is null,inform that is not found
+
+                return View(loginView);
         }
         #endregion
 

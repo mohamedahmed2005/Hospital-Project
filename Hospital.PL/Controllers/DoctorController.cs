@@ -1,4 +1,5 @@
 ﻿using Hospital.BBL.DTOs.DoctorDTOs;
+using Hospital.BBL.DTOs.PatientDTOs;
 using Hospital.BBL.Services.Interfaces;
 using Hospital.DAL.Models.Shared;
 using Hospital.PL.ViewModels;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace Hospital.PL.Controllers
 {
@@ -134,6 +136,7 @@ namespace Hospital.PL.Controllers
 
                     if (result > 0)
                     {
+                        TempData["Created"] = "Doctor Created successfully";
                         if (User.IsInRole("Admin"))
                         {
                             await EnsureDoctorIdentityAccountAsync(viewModel);
@@ -200,16 +203,32 @@ namespace Hospital.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int id)
+
+        async Task<bool> DeleteAspDoctor(GetDoctorByIdDto patient)//async function to perform te delete from Asp Table
+        {
+
+            //remove from AspNetUser table
+            var AspUser = await _userManager.FindByEmailAsync(patient.Email);
+            await _userManager.DeleteAsync(AspUser);
+            return true;
+        }
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == 0) return BadRequest();
 
             try
             {
+
+                GetDoctorByIdDto UserDoctor = _doctorService.GetDoctorById(id);
+                bool AspDelete= await DeleteAspDoctor(UserDoctor);
+
                 bool deleted = _doctorService.DeleteDoctor(id);
 
                 if (deleted)
+                {
+                    TempData["Deleted"] = "Doctor deleted successfully";
                     return RedirectToAction(nameof(Index));
+                }
 
                 ModelState.AddModelError(string.Empty, "Failed to delete doctor.");
                 return RedirectToAction(nameof(Index));
@@ -361,13 +380,14 @@ namespace Hospital.PL.Controllers
                     DepartmentId = viewModel.DepartmentId,
                     Image = viewModel.Image
                 };
-
                 int result = _doctorService.UpdateDoctor(doctorDto);
 
                 if (result > 0)
                 {
+                    TempData["Edited"] = "Doctor updated successfully";
                     if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
                     {
+                       
                         // Redirect to dashboard after updating profile
                         return RedirectToAction("Doctor", "Dashboard");
                     }

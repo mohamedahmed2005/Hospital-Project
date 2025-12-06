@@ -10,6 +10,7 @@ namespace Hospital.DAL.Models.AppointmentModule
 {
     public class Appointment
     {
+       
         public int Id { get; set; }
         public DateOnly Appointment_Date { get; set; }
         public TimeSpan Appointment_Time { get; set; }
