@@ -942,7 +942,9 @@ body.rtl .dark-mode-toggle {
     padding: 1.5rem 1rem;
   }
 }
-
+.form-control::placeholder {
+    color: var(--text-light);
+}
 /* ============================================
    Navbar Styles - From home.html design
    ============================================ */

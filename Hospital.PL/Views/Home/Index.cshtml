@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "_LandingLayout";
-    ViewData["Title"] = "NovaHealth";
+    ViewData["Title"] = "Home";
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
 }
 @if (TempData["Created"] != null)
@@ -16,28 +16,22 @@
         });
     </script>
 }
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Created" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="Created" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #20c997 0%, #1aa179 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-person-plus text-white me-2"></i>
             <strong class="me-auto text-white en-text">Saved</strong>
-            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الحفظ</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Patient Created successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم إنشاء المريض بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Patient Created successfully</div>
+            <div class="ar-text" style="display:none">تم إنشاء المريض بنجاح</div>
         </div>
     </div>
-</div>
+    </div>
 
 @section PageStyles {
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
@@ -161,7 +155,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h2 class="display-5 fw-bold mb-3">
+                <h2 class="display-5 fw-bold mb-3" style="color:white">
                     <span class="en-text">24/7 Emergency Care</span>
                     <span class="ar-text" style="display:none">الرعاية الطارئة على مدار 24/7</span>
                 </h2>
@@ -521,11 +515,11 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h2 class="display-5 fw-bold mb-3">
+                <h2 class="display-5 fw-bold mb-3" style="color:white">
                     <span class="en-text">Ready to take control of your health?</span>
                     <span class="ar-text" style="display:none">مستعد للاهتمام بصحتك؟</span>
                 </h2>
-                <p class="lead mb-4">
+                <p class="lead mb-4" style="color:white">
                     <span class="en-text">Schedule an appointment or contact us to learn more about our personalized care plans.</span>
                     <span class="ar-text" style="display:none">احجز موعدًا أو تواصل معنا لمعرفة المزيد عن خطط الرعاية الشخصية.</span>
                 </p>
@@ -544,7 +538,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-custom">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg px-4 py-2 fw-bold">
                         <span class="en-text">Patient Portal</span>
                         <span class="ar-text" style="display:none">بوابة المرضى</span>
                     </a>

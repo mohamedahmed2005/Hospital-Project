@@ -46,10 +46,10 @@
                 </p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-custom">
                     <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Patients</span>
-                    <span class="ar-text" style="display:none">العودة للمرضى</span>
+                    <span class="en-text">Back to Home</span>
+                    <span class="ar-text" style="display:none">العودة </span>
                 </a>
             </div>
         </div>
@@ -87,7 +87,7 @@
                                         <span class="en-text">First Name</span>
                                         <span class="ar-text" style="display:none">الاسم الأول</span>
                                     </label>
-                                    <input asp-for="FirstName" class="form-control" required />
+                                    <input asp-for="FirstName" class="form-control" placeholder="John" data-ar-placeholder="جون" required />
                                     <span asp-validation-for="FirstName" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -95,7 +95,7 @@
                                         <span class="en-text">Last Name</span>
                                         <span class="ar-text" style="display:none">الاسم الأخير</span>
                                     </label>
-                                    <input asp-for="LastName" class="form-control" required />
+                                    <input asp-for="LastName" class="form-control" placeholder="Doe" data-ar-placeholder="دو" required />
                                     <span asp-validation-for="LastName" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -103,7 +103,7 @@
                                         <span class="en-text">Email</span>
                                         <span class="ar-text" style="display:none">البريد الإلكتروني</span>
                                     </label>
-                                    <input asp-for="Email" class="form-control" required />
+                                    <input asp-for="Email" class="form-control" placeholder="john.doe@example.com" data-ar-placeholder="john.doe@example.com" required />
                                     <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
                                 @if (User.IsInRole("Admin"))
@@ -126,7 +126,7 @@
                                         <span class="en-text">Phone</span>
                                         <span class="ar-text" style="display:none">الهاتف</span>
                                     </label>
-                                    <input asp-for="PhoneNumber" class="form-control" required />
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="(555) 123-4567" data-ar-placeholder="(555) 123-4567" required />
                                     <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -158,7 +158,7 @@
                                         <span class="en-text">Address</span>
                                         <span class="ar-text" style="display:none">العنوان</span>
                                     </label>
-                                    <textarea asp-for="Address" rows="2" class="form-control"></textarea>
+                                    <textarea asp-for="Address" rows="2" class="form-control" placeholder="123 Main Street, City, Country" data-ar-placeholder="123 الشارع الرئيسي، المدينة، البلد"></textarea>
                                     <span asp-validation-for="Address" class="text-danger small"></span>
                                 </div>
                                 <div class="col-12">
@@ -189,7 +189,7 @@
                                         <span class="en-text">Height (cm)</span>
                                         <span class="ar-text" style="display:none">الطول (سم)</span>
                                     </label>
-                                    <input asp-for="Height" type="number" step="0.1" class="form-control" required />
+                                    <input asp-for="Height" type="number" step="0.1" class="form-control" placeholder="175.5" data-ar-placeholder="175.5" required />
                                     <span asp-validation-for="Height" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -197,7 +197,7 @@
                                         <span class="en-text">Weight (kg)</span>
                                         <span class="ar-text" style="display:none">الوزن (كجم)</span>
                                     </label>
-                                    <input asp-for="Weight" type="number" step="0.1" class="form-control" required />
+                                    <input asp-for="Weight" type="number" step="0.1" class="form-control" placeholder="70.5" data-ar-placeholder="70.5" required />
                                     <span asp-validation-for="Weight" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -205,7 +205,7 @@
                                         <span class="en-text">Allergies</span>
                                         <span class="ar-text" style="display:none">الحساسية</span>
                                     </label>
-                                    <input asp-for="Allergies" class="form-control" placeholder="Penicillin, Nuts..." />
+                                    <input asp-for="Allergies" class="form-control" placeholder="Penicillin, Nuts, Pollen" data-ar-placeholder="بنسلين، مكسرات، لقاح" />
                                     <span asp-validation-for="Allergies" class="text-danger small"></span>
                                 </div>
                                 <div class="col-12">
@@ -213,7 +213,7 @@
                                         <span class="en-text">Medical History</span>
                                         <span class="ar-text" style="display:none">التاريخ الطبي</span>
                                     </label>
-                                    <textarea asp-for="MedicalHistory" rows="3" class="form-control"></textarea>
+                                    <textarea asp-for="MedicalHistory" rows="3" class="form-control" placeholder="Diabetes (Type 2), Hypertension, Asthma" data-ar-placeholder="السكري (النوع 2)، ارتفاع ضغط الدم، الربو"></textarea>
                                     <span asp-validation-for="MedicalHistory" class="text-danger small"></span>
                                 </div>
                                 <div class="col-12">
@@ -221,15 +221,14 @@
                                         <span class="en-text">Current Medications</span>
                                         <span class="ar-text" style="display:none">الأدوية الحالية</span>
                                     </label>
-                                    <textarea asp-for="CurrentMedications" rows="2" class="form-control"></textarea>
+                                    <textarea asp-for="CurrentMedications" rows="2" class="form-control" placeholder="Metformin 500mg daily, Lisinopril 10mg daily, Albuterol inhaler as needed" data-ar-placeholder="ميتفورمين 500 ملغ يومياً، ليسينوبريل 10 ملغ يومياً، بخاخ ألبوتيرول عند الحاجة"></textarea>
                                     <span asp-validation-for="CurrentMedications" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="d-flex justify-content-end gap-3 mt-4">
-                        <a asp-action="Index" class="btn btn-outline-custom">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-custom">
                             <span class="en-text">Cancel</span>
                             <span class="ar-text" style="display:none">إلغاء</span>
                         </a>
@@ -246,5 +245,8 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation.js" asp-append-version="true"></script>
+    <script src="~/js/patient-form-validation.js" asp-append-version="true"></script>
 }
+
 

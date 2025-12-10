@@ -1,6 +1,7 @@
 ﻿using Hospital.DAL.Models.AppointmentModule;
+using Hospital.BBL.ValidationAttributes;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Hospital.BBL.DTOs.AppointmentDTOs
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Appointment date is required")]
+        [FutureDate(maxDaysInFuture: 365)]
         public DateOnly Appointment_Date { get; set; }
 
         [Required(ErrorMessage = "Appointment time is required")]

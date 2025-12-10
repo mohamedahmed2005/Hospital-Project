@@ -1,5 +1,6 @@
 @model Hospital.BBL.DTOs.PatientDTOs.GetPatientByIdDto
 @using Hospital.DAL.Models.PatientModule
+@using Hospital.DAL.Models.MedicalRecordModule
 @{
     ViewData["Title"] = "Patient Details";
 
@@ -121,65 +122,181 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5 class="text-primary-color mb-3">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
                             <span class="en-text">Personal Information</span>
                             <span class="ar-text" style="display:none">المعلومات الشخصية</span>
                         </h5>
                         <ul class="list-unstyled details-list">
                             <li>
-                                <strong><span class="en-text">Email:</span><span class="ar-text" style="display:none">البريد الإلكتروني:</span></strong>
-                                @Model.Email
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Email:</span>
+                                    <span class="ar-text" style="display:none">البريد الإلكتروني:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.Email</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Phone:</span><span class="ar-text" style="display:none">الهاتف:</span></strong>
-                                @Model.PhoneNumber
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Phone:</span>
+                                    <span class="ar-text" style="display:none">الهاتف:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.PhoneNumber</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Date of Birth:</span><span class="ar-text" style="display:none">تاريخ الميلاد:</span></strong>
-                                @Model.DateOfBirth.ToString("MMMM dd, yyyy")
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Date of Birth:</span>
+                                    <span class="ar-text" style="display:none">تاريخ الميلاد:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.DateOfBirth.ToString("MMMM dd, yyyy")</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Gender:</span><span class="ar-text" style="display:none">الجنس:</span></strong>
-                                @Model.Gender
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Gender:</span>
+                                    <span class="ar-text" style="display:none">الجنس:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.Gender</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Address:</span><span class="ar-text" style="display:none">العنوان:</span></strong>
-                                @Model.Address
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Address:</span>
+                                    <span class="ar-text" style="display:none">العنوان:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.Address</span>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h5 class="text-primary-color mb-3">
+                        <h5 style="color: var(--primary-color); margin-bottom: 1rem;">
                             <span class="en-text">Medical Information</span>
                             <span class="ar-text" style="display:none">المعلومات الطبية</span>
                         </h5>
                         <ul class="list-unstyled details-list">
                             <li>
-                                <strong><span class="en-text">Allergies:</span><span class="ar-text" style="display:none">الحساسية:</span></strong>
-                                @Model.Allergies
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Allergies:</span>
+                                    <span class="ar-text" style="display:none">الحساسية:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.Allergies</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Current Medications:</span><span class="ar-text" style="display:none">الأدوية الحالية:</span></strong>
-                                @Model.CurrentMedications
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Current Medications:</span>
+                                    <span class="ar-text" style="display:none">الأدوية الحالية:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.CurrentMedications</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Primary Doctor:</span><span class="ar-text" style="display:none">الطبيب الأساسي:</span></strong>
-                                @(Model.Doctor ?? "Not Assigned")
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Primary Doctor:</span>
+                                    <span class="ar-text" style="display:none">الطبيب الأساسي:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@(Model.Doctor ?? "Not Assigned")</span>
                             </li>
                             <li>
-                                <strong><span class="en-text">Status:</span><span class="ar-text" style="display:none">الحالة:</span></strong>
-                                @Model.Status
+                                <strong style="color: var(--text-dark);">
+                                    <span class="en-text">Status:</span>
+                                    <span class="ar-text" style="display:none">الحالة:</span>
+                                </strong>
+                                <span class="detail-value" style="color: var(--text-light);">@Model.Status</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <h5 class="text-primary-color mb-3">
-                        <span class="en-text">Medical History</span>
-                        <span class="ar-text" style="display:none">التاريخ الطبي</span>
+                    <h5 style="color: var(--primary-color); margin-bottom: 1.5rem;">
+                        <span class="en-text">Medical Records</span>
+                        <span class="ar-text" style="display:none">السجلات الطبية</span>
                     </h5>
-                    <p class="medical-history">@Model.MedicalHistory</p>
+                    @if (ViewBag.MedicalRecords != null && ((List<MedicalRecord>)ViewBag.MedicalRecords).Any())
+                    {
+                        <div class="medical-records-container">
+                            @foreach (var record in (List<MedicalRecord>)ViewBag.MedicalRecords)
+                            {
+                                <div class="card shadow-sm mb-3 medical-record-card" style="border-left: 4px solid var(--primary-color);">
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="bi bi-calendar3 me-2" style="color: var(--primary-color);"></i>
+                                                    <strong style="color: var(--text-dark);">
+                                                        <span class="en-text">Date:</span>
+                                                        <span class="ar-text" style="display:none">التاريخ:</span>
+                                                    </strong>
+                                                    <span class="ms-2" style="color: var(--text-light);">
+                                                        @record.RecordDate.ToString("MMMM dd, yyyy 'at' h:mm tt")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="bi bi-person-badge me-2" style="color: var(--primary-color);"></i>
+                                                    <strong style="color: var(--text-dark);">
+                                                        <span class="en-text">Doctor:</span>
+                                                        <span class="ar-text" style="display:none">الطبيب:</span>
+                                                    </strong>
+                                                    <span class="ms-2" style="color: var(--text-light);">
+                                                        @(record.Doctor?.Name ?? "Unknown Doctor")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <h6 style="color: var(--primary-color); margin-bottom: 0.5rem;">
+                                                    <span class="en-text">Diagnosis</span>
+                                                    <span class="ar-text" style="display:none">التشخيص</span>
+                                                </h6>
+                                                <div class="p-3" style="background-color: var(--bg-light); border-radius: 8px;">
+                                                    <p class="mb-0" style="color: var(--text-dark);">@record.Diagnosis</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <h6 style="color: var(--primary-color); margin-bottom: 0.5rem;">
+                                                    <span class="en-text">Treatment</span>
+                                                    <span class="ar-text" style="display:none">العلاج</span>
+                                                </h6>
+                                                <div class="p-3" style="background-color: var(--bg-light); border-radius: 8px;">
+                                                    <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@record.Treatment</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (!string.IsNullOrWhiteSpace(record.Prescription))
+                                        {
+                                            <div class="mb-3">
+                                                <h6 style="color: var(--primary-color); margin-bottom: 0.5rem;">
+                                                    <span class="en-text">Prescription</span>
+                                                    <span class="ar-text" style="display:none">الوصفة</span>
+                                                </h6>
+                                                <div class="p-3" style="background-color: var(--bg-light); border-radius: 8px;">
+                                                    <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@record.Prescription</p>
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(record.Notes))
+                                        {
+                                            <div class="mb-3">
+                                                <h6 style="color: var(--primary-color); margin-bottom: 0.5rem;">
+                                                    <span class="en-text">Notes</span>
+                                                    <span class="ar-text" style="display:none">ملاحظات</span>
+                                                </h6>
+                                                <div class="p-3" style="background-color: var(--bg-light); border-radius: 8px;">
+                                                    <p class="mb-0" style="color: var(--text-dark); white-space: pre-wrap;">@record.Notes</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span class="en-text">No medical records found for this patient.</span>
+                            <span class="ar-text" style="display:none">لا توجد سجلات طبية لهذا المريض.</span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

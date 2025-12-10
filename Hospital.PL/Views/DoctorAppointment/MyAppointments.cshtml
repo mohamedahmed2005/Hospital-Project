@@ -138,17 +138,17 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button type="button"
-                                            class="availability-toggle btn btn-sm @(appt.IsAvailable ? "btn-success" : "btn-danger")"
+                                    <span 
+                                            class="badge bg-success p-2 @(appt.IsAvailable ? "btn-success" : "btn-danger")"
                                             data-appointment-id="@appt.Id"
                                             data-is-available="@appt.IsAvailable.ToString().ToLower()">
                                         <span class="en-text">@(appt.IsAvailable ? "Available" : "Unavailable")</span>
                                         <span class="ar-text" style="display:none">@(appt.IsAvailable ? "متاح" : "غير متاح")</span>
-                                    </button>
+                                    </span>
                                 </td>
                                 <td>
                                     <div class="action-buttons d-flex gap-1">
-                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom" asp-controller="Appointment" asp-action="Details" asp-route-id="@appt.Id">
+                                        <a class="btn btn-sm btn-outline-custom btn-sm-custom" asp-controller="DoctorAppointment" asp-action="Details" asp-route-id="@appt.Id">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>

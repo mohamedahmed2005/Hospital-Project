@@ -1,4 +1,5 @@
 ﻿using Hospital.DAL.Models.DoctorModule;
+using Hospital.BBL.ValidationAttributes;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,13 @@ namespace Hospital.BBL.DTOs.DoctorDTOs
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Doctor's First Name is required")]
+        [NameValidation]
         [MaxLength(50, ErrorMessage = "Max length should be 50 character")]
         [MinLength(3, ErrorMessage = "Min length should be 3 characters")]
         public string FirstName { get; set; } = null!;
 
         [Required(ErrorMessage = "Doctor's Last Name is required")]
+        [NameValidation]
         [MaxLength(50, ErrorMessage = "Max length should be 50 character")]
         [MinLength(3, ErrorMessage = "Min length should be 3 characters")]
         public string LastName { get; set; } = null!;
@@ -40,7 +43,7 @@ namespace Hospital.BBL.DTOs.DoctorDTOs
 
         [Required(ErrorMessage = "Phone number is required")]
         [Display(Name = "Phone Number")]
-        [Phone]
+        [PhoneNumberValidation]
         public string PhoneNumber { get; set; } = null!;
 
         [Required(ErrorMessage = "Email is required")]

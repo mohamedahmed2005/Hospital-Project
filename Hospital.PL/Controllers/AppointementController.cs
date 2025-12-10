@@ -1,4 +1,4 @@
-﻿using Hospital.BBL.DTOs.AppointmentDTOs;
+using Hospital.BBL.DTOs.AppointmentDTOs;
 using Hospital.BBL.Services.Interfaces;
 using Hospital.DAL.Contexts;
 using Hospital.DAL.Models.AppointmentModule;
@@ -21,6 +21,7 @@ namespace Hospital.PL.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPatientService _patientService;
+        private readonly IDoctorService _doctorService;
 
         public AppointmentController(
             IAppointmentService appointmentService,
@@ -28,7 +29,8 @@ namespace Hospital.PL.Controllers
             IWebHostEnvironment environment,
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IPatientService patientService)
+            IPatientService patientService,
+            IDoctorService doctorService)
         {
             _appointmentService = appointmentService;
             _logger = logger;
@@ -36,11 +38,45 @@ namespace Hospital.PL.Controllers
             _context = context;
             _userManager = userManager;
             _patientService = patientService;
+            _doctorService = doctorService;
         }
 
-        private void PopulateDropdowns(int? selectedPatientId = null, int? selectedDoctorId = null)
+        private async Task PopulateDropdownsAsync(int? selectedPatientId = null, int? selectedDoctorId = null)
         {
             var patients = _context.Patients.AsNoTracking().ToList();
+            
+            // If user is a Doctor (not Admin), filter patients to only those with appointments
+            if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var allDoctors = _doctorService.GetAllDoctors(true);
+                    var doctor = allDoctors.FirstOrDefault(d => d.Email == user.Email);
+                    
+                    if (doctor != null)
+                    {
+                        // Get all appointments for this doctor
+                        var appointments = _appointmentService.GetAllAppointments(true)
+                            .Where(a => a.DoctorId == doctor.Id && a.PatientId.HasValue);
+                        
+                        // Get unique patient IDs from appointments
+                        var patientIds = appointments
+                            .Select(a => a.PatientId.Value)
+                            .Distinct()
+                            .ToList();
+                        
+                        // Filter patients to only those with appointments
+                        patients = patients.Where(p => patientIds.Contains(p.Id)).ToList();
+                    }
+                    else
+                    {
+                        // Doctor profile not found, show no patients
+                        patients = new List<Hospital.DAL.Models.PatientModule.Patient>();
+                    }
+                }
+            }
+            
             var doctors = _context.Doctors.AsNoTracking().ToList();
 
             ViewBag.Patients = new SelectList(patients, "Id", "Name", selectedPatientId);
@@ -67,6 +103,7 @@ namespace Hospital.PL.Controllers
                     {
                         appointments = appointments.Where(a => a.PatientId == patient.Id);
                     }
+                    else { appointments = null; }
                 }
             }
             
@@ -107,7 +144,7 @@ namespace Hospital.PL.Controllers
             }
             else
             {
-                PopulateDropdowns(patientId, null);
+                await PopulateDropdownsAsync(patientId, null);
             }
 
             ViewBag.PatientId = patientId;
@@ -135,7 +172,7 @@ namespace Hospital.PL.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, "Patient profile not found. Please contact administrator.");
-                        PopulateDropdowns(null, viewModel.DoctorId);
+                        await PopulateDropdownsAsync(null, viewModel.DoctorId);
                         return View(viewModel);
                     }
                 }
@@ -176,7 +213,7 @@ namespace Hospital.PL.Controllers
                 }
             }
 
-            PopulateDropdowns(viewModel.PatientId, viewModel.DoctorId);
+            await PopulateDropdownsAsync(viewModel.PatientId, viewModel.DoctorId);
 
             return View(viewModel);
         }
@@ -188,6 +225,7 @@ namespace Hospital.PL.Controllers
         [AllowAnonymous]
         public IActionResult Details(int? id)
         {
+            Console.WriteLine("\n\n\n\n ID:" + id+"\n\n\n");
             if (!id.HasValue) return BadRequest();
 
             var appointment = _appointmentService.GetAppointmentById(id.Value);
@@ -298,7 +336,7 @@ namespace Hospital.PL.Controllers
                 DoctorId = appointment.DoctorId ?? 0
             };
 
-            PopulateDropdowns(appointmentEditViewModel.PatientId, appointmentEditViewModel.DoctorId);
+            await PopulateDropdownsAsync(appointmentEditViewModel.PatientId, appointmentEditViewModel.DoctorId);
 
             return View(appointmentEditViewModel);
         }
@@ -336,7 +374,7 @@ namespace Hospital.PL.Controllers
 
             if (!ModelState.IsValid)
             {
-                PopulateDropdowns(viewModel.PatientId, viewModel.DoctorId);
+                await PopulateDropdownsAsync(viewModel.PatientId, viewModel.DoctorId);
                 return View(viewModel);
             }
 
@@ -364,7 +402,7 @@ namespace Hospital.PL.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Failed to update appointment.");
-                    PopulateDropdowns(viewModel.PatientId, viewModel.DoctorId);
+                    await PopulateDropdownsAsync(viewModel.PatientId, viewModel.DoctorId);
                     return View(viewModel);
                 }
             }
@@ -379,7 +417,7 @@ namespace Hospital.PL.Controllers
                     _logger.LogError(ex.Message);
                 }
 
-                PopulateDropdowns(viewModel.PatientId, viewModel.DoctorId);
+                await PopulateDropdownsAsync(viewModel.PatientId, viewModel.DoctorId);
                 return View(viewModel);
             }
         }

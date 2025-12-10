@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Hospital.BBL.DTOs.DoctorDTOs;
+using Hospital.BBL.DTOs.PatientDTOs;
 
 namespace Hospital.PL.Controllers
 {
@@ -16,106 +18,143 @@ namespace Hospital.PL.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDoctorService _doctorService;
         private readonly IPatientService _patientService;
+        private readonly IAppointmentService _appointmentService;
 
         public MedicalRecordController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IDoctorService doctorService,
-            IPatientService patientService)
+            IPatientService patientService,
+            IAppointmentService appointmentService)
         {
             _context = context;
             _userManager = userManager;
             _doctorService = doctorService;
             _patientService = patientService;
+            _appointmentService = appointmentService;
+        }
+
+        // Helper method to get current doctor by email
+        private async Task<GetAllDoctorsDto?> GetCurrentDoctorAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return null;
+
+            // Get doctor by Email (your current approach)
+            var doctors = _doctorService.GetAllDoctors(true);
+            var doctor = doctors.FirstOrDefault(d =>
+                !string.IsNullOrEmpty(d.Email) &&
+                d.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase));
+
+            return doctor;
+        }
+
+        // Helper method to check doctor profile
+        private async Task<IActionResult> CheckDoctorProfileAsync()
+        {
+            var doctor = await GetCurrentDoctorAsync();
+            if (doctor == null)
+            {
+                TempData["Error"] = "Please complete your doctor profile before accessing medical records.";
+                return RedirectToAction("Create", "DoctorProfiles");
+            }
+
+            return null; // No error, doctor exists
+        }
+
+        private IEnumerable<GetAllPatientsDto> GetPatientsForDoctor(int doctorId)
+        {
+            // Get all appointments for this doctor
+            var appointments = _appointmentService.GetAllAppointments(true)
+                .Where(a => a.DoctorId == doctorId && a.PatientId.HasValue);
+
+            // Get unique patient IDs from appointments
+            var patientIds = appointments
+                .Select(a => a.PatientId.Value)
+                .Distinct()
+                .ToList();
+
+            // Return only patients with appointments
+            return _patientService.GetAllPatients(true)
+                .Where(p => patientIds.Contains(p.Id));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(int? patientId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            // Get doctor by email
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-            {
-                TempData["Error"] = "Doctor profile not found.";
-                return RedirectToAction("Doctor", "Dashboard");
-            }
+            var doctor = await GetCurrentDoctorAsync();
 
             var query = _context.MedicalRecords
                 .Include(m => m.Patient)
                 .Include(m => m.Doctor)
                 .Where(m => m.DoctorId == doctor.Id && !m.IsDeleted);
 
-            if (patientId.HasValue)
+           /* if (patientId.HasValue)
             {
                 query = query.Where(m => m.PatientId == patientId.Value);
-            }
+            } it limit data after editing-creating to show one patient only--hassan*/
 
             var records = await query.OrderByDescending(m => m.RecordDate).ToListAsync();
 
             ViewBag.Doctor = doctor;
-            ViewBag.Patients = _patientService.GetAllPatients(true)
+            // Only show patients that have appointments with this doctor
+            ViewBag.Patients = GetPatientsForDoctor(doctor.Id)
                 .Select(p => new { p.Id, p.Name })
                 .ToList();
             ViewBag.SelectedPatientId = patientId;
-
+            ViewBag.HasDoctorProfile = true; // This tells the view the doctor profile exists
+               
             return View(records);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create(int? patientId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-            {
-                TempData["Error"] = "Doctor profile not found.";
-                return RedirectToAction("Doctor", "Dashboard");
-            }
+            var doctor = await GetCurrentDoctorAsync();
 
             ViewBag.Doctor = doctor;
-            ViewBag.Patients = _patientService.GetAllPatients(true)
+            // Only show patients that have appointments with this doctor
+            ViewBag.Patients = GetPatientsForDoctor(doctor.Id)
                 .Select(p => new { p.Id, p.Name })
                 .ToList();
             ViewBag.SelectedPatientId = patientId;
+            ViewBag.HasDoctorProfile = true; // This tells the view the doctor profile exists
 
-            return View(new MedicalRecord());
+            var model = new MedicalRecord
+            {
+                PatientId = patientId ?? 0,
+                DoctorId = doctor.Id,
+                RecordDate = DateTime.Now
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MedicalRecord model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
+            var doctor = await GetCurrentDoctorAsync();
 
-            if (doctor == null)
-            {
-                TempData["Error"] = "Doctor profile not found.";
-                return RedirectToAction("Doctor", "Dashboard");
-            }
-
-            // Set required fields that aren't in the form
+            // Set required fields
             model.DoctorId = doctor.Id;
             model.RecordDate = DateTime.Now;
             model.IsDeleted = false;
             model.Notes = model.Notes ?? string.Empty;
 
-            // Remove validation for properties we set manually or don't need from form
+            // Remove validation for properties we set manually
             ModelState.Remove("Doctor");
             ModelState.Remove("Patient");
             ModelState.Remove("DoctorId");
@@ -156,10 +195,12 @@ namespace Hospital.PL.Controllers
             }
 
             ViewBag.Doctor = doctor;
-            ViewBag.Patients = _patientService.GetAllPatients(true)
+            // Only show patients that have appointments with this doctor
+            ViewBag.Patients = GetPatientsForDoctor(doctor.Id)
                 .Select(p => new { p.Id, p.Name })
                 .ToList();
             ViewBag.SelectedPatientId = model?.PatientId;
+            ViewBag.HasDoctorProfile = true; // This tells the view the doctor profile exists
 
             return View(model);
         }
@@ -169,15 +210,11 @@ namespace Hospital.PL.Controllers
         {
             if (!id.HasValue) return BadRequest();
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-                return NotFound();
+            var doctor = await GetCurrentDoctorAsync();
 
             var record = await _context.MedicalRecords
                 .Include(m => m.Patient)
@@ -195,15 +232,11 @@ namespace Hospital.PL.Controllers
         {
             if (!id.HasValue) return BadRequest();
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-                return NotFound();
+            var doctor = await GetCurrentDoctorAsync();
 
             var record = await _context.MedicalRecords
                 .FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == doctor.Id && !m.IsDeleted);
@@ -211,9 +244,11 @@ namespace Hospital.PL.Controllers
             if (record == null)
                 return NotFound();
 
-            ViewBag.Patients = _patientService.GetAllPatients(true)
+            // Only show patients that have appointments with this doctor
+            ViewBag.Patients = GetPatientsForDoctor(doctor.Id)
                 .Select(p => new { p.Id, p.Name })
                 .ToList();
+            ViewBag.HasDoctorProfile = true; // This tells the view the doctor profile exists
 
             return View(record);
         }
@@ -222,15 +257,11 @@ namespace Hospital.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MedicalRecord model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-                return NotFound();
+            var doctor = await GetCurrentDoctorAsync();
 
             var record = await _context.MedicalRecords
                 .FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == doctor.Id && !m.IsDeleted);
@@ -257,9 +288,11 @@ namespace Hospital.PL.Controllers
                 return RedirectToAction("Index", new { patientId = model.PatientId });
             }
 
-            ViewBag.Patients = _patientService.GetAllPatients(true)
+            // Only show patients that have appointments with this doctor
+            ViewBag.Patients = GetPatientsForDoctor(doctor.Id)
                 .Select(p => new { p.Id, p.Name })
                 .ToList();
+            ViewBag.HasDoctorProfile = true; // This tells the view the doctor profile exists
 
             return View(model);
         }
@@ -268,15 +301,11 @@ namespace Hospital.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return RedirectToAction("Login", "Account");
+            // Check if doctor profile exists
+            var profileCheck = await CheckDoctorProfileAsync();
+            if (profileCheck != null) return profileCheck;
 
-            var doctors = _doctorService.GetAllDoctors(true);
-            var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
-
-            if (doctor == null)
-                return NotFound();
+            var doctor = await GetCurrentDoctorAsync();
 
             var record = await _context.MedicalRecords
                 .FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == doctor.Id && !m.IsDeleted);
@@ -292,4 +321,3 @@ namespace Hospital.PL.Controllers
         }
     }
 }
-

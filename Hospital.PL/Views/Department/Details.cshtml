@@ -1,7 +1,31 @@
 @model Hospital.BBL.DTOs.DepartmentDTOs.GetDepartmentByIdDto
 @using Hospital.DAL.Models.DepartmentModule
+@using Microsoft.AspNetCore.Identity
+@inject Microsoft.AspNetCore.Identity.UserManager<Hospital.DAL.Models.Shared.ApplicationUser> UserManager
 @{
+    bool visitor;//user who don't login to assign the role
+    bool isDoctor;
+    bool isPatient;
+    bool isAdmin;
+    bool canEdit;
+
+
     ViewData["Title"] = "Department Details";
+    var currentUser = await UserManager.GetUserAsync(User);
+    visitor = (currentUser == null);//if user isn't retrived from our database so he is vsistor
+
+    if(!visitor)
+    {
+
+        isDoctor = await UserManager.IsInRoleAsync(currentUser, "Doctor");
+        isPatient = await UserManager.IsInRoleAsync(currentUser, "Patient");
+        isAdmin = await UserManager.IsInRoleAsync(currentUser, "Admin");
+    }
+    else
+    {
+        isDoctor = isAdmin = isPatient = false;
+    }
+    canEdit = isAdmin;
 }
 
 @section PageStyles {
@@ -30,11 +54,14 @@
                     <span class="ar-text" style="display:none">العودة للأقسام</span>
                 </a>
 
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
-                    <i class="bi bi-pencil me-2"></i>
-                    <span class="en-text">Edit Department</span>
-                    <span class="ar-text" style="display:none">تعديل القسم</span>
-                </a>
+                @if (canEdit)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+                        <i class="bi bi-pencil me-2"></i>
+                        <span class="en-text">Edit Department</span>
+                        <span class="ar-text" style="display:none">تعديل القسم</span>
+                    </a>
+                }
             </div>
         </div>
     </div>

@@ -52,3 +52,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Sensitive configuration files (API keys, secrets, connection strings)
+Hospital.PL/appsettings.json
+Hospital.PL/appsettings.*.json
+!Hospital.PL/appsettings.example.json
+Hospital.PL/Properties/launchSettings.json
+!Hospital.PL/Properties/launchSettings.example.json

@@ -147,14 +147,75 @@
                                            asp-route-id="@record.Id">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form asp-action="Delete" asp-route-id="@record.Id" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-custom btn-sm-custom"
-                                                    onclick="return confirm('Are you sure you want to delete this medical record?');">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-custom btn-sm-custom" data-bs-toggle="modal" data-bs-target="#record_@record.Id">
+
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
+                                        <div class="modal fade" id="record_@record.Id" tabindex="-1" aria-labelledby="medicalRecord_delete_@record.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden"
+                                                     style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border: 1px solid rgba(32, 201, 151, 0.1);">
+                                                    <div class="modal-header border-0 pb-0"
+                                                         style="background: linear-gradient(135deg, #20c997 0%, #1aa179 100%);">
+                                                        <div class="modal-title w-100 text-center">
+                                                            <i class="bi bi-file-earmark-x text-white fs-2 mb-2 d-block"></i>
+                                                            <h5 class="text-white en-text mb-0 fw-bold">Delete Medical Record</h5>
+                                                            <h5 class="text-white ar-text mb-0 fw-bold" style="display:none">حذف السجل الطبي</h5>
+                                                        </div>
+                                                        <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body pt-4 pb-3 text-center">
+                                                        <p class=" text-black en-text fs-5 mb-2">
+                                                            Are you sure you want to delete this medical record?
+                                                        </p>
+                                                        <p class=" text-black ar-text fs-5 mb-2" style="display:none">
+                                                            هل أنت متأكد من رغبتك في حذف هذا السجل الطبي؟
+                                                        </p>
+                                                        <p class="en-text small mb-0">
+                                                            This action cannot be undone and will permanently remove the record.
+                                                        </p>
+                                                        <p class=" ar-text small mb-0" style="display:none">
+                                                            لا يمكن التراجع عن هذا الإجراء وسيتم إزالة السجل بشكل دائم.
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer border-0 pt-0">
+                                                        <form asp-action="Delete" asp-route-id="@record.Id" method="post" class="w-100">
+                                                            @Html.AntiForgeryToken()
+                                                            <div class="row g-2">
+                                                                <div class="col-6">
+                                                                    <button type="button"
+                                                                            class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                            style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;"
+                                                                            data-bs-dismiss="modal">
+                                                                        Keep Record
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                            style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white; display:none"
+                                                                            data-bs-dismiss="modal">
+                                                                        الاحتفاظ بالسجل
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <button type="submit"
+                                                                            class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                            style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white;">
+                                                                        Delete Record
+                                                                    </button>
+                                                                    <button type="submit"
+                                                                            class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                            style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; display:none">
+                                                                        حذف السجل
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -170,9 +231,9 @@
                     <span class="en-text">Show</span>
                     <span class="ar-text" style="display:none">عرض</span>
                 </label>
-                <select class="form-select form-select-sm w-auto" id="recordsPageSize">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
+                <select class="form-select form-select-sm" id="recordsPageSize" style="width: 70px; border-color: #dee2e6;">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
                 </select>
@@ -200,7 +261,6 @@
 
 @section Scripts {
     <script>
-        // Filter functionality
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const patientFilter = document.getElementById('patientFilter');
@@ -237,7 +297,6 @@
                     emptyState.classList.add('d-none');
                 }
 
-                // Update count
                 const total = parseInt(countLabelEn.getAttribute('data-total') || '0');
                 countLabelEn.textContent = `Showing ${visibleCount} record(s)`;
                 if (countLabelAr) {

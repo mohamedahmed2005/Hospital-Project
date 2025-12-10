@@ -93,6 +93,19 @@ namespace Hospital.PL.Controllers
             return View();
         }
 
+        #region Details
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Details(int? ID)
+        {
+            Console.WriteLine("\n\n\nAt DoctorApp Details \n id:" + ID + "\n\n\n");
+            TempData["FromMyAppointment"] = "return to My Appointment";
+            return RedirectToAction(nameof(Details), "Appointment", new { id = ID });
+        }
+        #endregion
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleAvailability([FromBody] ToggleAvailabilityRequest request)

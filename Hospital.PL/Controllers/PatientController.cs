@@ -1,4 +1,5 @@
-﻿using Hospital.BBL.DTOs.PatientDTOs;
+using Hospital.BBL.DTOs.PatientDTOs;
+using Hospital.BBL.DTOs.DoctorDTOs;
 using Hospital.BBL.Services.Interfaces;
 using Hospital.DAL.Models.PatientModule;
 using Hospital.DAL.Models.Shared;
@@ -8,25 +9,83 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Hospital.DAL.Contexts;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Hospital.PL.Controllers
 {
     [Authorize]
-    public class PatientController(IPatientService patientService,ILogger<PatientController> logger,IWebHostEnvironment environment, UserManager<ApplicationUser> userManager): Controller
+    public class PatientController : Controller
     {
-        private readonly IPatientService _patientService = patientService;
-        private readonly ILogger<PatientController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly IPatientService _patientService;
+        private readonly ILogger<PatientController> _logger;
+        private readonly IWebHostEnvironment _environment;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IDoctorService _doctorService;
+        private readonly IAppointmentService _appointmentService;
+        private readonly ApplicationDbContext _context;
         private const string DefaultPatientPassword = "Patient@123";
+
+        public PatientController(
+            IPatientService patientService,
+            ILogger<PatientController> logger,
+            IWebHostEnvironment environment,
+            UserManager<ApplicationUser> userManager,
+            IDoctorService doctorService,
+            IAppointmentService appointmentService,
+            ApplicationDbContext context)
+        {
+            _patientService = patientService;
+            _logger = logger;
+            _environment = environment;
+            _userManager = userManager;
+            _doctorService = doctorService;
+            _appointmentService = appointmentService;
+            _context = context;
+        }
 
         #region Index
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var patients = _patientService.GetAllPatients(true);
+            var allPatients = _patientService.GetAllPatients(true);
+            IEnumerable<GetAllPatientsDto> patients = allPatients;
+
+            // If user is a Doctor (not Admin), filter to show only patients with appointments
+            if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var doctors = _doctorService.GetAllDoctors(true);
+                    var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
+
+                    if (doctor != null)
+                    {
+                        // Get all appointments for this doctor
+                        var appointments = _appointmentService.GetAllAppointments(true)
+                            .Where(a => a.DoctorId == doctor.Id && a.PatientId.HasValue);
+
+                        // Get unique patient IDs from appointments
+                        var patientIds = appointments
+                            .Select(a => a.PatientId.Value)
+                            .Distinct()
+                            .ToList();
+
+                        // Filter patients to only those with appointments
+                        patients = allPatients.Where(p => patientIds.Contains(p.Id));
+                    }
+                    else
+                    {
+                        // Doctor profile not found, show no patients
+                        patients = Enumerable.Empty<GetAllPatientsDto>();
+                    }
+                }
+            }
+
             // Doctors can view but not modify
             ViewBag.CanModify = User.IsInRole("Admin");
 
@@ -37,7 +96,7 @@ namespace Hospital.PL.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    var existingPatient = patients.FirstOrDefault(p => p.Email == user.Email);
+                    var existingPatient = allPatients.FirstOrDefault(p => p.Email == user.Email);
                     ViewBag.HasProfile = existingPatient != null;
                     if (existingPatient != null)
                     {
@@ -166,7 +225,7 @@ namespace Hospital.PL.Controllers
                 {
                     await EnsurePatientIdentityAccountAsync(viewModel);
                     TempData["Created"] = "Patient Created successfully";
-                    
+
                     return RedirectToAction(nameof(Index), "Home");
                 }
 
@@ -207,8 +266,39 @@ namespace Hospital.PL.Controllers
                 }
             }
 
+            // Load medical records for this patient
+            var medicalRecordsQuery = _context.MedicalRecords
+                .Include(m => m.Doctor)
+                .Where(m => m.PatientId == id.Value && !m.IsDeleted);
+
+            // If user is a Doctor (not Admin), restrict to their own records
+            if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var doctors = _doctorService.GetAllDoctors(true);
+                    var doctor = doctors.FirstOrDefault(d => d.Email == user.Email);
+
+                    if (doctor != null)
+                    {
+                        medicalRecordsQuery = medicalRecordsQuery.Where(m => m.DoctorId == doctor.Id);
+                    }
+                    else
+                    {
+                        // If doctor profile not found, they shouldn't see any records
+                        medicalRecordsQuery = medicalRecordsQuery.Where(m => false);
+                    }
+                }
+            }
+
+            var medicalRecords = await medicalRecordsQuery
+                .OrderByDescending(m => m.RecordDate)
+                .ToListAsync();
+
             ViewBag.IsOwnProfile = isOwnProfile;
             ViewBag.CanEdit = User.IsInRole("Admin") || isOwnProfile;
+            ViewBag.MedicalRecords = medicalRecords;
 
             return View(patient);
         }
@@ -355,24 +445,34 @@ namespace Hospital.PL.Controllers
         [Authorize(Roles = "Admin")]
         async Task<bool> DeleteAspPatient(GetPatientByIdDto patient)//async function to perform te delete from Asp Table
         {
+            if (patient == null || string.IsNullOrWhiteSpace(patient.Email))
+                return false;
 
             //remove from AspNetUser table
             var AspUser = await _userManager.FindByEmailAsync(patient.Email);
-            await _userManager.DeleteAsync(AspUser);
-            return true;
+            if (AspUser != null)
+            {
+                await _userManager.DeleteAsync(AspUser);
+                return true;
+            }
+            return false;
         }
+
         public async Task<IActionResult> Delete(int id)
         {
             if (id == 0) return BadRequest();
 
             try
             {
-               GetPatientByIdDto? UserPatient = _patientService.GetPatientById(id);
+                GetPatientByIdDto? UserPatient = _patientService.GetPatientById(id);
+                if (UserPatient == null)
+                {
+                    TempData["ErrorMessage"] = "Patient not found.";
+                    return RedirectToAction(nameof(Index));
+                }
 
-               bool AspDelete= await DeleteAspPatient(UserPatient);
+                bool AspDelete = await DeleteAspPatient(UserPatient);
                 bool deleted = _patientService.DeletePatient(id);
-
-
 
                 if (deleted)
                 {
@@ -398,15 +498,37 @@ namespace Hospital.PL.Controllers
             }
         }
         #endregion
+
         private async Task EnsurePatientIdentityAccountAsync(PatientViewModel viewModel)
         {
             // Patients managing their own profile already have an identity account
             if (User.IsInRole("Patient") && !User.IsInRole("Admin"))
                 return;
 
+            if (viewModel == null)
+                return;
+
             var normalizedEmail = viewModel.Email?.Trim();
             if (string.IsNullOrWhiteSpace(normalizedEmail))
+            {
+                _logger.LogWarning("Attempted to create identity account with empty email.");
+                if (User.IsInRole("Admin"))
+                {
+                    TempData["GeneratedCredentials"] = $"Patient profile created but could not create login account because email is empty.";
+                }
                 return;
+            }
+
+            // Validate email format
+            if (!IsValidEmail(normalizedEmail))
+            {
+                _logger.LogWarning($"Attempted to create identity account with invalid email format: {normalizedEmail}");
+                if (User.IsInRole("Admin"))
+                {
+                    TempData["GeneratedCredentials"] = $"Patient profile created but could not create login account due to invalid email format: {normalizedEmail}";
+                }
+                return;
+            }
 
             var existingUser = await _userManager.FindByEmailAsync(normalizedEmail);
             if (existingUser == null)
@@ -414,6 +536,20 @@ namespace Hospital.PL.Controllers
                 var passwordToUse = !string.IsNullOrWhiteSpace(viewModel.AccountPassword)
                     ? viewModel.AccountPassword
                     : DefaultPatientPassword;
+
+                // Validate password meets requirements
+                var passwordValidator = new PasswordValidator<ApplicationUser>();
+                var passwordValidationResult = await passwordValidator.ValidateAsync(_userManager, null, passwordToUse);
+
+                if (!passwordValidationResult.Succeeded)
+                {
+                    _logger.LogWarning($"Invalid password format for user {normalizedEmail}");
+                    if (User.IsInRole("Admin"))
+                    {
+                        TempData["GeneratedCredentials"] = $"Patient profile created but could not create login account for {normalizedEmail} due to invalid password format. Password must contain uppercase, lowercase, number, and special character.";
+                    }
+                    return;
+                }
 
                 var user = new ApplicationUser
                 {
@@ -427,33 +563,73 @@ namespace Hospital.PL.Controllers
                 var resultUser = await _userManager.CreateAsync(user, passwordToUse);
                 if (resultUser.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Patient");
-                    if (User.IsInRole("Admin"))
+                    var roleResult = await _userManager.AddToRoleAsync(user, "Patient");
+                    if (roleResult.Succeeded)
                     {
-                        TempData["GeneratedCredentials"] = $"Patient account created for {normalizedEmail}. Temporary password: {passwordToUse}.";
+                        if (User.IsInRole("Admin"))
+                        {
+                            TempData["GeneratedCredentials"] = $"Patient account created for {normalizedEmail}. Temporary password: {passwordToUse}.";
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError($"Failed to add patient role for {normalizedEmail}");
+                        if (User.IsInRole("Admin"))
+                        {
+                            TempData["GeneratedCredentials"] = $"Patient account created for {normalizedEmail} but failed to assign role. Please contact administrator.";
+                        }
                     }
                 }
                 else
                 {
-                    foreach (var error in resultUser.Errors)
-                    {
-                        _logger.LogError($"Error creating user for patient {normalizedEmail}: {error.Description}");
-                    }
+                    var errors = string.Join(", ", resultUser.Errors.Select(e => e.Description));
+                    _logger.LogError($"Error creating user for patient {normalizedEmail}: {errors}");
 
                     if (User.IsInRole("Admin"))
                     {
-                        TempData["GeneratedCredentials"] = $"Patient profile created but failed to create login for {normalizedEmail}. Check logs for details.";
+                        TempData["GeneratedCredentials"] = $"Patient profile created but failed to create login for {normalizedEmail}. Error: {errors}";
                     }
                 }
             }
             else
             {
-                if (!await _userManager.IsInRoleAsync(existingUser, "Patient"))
+                // User exists, ensure they have Patient role
+                var isInPatientRole = await _userManager.IsInRoleAsync(existingUser, "Patient");
+                if (!isInPatientRole)
                 {
-                    await _userManager.AddToRoleAsync(existingUser, "Patient");
+                    var roleResult = await _userManager.AddToRoleAsync(existingUser, "Patient");
+                    if (roleResult.Succeeded)
+                    {
+                        _logger.LogInformation($"Added Patient role to existing user: {normalizedEmail}");
+                    }
+                    else
+                    {
+                        _logger.LogError($"Failed to add Patient role to existing user: {normalizedEmail}");
+                    }
+                }
+
+                if (User.IsInRole("Admin"))
+                {
+                    TempData["GeneratedCredentials"] = $"Patient profile created. User account already exists for {normalizedEmail}.";
                 }
             }
         }
-    }
 
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Simple email validation regex
+                var regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase);
+                return regex.IsMatch(email);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
 }

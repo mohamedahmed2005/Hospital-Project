@@ -1,338 +1,453 @@
 @inject Microsoft.AspNetCore.Identity.UserManager<Hospital.DAL.Models.Shared.ApplicationUser> UserManager
 @{
-    var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
-    string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    bool isHomePage = currentController?.Equals("Home", StringComparison.OrdinalIgnoreCase) == true && 
-                      currentAction?.Equals("Index", StringComparison.OrdinalIgnoreCase) == true;
-    
-    string userName = "";
-    string userEmail = "";
-    if (isAuthenticated)
-    {
-        var user = await UserManager.GetUserAsync(User);
-        if (user != null)
-        {
-            userName = user.UserName ?? "";
-            userEmail = user.Email ?? "";
-        }
-    }
+	var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+	string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+	string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+	bool isHomePage = currentController?.Equals("Home", StringComparison.OrdinalIgnoreCase) == true &&
+					  currentAction?.Equals("Index", StringComparison.OrdinalIgnoreCase) == true;
 
-    // Add a CSS helper class based on role (used to tweak navbar styling per role)
-    string navRoleClass = "";
-    if (isAuthenticated && User.IsInRole("Doctor"))
-    {
-        navRoleClass = " navbar-doctor";
-    }
-    else if (isAuthenticated && User.IsInRole("Admin"))
-    {
-        navRoleClass = " navbar-admin";
-    }
-    else if (isAuthenticated && User.IsInRole("Patient"))
-    {
-        navRoleClass = " navbar-patient";
-    }
+	string userName = "";
+	string userEmail = "";
+	if (isAuthenticated)
+	{
+		var user = await UserManager.GetUserAsync(User);
+		if (user != null)
+		{
+			userName = user.UserName ?? "";
+			userEmail = user.Email ?? "";
+		}
+	}
 
-    string GetActiveClass(string controller, string action = null)
-    {
-        if (currentController == controller)
-        {
-            if (action == null || currentAction == action)
-                return "active";
-        }
-        return "";
-    }
+	string navRoleClass = "";
+	if (isAuthenticated && User.IsInRole("Doctor"))
+	{
+		navRoleClass = " navbar-doctor";
+	}
+	else if (isAuthenticated && User.IsInRole("Admin"))
+	{
+		navRoleClass = " navbar-admin";
+	}
+	else if (isAuthenticated && User.IsInRole("Patient"))
+	{
+		navRoleClass = " navbar-patient";
+	}
+
+	string GetActiveClass(string controller, string action = null)
+	{
+		if (currentController == controller)
+		{
+			if (action == null || currentAction == action)
+				return "active";
+		}
+		return "";
+	}
 }
-<nav class="navbar navbar-expand-lg navbar-light sticky-top@navRoleClass">
-    <div class="container">
-        <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-            <i class="bi bi-heart-pulse me-2"></i>
-            <span class="en-text">NovaHealth</span>
-            <span class="ar-text" style="display: none">نوفا هيلث</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="navbar navbar-expand-lg navbar-light sticky-top @navRoleClass">
+	<div class="container">
+		<a class="navbar-brand" href="@Url.Action("Index", "Home")" style="font-weight: 700; font-size: 1.6rem; background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+			<i class="bi bi-heart-pulse me-2" style="color: #4b6cb7;"></i>
+			<span class="en-text">NovaHealth</span>
+			<span class="ar-text" style="display: none">نوفا هيلث</span>
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+				aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav m-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link @GetActiveClass("Home", "Index")" href="@Url.Action("Index", "Home")">
-                        <span class="en-text">Home</span>
-                        <span class="ar-text" style="display:none">الرئيسية</span>
-                    </a>
-                </li>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mb-2 mb-lg-0 overflow-x-hidden  w-100">
+				<li class="nav-item">
+					<a class="nav-link @GetActiveClass("Home", "Index")" href="@Url.Action("Index", "Home")">
+						<span class="en-text">Home</span>
+						<span class="ar-text" style="display:none">الرئيسية</span>
+					</a>
+				</li>
 
-                @* Admin Navigation *@
-                @if (isAuthenticated && User.IsInRole("Admin"))
-                {
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Dashboard")" href="@Url.Action("Admin", "Dashboard")">
-                            <span class="en-text">Dashboard</span>
-                            <span class="ar-text" style="display:none">لوحة التحكم</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Patient")" href="@Url.Action("Index", "Patient")">
-                            <span class="en-text">Patients</span>
-                            <span class="ar-text" style="display:none">المرضى</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Appointment")" href="@Url.Action("Index", "Appointment")">
-                            <span class="en-text">Appointments</span>
-                            <span class="ar-text" style="display:none">المواعيد</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
-                            <span class="en-text">Doctors</span>
-                            <span class="ar-text" style="display:none">الأطباء</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
-                            <span class="en-text">Departments</span>
-                            <span class="ar-text" style="display:none">الأقسام</span>
-                        </a>
-                    </li>
-                }
-                @* Doctor Navigation *@
-                else if (isAuthenticated && User.IsInRole("Doctor"))
-                {
-                 
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("DoctorAppointment")" href="@Url.Action("MyAppointments", "DoctorAppointment")">
-                            <span class="en-text">My Appointments</span>
-                            <span class="ar-text" style="display:none">مواعيدي</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("MedicalRecord")" href="@Url.Action("Index", "MedicalRecord")">
-                            <span class="en-text">Medical Records</span>
-                            <span class="ar-text" style="display:none">السجلات الطبية</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Patient")" href="@Url.Action("Index", "Patient")">
-                            <span class="en-text">Patients</span>
-                            <span class="ar-text" style="display:none">المرضى</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
-                            <span class="en-text">Departments</span>
-                            <span class="ar-text" style="display:none">الأقسام</span>
-                        </a>
-                    </li>
-                }
-                @* Unauthenticated/Guest Navigation *@
-                else
-                {
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Appointment")" href="@Url.Action("Index", "Appointment")">
-                            <span class="en-text">Appointments</span>
-                            <span class="ar-text" style="display:none">المواعيد</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
-                            <span class="en-text">Doctors</span>
-                            <span class="ar-text" style="display:none">الأطباء</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
-                            <span class="en-text">Departments</span>
-                            <span class="ar-text" style="display:none">الأقسام</span>
-                        </a>
-                    </li>
-                }
+				@* Admin Navigation *@
+				@if (isAuthenticated && User.IsInRole("Admin"))
+				{
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Dashboard")" href="@Url.Action("Admin", "Dashboard")">
+							<span class="en-text">Dashboard</span>
+							<span class="ar-text" style="display:none">لوحة التحكم</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Patient")" href="@Url.Action("Index", "Patient")">
+							<span class="en-text">Patients</span>
+							<span class="ar-text" style="display:none">المرضى</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Appointment")" href="@Url.Action("Index", "Appointment")">
+							<span class="en-text">Appointments</span>
+							<span class="ar-text" style="display:none">المواعيد</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
+							<span class="en-text">Doctors</span>
+							<span class="ar-text" style="display:none">الأطباء</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
+							<span class="en-text">Departments</span>
+							<span class="ar-text" style="display:none">الأقسام</span>
+						</a>
+					</li>
+				}
+				@* Doctor Navigation *@
+				else if (isAuthenticated && User.IsInRole("Doctor"))
+				{
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("DoctorAppointment")" href="@Url.Action("MyAppointments", "DoctorAppointment")">
+							<span class="en-text">My Appointments</span>
+							<span class="ar-text" style="display:none">مواعيدي</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("MedicalRecord")" href="@Url.Action("Index", "MedicalRecord")">
+							<span class="en-text">Medical Records</span>
+							<span class="ar-text" style="display:none">السجلات الطبية</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Patient")" href="@Url.Action("Index", "Patient")">
+							<span class="en-text">Patients</span>
+							<span class="ar-text" style="display:none">المرضى</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
+							<span class="en-text">Departments</span>
+							<span class="ar-text" style="display:none">الأقسام</span>
+						</a>
+					</li>
+				}
+				@* Unauthenticated/Guest Navigation (it's as well the patient navigation --hassan) *@
+				else
+				{
+					@if (isAuthenticated)//treat patient and guest as same...they aren't and only patient should view appointment
+					{
 
-                @* Common Navigation Items *@
-                <li class="nav-item">
-                    <a class="nav-link @GetActiveClass("Home", "About")" href="@Url.Action("About", "Home")">
-                        <span class="en-text">About Us</span>
-                        <span class="ar-text" style="display:none">من نحن</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @GetActiveClass("Home", "Contact")" href="@Url.Action("Contact", "Home")">
-                        <span class="en-text">Contact</span>
-                        <span class="ar-text" style="display:none">اتصل بنا</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="d-flex align-items-center gap-2">
-                @if (isAuthenticated)
-                {
-                    @* Admin Actions *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a href="@Url.Action("Create", "Appointment")" class="btn btn-primary-custom btn-sm">
-                            <span class="en-text">New Appointment</span>
-                            <span class="ar-text" style="display:none">موعد جديد</span>
-                        </a>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="en-text">Manage</span>
-                                <span class="ar-text" style="display:none">إدارة</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                                <li class="dropdown-header">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <div class="fw-bold">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
-                                            <small class="text-muted">@userEmail</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Create", "Doctor")">
-                                    <span class="en-text">Add Doctor</span>
-                                    <span class="ar-text" style="display:none">إضافة طبيب</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Create", "Patient")">
-                                    <span class="en-text">Add Patient</span>
-                                    <span class="ar-text" style="display:none">إضافة مريض</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Create", "Department")">
-                                    <span class="en-text">Add Department</span>
-                                    <span class="ar-text" style="display:none">إضافة قسم</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">
-                                    <span class="en-text">Change Password</span>
-                                    <span class="ar-text" style="display:none">تغيير كلمة المرور</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">
-                                    <span class="en-text">Logout</span>
-                                    <span class="ar-text" style="display:none">تسجيل خروج</span>
-                                </a></li>
-                            </ul>
-                        </div>
-                    }
-                    @* Doctor Actions *@
-                    else if (User.IsInRole("Doctor"))
-                    {
-                        <a href="@Url.Action("MyAppointments", "DoctorAppointment")" class="btn btn-primary-custom btn-sm">
-                            <span class="en-text">My Appointments</span>
-                            <span class="ar-text" style="display:none">مواعيدي</span>
-                        </a>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="doctorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="en-text">Profile</span>
-                                <span class="ar-text" style="display:none">الملف</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="doctorDropdown">
-                                <li class="dropdown-header">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <div class="fw-bold">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
-                                            <small class="text-muted">@userEmail</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("MyProfile", "Doctor")">
-                                    <span class="en-text">My Profile</span>
-                                    <span class="ar-text" style="display:none">ملفي الشخصي</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Doctor", "Dashboard")">
-                                    <span class="en-text">Dashboard</span>
-                                    <span class="ar-text" style="display:none">لوحة التحكم</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">
-                                    <span class="en-text">Change Password</span>
-                                    <span class="ar-text" style="display:none">تغيير كلمة المرور</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">
-                                    <span class="en-text">Logout</span>
-                                    <span class="ar-text" style="display:none">تسجيل خروج</span>
-                                </a></li>
-                            </ul>
-                        </div>
-                    }
-                    @* Patient Actions *@
-                    else if (User.IsInRole("Patient"))
-                    {
-                        <a href="@Url.Action("Create", "Appointment")" class="btn btn-primary-custom btn-sm">
-                            <span class="en-text">Book Appointment</span>
-                            <span class="ar-text" style="display:none">حجز موعد</span>
-                        </a>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="patientDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="en-text">Account</span>
-                                <span class="ar-text" style="display:none">الحساب</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="patientDropdown">
-                                <li class="dropdown-header">
-                                    <div class="d-flex align-items-center">
-                                        <div>
-                                            <div class="fw-bold">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
-                                            <small class="text-muted">@userEmail</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Patient", "Dashboard")">
-                                    <span class="en-text">Dashboard</span>
-                                    <span class="ar-text" style="display:none">لوحة التحكم</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("MyProfile", "Patient")">
-                                    <span class="en-text">My Profile</span>
-                                    <span class="ar-text" style="display:none">ملفي الشخصي</span>
-                                </a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Index", "Appointment")">
-                                    <span class="en-text">My Appointments</span>
-                                    <span class="ar-text" style="display:none">مواعيدي</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">
-                                    <span class="en-text">Change Password</span>
-                                    <span class="ar-text" style="display:none">تغيير كلمة المرور</span>
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">
-                                    <span class="en-text">Logout</span>
-                                    <span class="ar-text" style="display:none">تسجيل خروج</span>
-                                </a></li>
-                            </ul>
-                        </div>
-                    }
-                }
-                else
-                {
-                    @if (isHomePage)
-                    {
-                        <a href="@Url.Action("Login", "Account")" class="btn btn-outline-custom btn-sm px-4">
-                            <span class="en-text">Log In</span>
-                            <span class="ar-text" style="display:none">تسجيل الدخول</span>
-                        </a>
-                        <a href="@Url.Action("Register", "Account")" class="btn btn-primary-custom btn-sm px-4">
-                            <span class="en-text">Sign Up</span>
-                            <span class="ar-text" style="display:none">إنشاء حساب</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="@Url.Action("Login", "Account")" class="btn btn-outline-custom btn-sm">
-                            <span class="en-text">Log In</span>
-                            <span class="ar-text" style="display:none">تسجيل الدخول</span>
-                        </a>
-                        <a href="@Url.Action("Register", "Account")" class="btn btn-primary-custom btn-sm">
-                            <span class="en-text">Sign Up</span>
-                            <span class="ar-text" style="display:none">إنشاء حساب</span>
-                        </a>
-                    }
-                }
-            </div>
-        </div>
-    </div>
+						<li class="nav-item">
+							<a class="nav-link @GetActiveClass("Appointment")" href="@Url.Action("Index", "Appointment")">
+								<span class="en-text">Appointments</span>
+								<span class="ar-text" style="display:none">المواعيد</span>
+							</a>
+						</li>
+					}
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Doctor")" href="@Url.Action("Index", "Doctor")">
+							<span class="en-text">Doctors</span>
+							<span class="ar-text" style="display:none">الأطباء</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link @GetActiveClass("Department")" href="@Url.Action("Index", "Department")">
+							<span class="en-text">Departments</span>
+							<span class="ar-text" style="display:none">الأقسام</span>
+						</a>
+					</li>
+				}
+
+				@* Common Navigation Items *@
+				<li class="nav-item">
+					<a class="nav-link @GetActiveClass("Home", "About")" href="@Url.Action("About", "Home")">
+						<span class="en-text">About Us</span>
+						<span class="ar-text" style="display:none">من نحن</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link @GetActiveClass("Home", "Contact")" href="@Url.Action("Contact", "Home")">
+						<span class="en-text">Contact</span>
+						<span class="ar-text" style="display:none">اتصل بنا</span>
+					</a>
+				</li>
+			</ul>
+
+			<div class="d-flex align-items-center">
+				@if (isAuthenticated)
+				{
+					@* Admin Actions *@
+					@if (User.IsInRole("Admin"))
+					{
+						<div class="d-flex align-items-center gap-2">
+							<a href="@Url.Action("Create", "Appointment")" class="btn btn-primary-custom btn-sm" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3); display: flex; align-items: center; gap: 6px;">
+								<i class="bi bi-plus-circle" style="font-size: 1.1rem;"></i>
+								<span class="en-text">New Appointment</span>
+								<span class="ar-text" style="display:none">موعد جديد</span>
+							</a>
+							<div class="dropdown">
+								<button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: 2px solid #4b6cb7; color: #4b6cb7; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;">
+									<i class="bi bi-gear" style="font-size: 1.1rem;"></i>
+									<span class="en-text">Manage</span>
+									<span class="ar-text" style="display:none">إدارة</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown" style="border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); border-radius: 12px; padding: 8px; margin-top: 10px; min-width: 240px;">
+									<li class="dropdown-header" style="padding: 12px 16px; border-radius: 8px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); margin-bottom: 8px;">
+										<div class="d-flex align-items-center">
+											<div class="me-3" style="width: 40px; height: 40px; background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+												<i class="bi bi-person-fill" style="color: white; font-size: 1.2rem;"></i>
+											</div>
+											<div>
+												<div class="fw-bold" style="color: #182848; font-size: 0.95rem;">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
+												<small style="font-size: 0.8rem;">@userEmail</small>
+											</div>
+										</div>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Create", "Doctor")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-person-plus" style="color: #4b6cb7;"></i>
+											<div>
+												<div style="font-weight: 500; color: #333;">
+													<span class="en-text">Add Doctor</span>
+													<span class="ar-text" style="display:none">إضافة طبيب</span>
+												</div>
+												<small style="font-size: 0.8rem;">
+													<span class="en-text">Register new doctor</span>
+													<span class="ar-text" style="display:none">تسجيل طبيب جديد</span>
+												</small>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Create", "Patient")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-person-plus" style="color: #28a745;"></i>
+											<div>
+												<div style="font-weight: 500; color: #333;">
+													<span class="en-text">Add Patient</span>
+													<span class="ar-text" style="display:none">إضافة مريض</span>
+												</div>
+												<small style="font-size: 0.8rem;">
+													<span class="en-text">Register new patient</span>
+													<span class="ar-text" style="display:none">تسجيل مريض جديد</span>
+												</small>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Create", "Department")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-building-add" style="color: #ffc107;"></i>
+											<div>
+												<div style="font-weight: 500; color: #333;">
+													<span class="en-text">Add Department</span>
+													<span class="ar-text" style="display:none">إضافة قسم</span>
+												</div>
+												<small style="font-size: 0.8rem;">
+													<span class="en-text">Create new department</span>
+													<span class="ar-text" style="display:none">إنشاء قسم جديد</span>
+												</small>
+											</div>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-shield-lock" style="color: #6c757d;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Change Password</span>
+												<span class="ar-text" style="display:none">تغيير كلمة المرور</span>
+											</span>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Logout", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%); color: white; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-box-arrow-right"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Logout</span>
+												<span class="ar-text" style="display:none">تسجيل خروج</span>
+											</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					}
+					@* Doctor Actions *@
+					else if (User.IsInRole("Doctor"))
+					{
+						<div class="d-flex align-items-center gap-2">
+							<a href="@Url.Action("Create", "MedicalRecord")" class="btn btn-primary-custom btn-sm" style="background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3); display: flex; align-items: center; gap: 6px;">
+								<i class="bi bi-file-earmark-plus" style="font-size: 1.1rem;"></i>
+								<span class="en-text">New Record</span>
+								<span class="ar-text" style="display:none">سجل جديد</span>
+							</a>
+							<div class="dropdown">
+								<button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="doctorDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: 2px solid #20c997; color: #20c997; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;">
+									<i class="bi bi-person-circle" style="font-size: 1.1rem;"></i>
+									<span class="en-text">Profile</span>
+									<span class="ar-text" style="display:none">الملف</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="doctorDropdown" style="border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); border-radius: 12px; padding: 8px; margin-top: 10px; min-width: 220px;">
+									<li class="dropdown-header" style="padding: 12px 16px; border-radius: 8px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); margin-bottom: 8px;">
+										<div class="d-flex align-items-center">
+											<div class="me-3" style="width: 40px; height: 40px; background: linear-gradient(135deg, #20c997 0%, #0ca678 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+												<i class="bi bi-person-fill" style="color: white; font-size: 1.2rem;"></i>
+											</div>
+											<div>
+												<div class="fw-bold" style="color: #0ca678; font-size: 0.95rem;">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
+												<small style="font-size: 0.8rem;">@userEmail</small>
+											</div>
+										</div>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("MyProfile", "Doctor")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-person-vcard" style="color: #20c997;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">My Profile</span>
+												<span class="ar-text" style="display:none">ملفي الشخصي</span>
+											</span>
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Doctor", "Dashboard")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-speedometer2" style="color: #6f42c1;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Dashboard</span>
+												<span class="ar-text" style="display:none">لوحة التحكم</span>
+											</span>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-shield-lock" style="color: #6c757d;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Change Password</span>
+												<span class="ar-text" style="display:none">تغيير كلمة المرور</span>
+											</span>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Logout", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%); color: white; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-box-arrow-right"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Logout</span>
+												<span class="ar-text" style="display:none">تسجيل خروج</span>
+											</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					}
+					@* Patient Actions *@
+					else if (User.IsInRole("Patient"))
+					{
+						<div class="d-flex align-items-center gap-2">
+							<a href="@Url.Action("Create", "Appointment")" class="btn btn-primary-custom btn-sm" style="background: linear-gradient(135deg, #6f42c1 0%, #4a1d96 100%); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3); display: flex; align-items: center; gap: 6px;">
+								<i class="bi bi-calendar-plus" style="font-size: 1.1rem;"></i>
+								<span class="en-text">Book Appointment</span>
+								<span class="ar-text" style="display:none">حجز موعد</span>
+							</a>
+							<div class="dropdown">
+								<button class="btn btn-outline-custom btn-sm dropdown-toggle" type="button" id="patientDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: 2px solid #6f42c1; color: #6f42c1; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;">
+									<i class="bi bi-person-circle" style="font-size: 1.1rem;"></i>
+									<span class="en-text">Account</span>
+									<span class="ar-text" style="display:none">الحساب</span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="patientDropdown" style="border: none; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); border-radius: 12px; padding: 8px; margin-top: 10px; min-width: 220px;">
+									<li class="dropdown-header" style="padding: 12px 16px; border-radius: 8px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); margin-bottom: 8px;">
+										<div class="d-flex align-items-center">
+											<div class="me-3" style="width: 40px; height: 40px; background: linear-gradient(135deg, #6f42c1 0%, #4a1d96 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+												<i class="bi bi-person-fill" style="color: white; font-size: 1.2rem;"></i>
+											</div>
+											<div>
+												<div class="fw-bold" style="color: #4a1d96; font-size: 0.95rem;">@(!string.IsNullOrEmpty(userName) ? userName : userEmail)</div>
+												<small style="font-size: 0.8rem;">@userEmail</small>
+											</div>
+										</div>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Patient", "Dashboard")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-speedometer2" style="color: #6f42c1;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Dashboard</span>
+												<span class="ar-text" style="display:none">لوحة التحكم</span>
+											</span>
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("MyProfile", "Patient")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-person-vcard" style="color: #20c997;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">My Profile</span>
+												<span class="ar-text" style="display:none">ملفي الشخصي</span>
+											</span>
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Index", "Appointment")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-calendar-check" style="color: #fd7e14;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">My Appointments</span>
+												<span class="ar-text" style="display:none">مواعيدي</span>
+											</span>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-shield-lock" style="color: #6c757d;"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Change Password</span>
+												<span class="ar-text" style="display:none">تغيير كلمة المرور</span>
+											</span>
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" style="margin: 8px 0;"></li>
+									<li>
+										<a class="dropdown-item" href="@Url.Action("Logout", "Account")" style="padding: 10px 16px; border-radius: 6px; transition: all 0.2s ease; background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%); color: white; display: flex; align-items: center; gap: 10px;">
+											<i class="bi bi-box-arrow-right"></i>
+											<span style="font-weight: 500;">
+												<span class="en-text">Logout</span>
+												<span class="ar-text" style="display:none">تسجيل خروج</span>
+											</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					}
+				}
+				else
+				{
+					@if (isHomePage)
+					{
+						<a href="@Url.Action("Login", "Account")" class="btn btn-outline-custom btn-sm px-4" style="border: 2px solid #4b6cb7; color: #4b6cb7; padding: 8px 24px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;">
+							<i class="bi bi-box-arrow-in-right" style="font-size: 1.1rem;"></i>
+							<span class="en-text">Log In</span>
+							<span class="ar-text" style="display:none">تسجيل الدخول</span>
+						</a>
+						<a href="@Url.Action("Register", "Account")" class="btn btn-primary-custom btn-sm px-4" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border: none; color: white; padding: 8px 24px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3); display: flex; align-items: center; gap: 6px;">
+							<i class="bi bi-person-plus" style="font-size: 1.1rem;"></i>
+							<span class="en-text">Sign Up</span>
+							<span class="ar-text" style="display:none">إنشاء حساب</span>
+						</a>
+					}
+					else
+					{
+						<a href="@Url.Action("Login", "Account")" class="btn btn-outline-custom btn-sm" style="border: 2px solid #4b6cb7; color: #4b6cb7; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;">
+							<i class="bi bi-box-arrow-in-right" style="font-size: 1.1rem;"></i>
+							<span class="en-text">Log In</span>
+							<span class="ar-text" style="display:none">تسجيل الدخول</span>
+						</a>
+						<a href="@Url.Action("Register", "Account")" class="btn btn-primary-custom btn-sm" style="background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border: none; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3); display: flex; align-items: center; gap: 6px;">
+							<i class="bi bi-person-plus" style="font-size: 1.1rem;"></i>
+							<span class="en-text">Sign Up</span>
+							<span class="ar-text" style="display:none">إنشاء حساب</span>
+						</a>
+					}
+				}
+			</div>
+		</div>
+	</div>
 </nav>
-

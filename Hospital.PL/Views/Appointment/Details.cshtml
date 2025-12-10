@@ -1,168 +1,219 @@
 @model Hospital.BBL.DTOs.AppointmentDTOs.GetAppointmentByIdDto
 @using Hospital.DAL.Models.AppointmentModule
+@using Microsoft.AspNetCore.Identity
+@inject Microsoft.AspNetCore.Identity.UserManager<Hospital.DAL.Models.Shared.ApplicationUser> UserManager
 @{
-    ViewData["Title"] = "Appointment Details";
+	ViewData["Title"] = "Appointment Details";
+	bool visitor;//user who don't login to assign the role
+	bool isDoctor;
+	bool isPatient;
+	bool isAdmin;
+	bool canEdit;
 
-    string FormatStatus(AppointmentStatus status) => status switch
-    {
-        AppointmentStatus.confirmed => "Confirmed",
-        AppointmentStatus.cancelled => "Cancelled",
-        AppointmentStatus.pending => "Pending",
-        _ => status.ToString()
-    };
+	string FormatStatus(AppointmentStatus status) => status switch
+	{
+		AppointmentStatus.confirmed => "Confirmed",
+		AppointmentStatus.cancelled => "Cancelled",
+		AppointmentStatus.pending => "Pending",
+		_ => status.ToString()
+	};
 
-    string FormatType(AppointmentType type) => type switch
-    {
-        AppointmentType.FollowUp => "Follow-up",
-        AppointmentType.Checkup => "Check-up",
-        _ => type.ToString()
-    };
+	string FormatType(AppointmentType type) => type switch
+	{
+		AppointmentType.FollowUp => "Follow-up",
+		AppointmentType.Checkup => "Check-up",
+		_ => type.ToString()
+	};
 
-    string FormatTime(TimeSpan time) => DateTime.Today.Add(time).ToString("h:mm tt");
+	string FormatTime(TimeSpan time) => DateTime.Today.Add(time).ToString("h:mm tt");
+
+	// Get current user and check roles
+	var currentUser = await UserManager.GetUserAsync(User);
+
+	visitor = (currentUser == null);//if user isn't retrived from our database so he is vsistory
+	if (!visitor)
+	{
+		isDoctor = await UserManager.IsInRoleAsync(currentUser, "Doctor");
+		isPatient = await UserManager.IsInRoleAsync(currentUser, "Patient");
+		isAdmin = await UserManager.IsInRoleAsync(currentUser, "Admin");
+	}
+	else
+	{
+		isDoctor = isAdmin = false;
+		isDoctor = isAdmin = isPatient = false;
+	}
+
+	canEdit = isAdmin || isPatient; // Admin or non-doctor can edit(Admin or patient only can edit)
 }
 
 @section PageStyles {
-    <link rel="stylesheet" href="~/css/appointments.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/appointments.css" asp-append-version="true" />
 }
 
 <section class="page-header">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="display-5 fw-bold mb-3" style="color: var(--primary-color);">
-                    <span class="en-text">Appointment Details</span>
-                    <span class="ar-text" style="display:none">تفاصيل الموعد</span>
-                </h1>
+	<div class="container">
+		<div class="row align-items-center">
+			<div class="col-md-8">
+				<h1 class="display-5 fw-bold mb-3" style="color: var(--primary-color);">
+					<span class="en-text">Appointment Details</span>
+					<span class="ar-text" style="display:none">تفاصيل الموعد</span>
+				</h1>
 
-                <p class="lead mb-0" style="color: var(--text-light);">
-                    <span class="en-text">Review schedule, type, status, and notes.</span>
-                    <span class="ar-text" style="display:none">راجع الموعد والنوع والحالة والملاحظات.</span>
-                </p>
-            </div>
+				<p class="lead mb-0" style="color: var(--text-light);">
+					<span class="en-text">Review schedule, type, status, and notes.</span>
+					<span class="ar-text" style="display:none">راجع الموعد والنوع والحالة والملاحظات.</span>
+				</p>
+			</div>
 
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <a asp-action="Index" class="btn btn-outline-custom me-2">
-                    <i class="bi bi-arrow-left me-2"></i>
-                    <span class="en-text">Back to Appointments</span>
-                    <span class="ar-text" style="display:none">العودة للمواعيد</span>
-                </a>
+			<div class="col-md-4 text-md-end mt-3 mt-md-0">
+				@if (isDoctor)
+				{
+					if (TempData["FromMyAppointment"] is string)
+					{
 
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
-                    <i class="bi bi-pencil me-2"></i>
-                    <span class="en-text">Edit Appointment</span>
-                    <span class="ar-text" style="display:none">تعديل الموعد</span>
-                </a>
-            </div>
-        </div>
-    </div>
+						<a asp-controller="DoctorAppointment" asp-action="MyAppointments" class="btn btn-outline-custom me-2">
+							<i class="bi bi-arrow-left me-2"></i>
+							<span class="en-text">Back to My Appointments</span>
+							<span class="ar-text" style="display:none">العودة إلى مواعيدي</span>
+						</a>
+					}
+					else
+					{
+						<a asp-action="index" class="btn btn-outline-custom me-2">
+							<i class="bi bi-arrow-left me-2"></i>
+							<span class="en-text">Back to View Appointments</span>
+							<span class="ar-text" style="display:none">العودة إلى مواعيدي</span>
+						</a>
+					}
+				}
+				else
+				{
+					<a asp-action="Index" class="btn btn-outline-custom me-2">
+						<i class="bi bi-arrow-left me-2"></i>
+						<span class="en-text">Back to Appointments</span>
+						<span class="ar-text" style="display:none">العودة للمواعيد</span>
+					</a>
+				}
+
+				@if (canEdit)
+				{
+					<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
+						<i class="bi bi-pencil me-2"></i>
+						<span class="en-text">Edit Appointment</span>
+						<span class="ar-text" style="display:none">تعديل الموعد</span>
+					</a>
+				}
+			</div>
+		</div>
+	</div>
 </section>
 
 <section class="py-4">
-    <div class="container">
-        <div class="card shadow-sm">
-            <div class="card-body">
+	<div class="container">
+		<div class="card shadow-sm">
+			<div class="card-body">
 
-                <div class="row mb-4">
+				<div class="row mb-4">
 
-                    <div class="col-md-6">
-                        <h5 style="color: var(--primary-color);" class="mb-3">
-                            <span class="en-text">Appointment Information</span>
-                            <span class="ar-text" style="display:none">معلومات الموعد</span>
-                        </h5>
+					<div class="col-md-6">
+						<h5 style="color: var(--primary-color);" class="mb-3">
+							<span class="en-text">Appointment Information</span>
+							<span class="ar-text" style="display:none">معلومات الموعد</span>
+						</h5>
 
-                        <ul class="list-unstyled details-list" style="color: var(--text-light);">
-                            <li>
-                                <strong><span class="en-text">Date:</span><span class="ar-text" style="display:none">التاريخ:</span></strong>
-                                @Model.Appointment_Date.ToString("MMMM dd, yyyy")
-                            </li>
+						<ul class="list-unstyled details-list" style="color: var(--text-light);">
+							<li>
+								<strong><span class="en-text">Date:</span><span class="ar-text" style="display:none">التاريخ:</span></strong>
+								@Model.Appointment_Date.ToString("MMMM dd, yyyy")
+							</li>
 
-                            <li>
-                                <strong><span class="en-text">Time:</span><span class="ar-text" style="display:none">الوقت:</span></strong>
-                                @FormatTime(Model.Appointment_Time)
-                            </li>
+							<li>
+								<strong><span class="en-text">Time:</span><span class="ar-text" style="display:none">الوقت:</span></strong>
+								@FormatTime(Model.Appointment_Time)
+							</li>
 
-                            <li>
-                                <strong><span class="en-text">Type:</span><span class="ar-text" style="display:none">النوع:</span></strong>
-                                @FormatType(Model.AppointmentType)
-                            </li>
+							<li>
+								<strong><span class="en-text">Type:</span><span class="ar-text" style="display:none">النوع:</span></strong>
+								@FormatType(Model.AppointmentType)
+							</li>
 
-                            <li>
-                                <strong><span class="en-text">Status:</span><span class="ar-text" style="display:none">الحالة:</span></strong>
-                                @FormatStatus(Model.Status)
-                            </li>
+							<li>
+								<strong><span class="en-text">Status:</span><span class="ar-text" style="display:none">الحالة:</span></strong>
+								@FormatStatus(Model.Status)
+							</li>
 
-                            @if (!string.IsNullOrEmpty(Model.DoctorName))
-                            {
-                                <li>
-                                    <strong><span class="en-text">Doctor:</span><span class="ar-text" style="display:none">الطبيب:</span></strong>
-                                    @Model.DoctorName
-                                </li>
-                            }
+							@if (!string.IsNullOrEmpty(Model.DoctorName))
+							{
+								<li>
+									<strong><span class="en-text">Doctor:</span><span class="ar-text" style="display:none">الطبيب:</span></strong>
+									@Model.DoctorName
+								</li>
+							}
 
-                            @if (!string.IsNullOrEmpty(Model.DoctorEmail))
-                            {
-                                <li>
-                                    <strong><span class="en-text">Email:</span><span class="ar-text" style="display:none">البريد الإلكتروني:</span></strong>
-                                    @Model.DoctorEmail
-                                </li>
-                            }
+							@if (!string.IsNullOrEmpty(Model.DoctorEmail))
+							{
+								<li>
+									<strong><span class="en-text">Email:</span><span class="ar-text" style="display:none">البريد الإلكتروني:</span></strong>
+									@Model.DoctorEmail
+								</li>
+							}
 
-                            @if (!string.IsNullOrEmpty(Model.DoctorPhone))
-                            {
-                                <li>
-                                    <strong><span class="en-text">Phone:</span><span class="ar-text" style="display:none">الهاتف:</span></strong>
-                                    @Model.DoctorPhone
-                                </li>
-                            }
+							@if (!string.IsNullOrEmpty(Model.DoctorPhone))
+							{
+								<li>
+									<strong><span class="en-text">Phone:</span><span class="ar-text" style="display:none">الهاتف:</span></strong>
+									@Model.DoctorPhone
+								</li>
+							}
 
-                            @if (!string.IsNullOrEmpty(Model.DoctorEducation))
-                            {
-                                <li>
-                                    <strong><span class="en-text">Education:</span><span class="ar-text" style="display:none">التعليم:</span></strong>
-                                    @Model.DoctorEducation
-                                </li>
-                            }
-                        </ul>
-                    </div>
+							@if (!string.IsNullOrEmpty(Model.DoctorEducation))
+							{
+								<li>
+									<strong><span class="en-text">Education:</span><span class="ar-text" style="display:none">التعليم:</span></strong>
+									@Model.DoctorEducation
+								</li>
+							}
+						</ul>
+					</div>
 
-                    <div class="col-md-6">
-                        <h5 style="color: var(--primary-color);" class="mb-3">
-                            <span class="en-text">Notes</span>
-                            <span class="ar-text" style="display:none">ملاحظات</span>
-                        </h5>
+					<div class="col-md-6">
+						<h5 style="color: var(--primary-color);" class="mb-3">
+							<span class="en-text">Notes</span>
+							<span class="ar-text" style="display:none">ملاحظات</span>
+						</h5>
 
-                        <p style="color: var(--text-light);">
-                            @Model.Notes
-                        </p>
-                    </div>
-                </div>
+						<p style="color: var(--text-light);">
+							@Model.Notes
+						</p>
+					</div>
+				</div>
 
-                <div class="row">
+				<div class="row">
 
-                    <div class="col-md-6">
-                        <h5 style="color: var(--primary-color);" class="mb-3">
-                            <span class="en-text">Attachments</span>
-                            <span class="ar-text" style="display:none">المرفقات</span>
-                        </h5>
+					<div class="col-md-6">
+						<h5 style="color: var(--primary-color);" class="mb-3">
+							<span class="en-text">Attachments</span>
+							<span class="ar-text" style="display:none">المرفقات</span>
+						</h5>
 
-                        @if (!string.IsNullOrWhiteSpace(Model.Image))
-                        {
-                            <img src="@Model.Image"
-                                 alt="Appointment attachment"
-                                 class="img-fluid rounded shadow-sm" />
-                        }
-                        else
-                        {
-                            <p style="color: var(--text-light);">
-                                <span class="en-text">No attachments uploaded.</span>
-                                <span class="ar-text" style="display:none">لا توجد مرفقات.</span>
-                            </p>
-                        }
-                    </div>
+						@if (!string.IsNullOrWhiteSpace(Model.Image))
+						{
+							<img src="@Model.Image"
+								 alt="Appointment attachment"
+								 class="img-fluid rounded shadow-sm" />
+						}
+						else
+						{
+							<p style="color: var(--text-light);">
+								<span class="en-text">No attachments uploaded.</span>
+								<span class="ar-text" style="display:none">لا توجد مرفقات.</span>
+							</p>
+						}
+					</div>
 
-                </div>
+				</div>
 
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 </section>

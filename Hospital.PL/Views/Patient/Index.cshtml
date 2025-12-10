@@ -1,7 +1,7 @@
 @model IEnumerable<Hospital.BBL.DTOs.PatientDTOs.GetAllPatientsDto>
 @using Hospital.DAL.Models.PatientModule
 @{
-    ViewData["Title"] = "Patients Management";
+    ViewData["Title"] = "Patients";
     var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
 
     string GetStatusBadgeClass(PatientStatus status) => status switch
@@ -85,71 +85,49 @@
         });
     </script>
 }
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Created" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="Created" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #20c997 0%, #1aa179 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-person-plus text-white me-2"></i>
             <strong class="me-auto text-white en-text">Saved</strong>
-            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الحفظ</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Patient Created successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم إنشاء المريض بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Patient Created successfully</div>
+            <div class="ar-text" style="display:none">تم إنشاء المريض بنجاح</div>
         </div>
     </div>
-</div>
 
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Edited" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
+    <div id="Edited" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-person-check text-white me-2"></i>
             <strong class="me-auto text-white en-text">Saved</strong>
-            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الحفظ</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Patient updated successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم تحديث بيانات المريض بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Patient updated successfully</div>
+            <div class="ar-text" style="display:none">تم تحديث بيانات المريض بنجاح</div>
         </div>
     </div>
-</div>
 
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Deleted" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
+    <div id="Deleted" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-person-x text-white me-2"></i>
             <strong class="me-auto text-white en-text">Done</strong>
-            <strong class="me-auto text-white ar-text">تم الانتهاء</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الانتهاء</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Patient Deleted successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم حذف المريض بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Patient Deleted successfully</div>
+            <div class="ar-text" style="display:none">تم حذف المريض بنجاح</div>
         </div>
     </div>
 </div>
@@ -327,36 +305,70 @@
                                             </button>
 
                                             <div class="modal fade" id="@patient.Id" tabindex="-1" aria-labelledby="Patient_delete" aria-hidden="true">
-                                                <form asp-action="Delete" asp-route-id="@patient.Id" method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden"
+                                                         style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border: 1px solid rgba(32, 201, 151, 0.1);">
 
-                                                                <h1 class="modal-title en-text fs-5 text-primary" id="Patient_delete">Confirmation Required</h1>
-                                                                <h1 class="modal-title ar-text fs-5 text-primary" id="Patient_delete">تأكيد مطلوب</h1>
-                                                                
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <div class="modal-header border-0 pb-0"
+                                                             style="background: linear-gradient(135deg, #20c997 0%, #1aa179 100%);">
+                                                            <div class="modal-title w-100 text-center">
+                                                                <i class="bi bi-person-x text-white fs-2 mb-2 d-block"></i>
+                                                                <h5 class="text-white en-text mb-0 fw-bold">Patient Removal</h5>
+                                                                <h5 class="text-white ar-text mb-0 fw-bold" style="display:none">إزالة المريض</h5>
                                                             </div>
-
-                                                            <div class="modal-body en-text text-secondary">
-                                                                Do you want to delete the Patient
-                                                            </div>
-                                                            <div class="modal-body ar-text text-secondary">
-                                                                هل تريد حذف المريض
-                                                            </div>
-
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn en-text btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn ar-text btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-
-                                                                <button type="submit" class="btn btn-primary en-text">Confirm</button>
-                                                                <button type="submit" class="btn btn-primary ar-text">تأكيد</button>
-                                                            </div>
+                                                            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
 
+                                                        <div class="modal-body pt-4 pb-3 text-center">
+                                                            <p class="text-black en-text fs-5 mb-2">
+                                                                Are you sure you want to remove this patient?
+                                                            </p>
+                                                            <p class="text-black ar-text fs-5 mb-2" style="display:none">
+                                                                هل أنت متأكد من رغبتك في إزالة هذا المريض؟
+                                                            </p>
+                                                            <p class="  en-text small mb-0">
+                                                                Patient records and appointments will be permanently deleted.
+                                                            </p>
+                                                            <p class="  ar-text small mb-0" style="display:none">
+                                                                سيتم حذف سجلات المريض ومواعيده بشكل دائم.
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer border-0 pt-0">
+                                                            <form asp-action="Delete" asp-route-id="@patient.Id" method="post" class="w-100">
+                                                                @Html.AntiForgeryToken()
+                                                                <div class="row g-2">
+                                                                    <div class="col-6">
+                                                                        <button type="button"
+                                                                                class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                                style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;"
+                                                                                data-bs-dismiss="modal">
+                                                                            Keep Patient
+                                                                        </button>
+                                                                        <button type="button"
+                                                                                class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                                style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white; display:none"
+                                                                                data-bs-dismiss="modal">
+                                                                            الاحتفاظ بالمريض
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <button type="submit"
+                                                                                class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                                style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white;">
+                                                                            Remove Patient
+                                                                        </button>
+                                                                        <button type="submit"
+                                                                                class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                                style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; display:none">
+                                                                            إزالة المريض
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         }
                                     </div>
@@ -374,9 +386,9 @@
                     <span class="en-text">Show</span>
                     <span class="ar-text" style="display:none">عرض</span>
                 </label>
-                <select class="form-select form-select-sm w-auto" id="patientsPageSize">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
+                <select class="form-select form-select-sm" id="patientsPageSize" style="width: 70px; border-color: #dee2e6;">
+                    <option value="5" selected>5</option>
+                    <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
                 </select>

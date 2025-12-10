@@ -1,4 +1,4 @@
-﻿using Hospital.DAL.Models.DepartmentModule;
+using Hospital.DAL.Models.DepartmentModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ namespace Hospital.BBL.DTOs.DepartmentDTOs
         public string Location { get; set; } = null!;
         public string DepartmentSpeciality { get; set; } = null!;
         public DepartmentStatus Status { get; set; }
+        public string KeyServices { get; set; } = null!;
 
     }
 }

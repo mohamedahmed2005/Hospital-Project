@@ -93,7 +93,7 @@
                                 <span class="en-text">Date</span>
                                 <span class="ar-text" style="display:none">التاريخ</span>
                             </label>
-                            <input asp-for="Appointment_Date" type="date" class="form-control" required />
+                            <input asp-for="Appointment_Date" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
                             <span asp-validation-for="Appointment_Date" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">

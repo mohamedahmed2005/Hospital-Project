@@ -119,7 +119,7 @@ namespace Hospital.PL.Controllers
                 {
                     // Force email to match user's email
                     viewModel.Email = user.Email;
-                    
+
                     // Check if profile already exists
                     var doctors = _doctorService.GetAllDoctors(true);
                     var existingDoctor = doctors.FirstOrDefault(d => d.Email == user.Email);
@@ -234,48 +234,51 @@ namespace Hospital.PL.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-
-        async Task<bool> DeleteAspDoctor(GetDoctorByIdDto patient)//async function to perform te delete from Asp Table
-        {
-
-            //remove from AspNetUser table
-            var AspUser = await _userManager.FindByEmailAsync(patient.Email);
-            await _userManager.DeleteAsync(AspUser);
-            return true;
-        }
         public async Task<IActionResult> Delete(int id)
         {
-            if (id == 0) return BadRequest();
+            if (id <= 0) return BadRequest();
 
             try
             {
+                // Get doctor info
+                var doctor = _doctorService.GetDoctorById(id);
+                if (doctor == null)
+                {
+                    TempData["Error"] = "Doctor not found.";
+                    return RedirectToAction(nameof(Index));
+                }
 
-                GetDoctorByIdDto UserDoctor = _doctorService.GetDoctorById(id);
-                bool AspDelete= await DeleteAspDoctor(UserDoctor);
+                // Delete from ASP.NET Identity if exists
+                var aspUser = await _userManager.FindByEmailAsync(doctor.Email);
+                if (aspUser != null)
+                {
+                    var deleteResult = await _userManager.DeleteAsync(aspUser);
+                    if (!deleteResult.Succeeded)
+                    {
+                        _logger.LogWarning("Failed to delete ASP.NET user for doctor {Email}: {Errors}",
+                            doctor.Email, string.Join(", ", deleteResult.Errors.Select(e => e.Description)));
+                    }
+                }
 
+                // Delete from your database
                 bool deleted = _doctorService.DeleteDoctor(id);
 
                 if (deleted)
                 {
-                    TempData["Deleted"] = "Doctor deleted successfully";
-                    return RedirectToAction(nameof(Index));
+                    TempData["Deleted"] = $"Doctor {doctor.Name} deleted successfully";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to delete doctor from database.";
                 }
 
-                ModelState.AddModelError(string.Empty, "Failed to delete doctor.");
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                if (_environment.IsDevelopment())
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    _logger.LogError(ex.Message);
-                    return View("Errorview", ex);
-                }
+                _logger.LogError(ex, "Error deleting doctor with ID: {Id}", id);
+                TempData["Error"] = "An error occurred while deleting the doctor.";
+                return RedirectToAction(nameof(Index));
             }
         }
         #endregion
@@ -373,7 +376,7 @@ namespace Hospital.PL.Controllers
                 var doctorEntity = _doctorService.GetDoctorById(id.Value);
                 if (doctorEntity == null)
                     return NotFound();
-                
+
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null && doctorEntity.Email != user.Email)
                 {
@@ -418,7 +421,6 @@ namespace Hospital.PL.Controllers
                     TempData["Edited"] = "Doctor updated successfully";
                     if (User.IsInRole("Doctor") && !User.IsInRole("Admin"))
                     {
-                       
                         // Redirect to dashboard after updating profile
                         return RedirectToAction("Doctor", "Dashboard");
                     }

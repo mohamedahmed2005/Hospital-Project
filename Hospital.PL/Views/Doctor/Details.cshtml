@@ -28,17 +28,18 @@
             </div>
 
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                @if (ViewBag.IsOwnProfile != true)
-                {
+               
+                
                     <a asp-action="Index" class="btn btn-outline-custom me-2">
                         <i class="bi bi-arrow-left me-2"></i>
                         <span class="en-text">Back to Doctors</span>
                         <span class="ar-text" style="display:none">العودة للأطباء</span>
                     </a>
-                }
 
-                @if (User.IsInRole("Admin") || (User.IsInRole("Doctor") && !User.IsInRole("Admin")))
+                
+                @if (User.IsInRole("Admin") || (User.IsInRole("Doctor") && ViewBag.IsOwnProfile == true ) )
                 {
+
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-custom">
                         <i class="bi bi-pencil me-2"></i>
                         <span class="en-text">Edit Doctor</span>

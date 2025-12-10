@@ -1,19 +1,24 @@
+using Hospital.BBL.ValidationAttributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hospital.PL.ViewModels
 {
     public class ContactViewModel
     {
-        [Required, Display(Name = "First Name")]
+        [Required(ErrorMessage = "First name is required")]
+        [NameValidation]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required, Display(Name = "Last Name")]
+        [Required(ErrorMessage = "Last name is required")]
+        [NameValidation]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; } = string.Empty;
 
         [Required, EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Phone]
+        [PhoneNumberValidation]
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 

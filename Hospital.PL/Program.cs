@@ -6,6 +6,7 @@ using Hospital.DAL.Contexts;
 using Hospital.DAL.Models.Shared;
 using Hospital.DAL.Repositories.Classes;
 using Hospital.DAL.Repositories.Interfaces;
+using Hospital.PL.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
@@ -36,9 +37,8 @@ namespace Hospital.PL
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly("Hospital.DAL"));
+                      b => b.MigrationsAssembly("Hospital.DAL"));
                 options.UseLazyLoadingProxies();
-
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
@@ -83,6 +83,7 @@ namespace Hospital.PL
                 options.ReturnUrlParameter = "returnUrl";
             });
             builder.Services.AddScoped<IAttachementService, AttachementService>();
+            builder.Services.AddScoped<LocalChatService>();
             builder.Services.AddHttpClient();
             #endregion
 

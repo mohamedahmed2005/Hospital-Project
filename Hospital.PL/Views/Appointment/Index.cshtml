@@ -66,7 +66,7 @@
     <link rel="stylesheet" href="~/css/appointments.css" asp-append-version="true" />
 }
 
-@if (TempData["Edited"] != null)//usually named Edited,but was named Success sat the controller
+@if (TempData["Edited"] != null)
 {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -105,71 +105,49 @@
         });
     </script>
 }
-<div class="toast-container position-fixed top-0  p-3">
-    <div id="Created" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
-            <strong class="me-auto en-text text-white">Saved</strong>
-            <strong class="me-auto ar-text text-white">تم الحفظ</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-closemergency-banner en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="Created" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-calendar-plus text-white me-2"></i>
+            <strong class="me-auto text-white en-text">Created</strong>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الإنشاء</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Appointment Created successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم إنشاء الموعد بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Appointment Created successfully</div>
+            <div class="ar-text" style="display:none">تم إنشاء الموعد بنجاح</div>
         </div>
     </div>
-</div>
 
-
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Edited" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-            <strong class="me-auto text-white en-text">Saved</strong>
-            <strong class="me-auto text-white ar-text">تم الحفظ</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div id="Edited" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-calendar-check text-white me-2"></i>
+            <strong class="me-auto text-white en-text">Updated</strong>
+            <strong class="me-auto text-white ar-text" style="display:none">تم التحديث</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Appointment updated successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم تحديث الموعد بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Appointment updated successfully</div>
+            <div class="ar-text" style="display:none">تم تحديث الموعد بنجاح</div>
         </div>
     </div>
-</div>
 
-<div class="toast-container position-fixed top-0 p-3">
-    <div id="Deleted" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary">
-
-            <strong class="me-auto text-white en-text">finished</strong>
-            <strong class="me-auto text-white ar-text">تم الانتهاء</strong>
-
-            <small class="en-text">1 mins ago</small>
-            <small class="ar-text">قبل دقيقة واحدة</small>
-
-            <button type="button" class="btn-close en-text" data-bs-dismiss="toast" aria-label="Close"></button>
-            <button type="button" class="btn-close ar-text" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div id="Deleted" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);">
+        <div class="toast-header border-0" style="background: rgba(255, 255, 255, 0.1);">
+            <i class="bi bi-calendar-x text-white me-2"></i>
+            <strong class="me-auto text-white en-text">Finished</strong>
+            <strong class="me-auto text-white ar-text" style="display:none">تم الانتهاء</strong>
+            <small class="text-white-50 en-text">just now</small>
+            <small class="text-white-50 ar-text" style="display:none">الآن</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
-        <div class="toast-body text-success en-text">
-            Appointment Deleted successfully
-        </div>
-        <div class="toast-body text-success ar-text">
-            تم حذف الموعد بنجاح
+        <div class="toast-body text-white">
+            <div class="en-text">Appointment Deleted successfully</div>
+            <div class="ar-text" style="display:none">تم حذف الموعد بنجاح</div>
         </div>
     </div>
 </div>
@@ -190,7 +168,7 @@
                 </p>
             </div>
             <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                @if (isAuthenticated)
+                @if (isAuthenticated && ( User.IsInRole("Admin") || User.IsInRole("Patient") ) )
                 {
                     <a class="btn btn-primary-custom" asp-action="Create">
                         <i class="bi bi-plus-circle me-2"></i>
@@ -324,7 +302,7 @@
                                                asp-route-id="@appointment.Id">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            @if (isAuthenticated)
+                                            @if (isAuthenticated &&( User.IsInRole("Admin") || User.IsInRole("Patient") ) )
                                             {
                                                 <a class="btn btn-sm btn-outline-custom btn-sm-custom"
                                                    asp-action="Edit"
@@ -341,39 +319,73 @@
                                                     <i class="bi bi-x-circle"></i>
                                                 </button>
                                                 <div class="modal fade" id="@appointment.Id" tabindex="-1" aria-labelledby="Appointment_delete" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden"
+                                                             style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border: 1px solid rgba(255, 193, 7, 0.1);">
 
-                                                    <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="d-inline">
-                                                        @Html.AntiForgeryToken()
-
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-
-                                                                    <h1 class="modal-title en-text fs-5 text-primary" id="Appointment_Delete">Confirmation Required</h1>
-                                                                    <h1 class="modal-title ar-text fs-5 text-primary" id="Appointment_Delete">تأكيد مطلوب</h1>
-
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <div class="modal-header border-0 pb-0"
+                                                                 style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+                                                                <div class="modal-title w-100 text-center">
+                                                                    <i class="bi bi-calendar-x text-white fs-2 mb-2 d-block"></i>
+                                                                    <h5 class="text-white en-text mb-0 fw-bold">Appointment Cancellation</h5>
+                                                                    <h5 class="text-white ar-text mb-0 fw-bold" style="display:none">إلغاء الموعد</h5>
                                                                 </div>
-                                                                <div class="modal-body en-text text-secondary">
-                                                                    Do you want to delete the Appointment
-                                                                </div>
-                                                                <div class="modal-body ar-text text-secondary">
-                                                                    هل تريد حذف الموعد
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn en-text btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn ar-text btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-
-                                                                    <button type="submit" class="btn btn-primary en-text">Confirm</button>
-                                                                    <button type="submit" class="btn btn-primary ar-text">تأكيد</button>
-                                                                </div>
+                                                                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
+                                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
 
-                                                        </div>
+                                                            <div class="modal-body pt-4 pb-3 text-center">
+                                                                <p class="text-black en-text fs-5 mb-2">
+                                                                    Are you sure you want to cancel this appointment?
+                                                                </p>
+                                                                <p class="text-black ar-text fs-5 mb-2" style="display:none">
+                                                                    هل أنت متأكد من رغبتك في إلغاء هذا الموعد؟
+                                                                </p>
+                                                                <p class="  en-text small mb-0">
+                                                                    This action will remove the appointment from the schedule.
+                                                                </p>
+                                                                <p class="  ar-text small mb-0" style="display:none">
+                                                                    سيتم إزالة الموعد من الجدول الزمني.
+                                                                </p>
+                                                            </div>
 
-                                                    </form>
+                                                            <div class="modal-footer border-0 pt-0">
+                                                                <form asp-action="Delete" asp-route-id="@appointment.Id" method="post" class="w-100">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <div class="row g-2">
+                                                                        <div class="col-6">
+                                                                            <button type="button"
+                                                                                    class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                                    style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;"
+                                                                                    data-bs-dismiss="modal">
+                                                                                Keep Appointment
+                                                                            </button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                                    style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white; display:none"
+                                                                                    data-bs-dismiss="modal">
+                                                                                الاحتفاظ بالموعد
+                                                                            </button>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <button type="submit"
+                                                                                    class="btn btn-lg w-100 border-0 rounded-3 en-text"
+                                                                                    style="background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%); color: white;">
+                                                                                Cancel Appointment
+                                                                            </button>
+                                                                            <button type="submit"
+                                                                                    class="btn btn-lg w-100 border-0 rounded-3 ar-text"
+                                                                                    style="background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%); color: white; display:none">
+                                                                                إلغاء الموعد
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            }
+                                                    }
                                         </div>
                                     </td>
                                 </tr>
@@ -389,9 +401,9 @@
                         <span class="en-text">Show</span>
                         <span class="ar-text" style="display:none">عرض</span>
                     </label>
-                    <select class="form-select form-select-sm w-auto" id="appointmentsPageSize">
-                        <option value="5">5</option>
-                        <option value="10" selected>10</option>
+                    <select class="form-select form-select-sm" id="appointmentsPageSize" style="width: 70px; border-color: #dee2e6;">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="20">20</option>
                     </select>
@@ -446,4 +458,3 @@
     </script>
     <script src="~/js/appointments.js" asp-append-version="true"></script>
 }
-
